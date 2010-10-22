@@ -1,0 +1,87 @@
+<html>
+<head>
+<title>JavaScript Charting Unit Tests - Line Series</title>
+<script type="text/javascript" src="http://localhost/closure-library/js/goog/base.js"></script>
+<script type="text/javascript" src="http://localhost/javascript-charting-sample/demo/myDeps.js"></script>
+<script>
+	goog.require('goog.testing.jsunit');
+	goog.require('goog.dom');
+	
+	goog.require('goog.date');
+	
+	goog.require('scottlogic.chart.Chart');
+	goog.require('scottlogic.chart.rendering.DateTimeAxis');
+	goog.require('scottlogic.chart.rendering.NumericalAxis');
+	goog.require('scottlogic.chart.rendering.LineSeries');
+</script>
+</head>
+<body>
+<script>  
+    // Clear the canvas after the charts have been tested
+    function tearDown(){
+        var canvas = goog.dom.$('canvas');
+        canvas.innerHTML = '';
+    }
+    
+    function testTrackball(){
+    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 12, 0, 0, 0);
+    	var midway1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 13, 0, 0, 0);
+    	var midway2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 14, 0, 0, 0);
+    	var midway3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 15, 0, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 16, 0, 0, 0);
+        var x = new scottlogic.chart.rendering.DateTimeAxis();
+        x.setMinimum(min);
+    	x.setMaximum(max);
+        
+        var chart = new scottlogic.chart.Chart("canvas", [300, 300]);
+        var series = new scottlogic.chart.rendering.LineSeries("", [[min, -1],[midway1, 3],[midway2, 1],[midway3, 7],[max, 10]]);
+        chart.addLineSeries(series);
+        chart.redraw();
+        
+        var chartPoint = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 13, 14, 25, 0);
+        series.updateTrackball(chartPoint);
+        assertEquals("Correctly assigned midway through", midway2, series.getCurrentTrackballPoint()[0]);
+        assertEquals("Correctly assigned midway through", 1, series.getCurrentTrackballPoint()[1]);
+        
+        var chartPoint2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 12, 12, 0, 0);
+        series.updateTrackball(chartPoint2);
+        assertEquals("Correctly assigned midway through 2", midway1, series.getCurrentTrackballPoint()[0]);
+        
+        var chartPoint3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 15, 23, 1, 0);
+        series.updateTrackball(chartPoint3);
+        assertEquals("Correctly assigned midway through 3", max, series.getCurrentTrackballPoint()[0]);
+        
+        var chartPoint4 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 14, 51, 0, 0);
+        series.updateTrackball(chartPoint4);
+        assertEquals("Correctly assigned midway through 4", midway3, series.getCurrentTrackballPoint()[0]);
+        
+        var beforeMin = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 11, 0, 0, 0);
+        series.updateTrackball(beforeMin);
+        assertEquals("Correctly assigned when before min 1 - x", min, series.getCurrentTrackballPoint()[0]);
+        assertEquals("Correctly assigned when before min 1 - y", -1, series.getCurrentTrackballPoint()[1]);
+        
+        var afterMax = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 17, 0, 0, 0);
+        series.updateTrackball(afterMax);
+        assertEquals("Correctly assigned when after max 1 - x", max, series.getCurrentTrackballPoint()[0]);
+        assertEquals("Correctly assigned when after max 1 - y", 10, series.getCurrentTrackballPoint()[1]);
+            
+        var chart = new scottlogic.chart.Chart("canvas", [300, 300]);
+        var series = new scottlogic.chart.rendering.LineSeries("", [[midway1, 3],[midway2, 1],[midway3, 7]]);
+        chart.addLineSeries(series);
+        chart.redraw();
+        
+        var beforeMin = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 11, 0, 0, 0);
+        series.updateTrackball(beforeMin);
+        assertEquals("Correctly assigned when before min 2 - x", midway1, series.getCurrentTrackballPoint()[0]);
+        assertEquals("Correctly assigned when before min 2 - y", 3, series.getCurrentTrackballPoint()[1]);
+        
+        var afterMax = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 17, 0, 0, 0);
+        series.updateTrackball(afterMax);
+        assertEquals("Correctly assigned when after max 2 - x", midway3, series.getCurrentTrackballPoint()[0]);
+        assertEquals("Correctly assigned when after max 2 - y", 7, series.getCurrentTrackballPoint()[1]);  
+    }
+   
+</script>
+<div id="canvas"></div>
+</body>
+</html>

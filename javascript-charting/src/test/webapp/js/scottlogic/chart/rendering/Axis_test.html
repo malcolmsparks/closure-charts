@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>JavaScript Charting Unit Tests - Axis</title>
+<script type="text/javascript" src="http://localhost/closure-library/js/goog/base.js"></script>
+<script type="text/javascript" src="http://localhost/javascript-charting-sample/demo/myDeps.js"></script>
+<script>
+    goog.require('goog.testing.jsunit');
+
+    goog.require('goog.dom');
+    goog.require('scottlogic.chart.rendering.NumericalAxis');
+    goog.require('scottlogic.chart.rendering.DateTimeAxis');
+
+</script>
+</head>
+<body>
+<script>  
+    // Clear the canvas after the charts have been tested
+    function tearDown(){
+        var canvas = goog.dom.$('canvas');
+        canvas.innerHTML = '';
+    }
+
+    function testNullFormatter(){
+        var x = new scottlogic.chart.rendering.NumericalAxis();
+        
+        assertNull("Formatter is null", x.formatter_);
+        assertEquals("Label correctly generated", "5", x.getLabel(5));
+        
+        var min = new goog.date.UtcDateTime(2010, 4, 3, 3, 4, 2, 3);
+        var max = new goog.date.UtcDateTime(2010, 5, 4, 3, 2, 4, 3);
+        var x = new scottlogic.chart.rendering.DateTimeAxis();
+        x.setMinimum(min);
+        x.setMaximum(max);
+        assertNull("Formatter is null", x.formatter_);
+        assertEquals("Label correctly generated", "19700101T000000", x.getLabel(1));
+    }
+   
+</script>
+<div id="canvas"></div>
+</body>
+</html>

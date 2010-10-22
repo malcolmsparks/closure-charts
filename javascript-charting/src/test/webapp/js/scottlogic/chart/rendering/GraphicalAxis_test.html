@@ -1,0 +1,55 @@
+<html>
+<head>
+<title>JavaScript Charting Unit Tests - Graphical Axis</title>
+<script type="text/javascript" src="http://localhost/closure-library/js/goog/base.js"></script>
+<script type="text/javascript" src="http://localhost/javascript-charting-sample/demo/myDeps.js"></script>
+<script>
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.dom');
+    goog.require('goog.date');
+    goog.require('goog.math');
+    
+    goog.require('scottlogic.chart.Chart');
+    goog.require('scottlogic.chart.rendering.DateTimeAxis');
+    goog.require('scottlogic.chart.rendering.NumericalAxis');
+
+</script>
+</head>
+<body>
+<script>  
+    // Clear the canvas after the charts have been tested
+    function tearDown(){
+        var canvas = goog.dom.$('canvas');
+        canvas.innerHTML = '';
+    }
+    
+    function testConvert(){
+    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 12, 0, 0, 0);
+    	var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 16, 0, 0, 0);
+    	
+    	var chart = new scottlogic.chart.Chart("canvas", [300, 300]);
+    	chart.xAxisData.setMinimum(min);
+    	chart.xAxisData.setMaximum(max);
+    	chart.xAxisData.setStartOfHours(new goog.date.UtcDateTime(1990, 06, 22, 08));
+    	chart.xAxisData.setEndOfHours(new goog.date.UtcDateTime(1990, 06, 22, 17));
+    	
+    	chart.redraw();
+    	
+    	//TODO : rewrite these, they only work with default padding
+    	// padding (40) + tick width (7)
+    	assertEquals("Convert minimum x", chart.paddingY, chart.xAxis.convert(min));
+    	
+    	// height (300) - tick length (7) - font size (13)
+    	assertEquals("Convert minimum y", 300 - chart.paddingX, chart.yAxis.convert(0));
+    	
+    	// width (300) - half of padding (20)
+    	assertTrue("convert maximum x", goog.math.nearlyEquals(300 - chart.paddingRight, chart.xAxis.convert(max)));
+    	
+    	// half of font size (13)
+    	assertTrue("convert maximum y", goog.math.nearlyEquals(chart.paddingTop, chart.yAxis.convert(1)));
+    }
+   
+</script>
+<div id="canvas"></div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<html>
+<head>
+<title>JavaScript Charting Unit Tests - DiscontinuousDateTimeAxis</title>
+<script type="text/javascript" src="http://localhost/closure-library/js/goog/base.js"></script>
+<script type="text/javascript" src="http://localhost/javascript-charting-sample/demo/myDeps.js"></script>
+<script>
+    goog.require('goog.testing.jsunit');
+
+    goog.require('goog.dom');
+    goog.require('goog.date');
+    goog.require('scottlogic.chart.rendering.DiscontinuousDateTimeAxis');
+    goog.require('scottlogic.chart.rendering.DiscontinuousDateTimeCache');
+</script>
+</head>
+<body>
+<script>  
+    // Clear the canvas after the charts have been tested
+    function tearDown(){
+        var canvas = goog.dom.$('canvas');
+        canvas.innerHTML = '';
+    }
+   
+    function testGenerate() {
+      var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+      var cache = new scottlogic.chart.rendering.DiscontinuousDateTimeCache(axis);
+      
+      cache.generate();
+      
+      var allInWorkingHours = true;
+      for(var i = 0; i<cache.keys_.length; i++) {
+        var curr = new goog.date.UtcDateTime(new Date(cache.keys_[i]));
+        if(!axis.isInWorkingHours(curr)) {
+          allInWorkingHours = false;
+        }
+      }
+      assertTrue("All keys are in working hours", allInWorkingHours);
+      
+      var allIncrementedByDay = true;
+      for(var i = 1; i<cache.vals_.length; i++) {
+        if(cache.vals_[i] - cache.vals_[i-1] !== 32400000) {
+          allIncrementedByDay = false;
+        }
+      }
+      assertTrue("All values incremented by one day", allIncrementedByDay);
+      
+      var allCorrectValues = true;
+      for(var i = 0; i<cache.vals_.length; i++) {
+        var curr = new goog.date.UtcDateTime(new Date(cache.keys_[i]));
+        if(cache.vals_[i] !== axis.normalizeFrom_(curr, new goog.date.UtcDateTime(new Date(0)))) {
+          allCorrectValues = false;
+        }
+      }
+      assertTrue("All values are their normalized equivalents", allCorrectValues);
+    }
+    
+    function testGetKey() {
+      var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+      var cache = new scottlogic.chart.rendering.DiscontinuousDateTimeCache(axis);
+      
+      cache.generate();
+      
+      var firstVal = new goog.date.UtcDateTime(2007, 0, 1, 8);
+      assertEquals("First value correct", 312753600000, cache.getVal(firstVal));
+      
+      var lastVal = new goog.date.UtcDateTime(new Date());
+      lastVal = axis.getStartOfDay_(lastVal);
+      assertEquals("Last value correct", cache.vals_[cache.vals_.length-1], cache.getVal(lastVal));
+      
+      var middleVal = new goog.date.UtcDateTime(2008, goog.date.month.AUG, 15, 8);
+      assertEquals("Middle value correct", 326491200000, cache.getVal(middleVal))
+    }
+    
+    function testGetVal() {
+      var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+      var cache = new scottlogic.chart.rendering.DiscontinuousDateTimeCache(axis);
+      
+      cache.generate();
+      
+      var firstVal = new goog.date.UtcDateTime(2007, 0, 1, 8);
+      assertEquals("First value correct", firstVal.getTime(), cache.getKey(312753600000).getTime());
+      
+      var lastVal = new goog.date.UtcDateTime(new Date());
+      lastVal = axis.getStartOfDay_(lastVal);
+      assertEquals("Last value correct", lastVal.getTime(), cache.getKey(cache.vals_[cache.vals_.length-1]).getTime());
+      
+      var middleVal = new goog.date.UtcDateTime(2008, goog.date.month.AUG, 15, 8);
+      assertEquals("Middle value correct", middleVal.getTime(), cache.getKey(326491200000).getTime())
+    }
+</script>
+<div id="canvas"></div>
+</body>
+</html>

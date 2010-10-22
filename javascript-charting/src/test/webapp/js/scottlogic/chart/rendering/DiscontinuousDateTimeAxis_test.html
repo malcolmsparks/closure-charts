@@ -1,0 +1,701 @@
+<html>
+<head>
+<title>JavaScript Charting Unit Tests - DiscontinuousDateTimeAxis</title>
+<script type="text/javascript" src="http://localhost/closure-library/js/goog/base.js"></script>
+<script type="text/javascript" src="http://localhost/javascript-charting-sample/demo/myDeps.js"></script>
+<script>
+    goog.require('goog.testing.jsunit');
+
+    goog.require('goog.dom');
+    goog.require('goog.date');
+    goog.require('scottlogic.chart.rendering.DiscontinuousDateTimeAxis');
+    goog.require('scottlogic.chart.Chart');
+</script>
+</head>
+<body>
+<script>  
+    // Clear the canvas after the charts have been tested
+    function tearDown(){
+        var canvas = goog.dom.$('canvas');
+        canvas.innerHTML = '';
+    }
+    
+    function testSetIntervalStep() {
+        var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);
+        var max = new goog.date.UtcDateTime(2016, goog.date.month.AUG, 4, 10, 0, 0, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 0, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 0, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.initialize();
+        
+        var range = axis.max - axis.min;
+        
+        // 25mins = 30 mins
+        var test1 = Math.floor(range / 1500000);
+        var test1_result = new goog.date.Interval(0, 0, 0, 0, 30, 0);
+        axis.setIntervalStep(test1);
+        
+        assertEquals("30 mins", test1_result.getTotalSeconds(), axis.intervalStep.getTotalSeconds());
+        
+        // 45 mins = 1 hour
+        var test2 = Math.floor(range / 2700000);
+        var test2_result = new goog.date.Interval(0, 0, 0, 1, 0, 0);
+        axis.setIntervalStep(test2);
+        
+        assertEquals("1 hour", test2_result.getTotalSeconds(), axis.intervalStep.getTotalSeconds());
+        
+        // 1 hr 32 min = 2 hours
+        var test3 = Math.floor(range / 5520000);
+        var test3_result = new goog.date.Interval(0, 0, 0, 2, 0, 0);
+        axis.setIntervalStep(test3);
+        
+        assertEquals("2 hours", test3_result.getTotalSeconds(), axis.intervalStep.getTotalSeconds());
+        
+        // 4 hrs 32 mins = 6 hours
+        var test4 = Math.floor(range / 16320000);
+        var test4_result = new goog.date.Interval(0, 0, 0, 6, 0, 0);
+        axis.setIntervalStep(test4);
+        
+        assertEquals("6 hours", test4_result.getTotalSeconds(), axis.intervalStep.getTotalSeconds());
+        
+        // 21 hours = 1 day
+        var test6 = Math.floor(range / 75600000);
+        var test6_result = new goog.date.Interval(0, 0, 1, 0, 0, 0);
+        axis.setIntervalStep(test6);
+        
+        assertEquals("1 day", test6_result.getTotalSeconds(), axis.intervalStep.getTotalSeconds());
+        
+        // 1 day 13 hours = 2 days
+        var test7 = Math.floor(range / 133200000);
+        var test7_result = new goog.date.Interval(0, 0, 2, 0, 0, 0);
+        axis.setIntervalStep(test7);
+        
+        assertEquals("2 days", test7_result.getTotalSeconds(), axis.intervalStep.getTotalSeconds());
+        
+        // 4 days 18 hours = 5 days
+        var test8 = Math.floor(range / 410400000);
+        var test8_result = new goog.date.Interval(0, 0, 5, 0, 0, 0);
+        axis.setIntervalStep(test8);
+        
+        assertEquals("5 days", test8_result.getTotalSeconds(), axis.intervalStep.getTotalSeconds());
+        
+        // 9 days = 10 days
+        var test9 = Math.floor(range / 777600000);
+        var test9_result = new goog.date.Interval(0, 0, 10, 0, 0, 0);
+        axis.setIntervalStep(test9);
+        
+        assertEquals("10 days", test9_result.getTotalSeconds(), axis.intervalStep.getTotalSeconds());
+        
+        // 23 days = 1 month (30.4375 days)
+        var test10 = Math.floor(range / 1987200000);
+        var test10_result = new goog.date.Interval(0, 1, 0, 0, 0, 0);
+        axis.setIntervalStep(test10);
+        
+        assertEquals("1 month", test10_result.months, axis.intervalStep.months);
+        
+        // 4 months = 6 months (6 * 30.4375 days)
+        var test11 = Math.floor(range / 10519200000);
+        var test11_result = new goog.date.Interval(0, 6, 0, 0, 0, 0);
+        axis.setIntervalStep(test11);
+        
+        assertEquals("6 months", test11_result.months, axis.intervalStep.months);
+        
+        // 8 months = 1 year (365.25 days)
+        var test12 = Math.floor(range / 21038400000);
+        var test12_result = new goog.date.Interval(1, 0, 0, 0, 0, 0);
+        axis.setIntervalStep(test12);
+        
+        assertEquals("1 year", test12_result.years, axis.intervalStep.years);
+        
+        // Now test the awkward cases
+     	// 1 hour = 1 hour
+        var test13 = Math.floor(range / 3600000);
+        var test13_result = new goog.date.Interval(0, 0, 0, 1, 0, 0);
+        axis.setIntervalStep(test13);
+        
+        assertEquals("Exactly 1 hour", test13_result.getTotalSeconds(), axis.intervalStep.getTotalSeconds());
+        
+     	// 12 hours = 12 hours
+        var test14 = Math.floor(range / 43200000);
+        var test14_result = new goog.date.Interval(0, 0, 1, 0, 0, 0);
+        axis.setIntervalStep(test14);
+        
+        assertEquals("Exactly 12 hours", test14_result.getTotalSeconds(), axis.intervalStep.getTotalSeconds());
+        
+     	// 1 day = 1 day
+        var test15 = Math.floor(range / 86400000);
+        var test15_result = new goog.date.Interval(0, 0, 1, 0, 0, 0);
+        axis.setIntervalStep(test15);
+        
+        assertEquals("Exactly 1 day", test15_result.getTotalSeconds(), axis.intervalStep.getTotalSeconds());
+    }
+
+    function testNormalizeFrom(){
+        var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 6, 10, 0, 0, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 0, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 0, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.initialize();
+        
+        var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);
+        var test1_from = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 9, 0, 0, 0);
+        assertEquals("Simple normalize", 3600000, axis.normalizeFrom_(test1, test1_from));
+        
+        var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 9, 0, 0, 0);
+        var test2_from = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 16, 0, 0, 0);
+        assertEquals("Over a day", 7200000, axis.normalizeFrom_(test2, test2_from));
+        
+        var test3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 9, 0, 0, 0);
+        var test3_from = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 6, 16, 0, 0, 0);
+        assertEquals("Over a week", 7200000, axis.normalizeFrom_(test3, test3_from));
+        
+        var test4 = new goog.date.UtcDateTime(2011, goog.date.month.JAN, 3, 9, 0, 0, 0);
+        var test4_from = new goog.date.UtcDateTime(2010, goog.date.month.DEC, 29, 16, 0, 0, 0);
+        assertEquals("Over a year", 72000000, axis.normalizeFrom_(test4, test4_from));
+    }
+    
+    /*function testNormalize(){
+        var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 6, 10, 0, 0, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 0, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 0, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.initialize();
+
+        var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 100);
+        var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 10, 0, 0, 0);
+        var test3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 14, 12, 32, 323);
+
+        assertEquals("Milliseconds in a working day", 32400000, axis.millisecondsInAWorkingDay_);
+        assertEquals("Milliseconds in a working week", 162000000, axis.millisecondsInAWorkingWeek_);
+        
+        assertEquals("Minimum value normalized to 0", 0, axis.normalize(min));
+        assertEquals("100 ms after minimum normalized to 100", 100, axis.normalize(test1));
+        assertEquals("One day later normalized to 32400000", 32400000, axis.normalize(test2));
+        assertEquals("Maximum date normalized to 129600000", 129600000, axis.normalize(max));
+        assertEquals("Random value normalized", (32400000 + ((((4 * 60) * 60) * 1000)) + (((12 * 60) * 1000)) + (32 * 1000) + 323), axis.normalize(test3));
+
+        axis.setMaximum(new goog.date.UtcDateTime(2010, goog.date.month.AUG, 11, 10, 0, 0, 0));
+
+        var test6 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 10, 0, 0, 0);
+        var test7 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 12, 15, 42, 231); 
+        assertEquals("One week later normalized to 162000000", 162000000, axis.normalize(test6));
+        assertEquals("One week and some random hours later normalized", (162000000 + ((((2 * 60) * 60) * 1000)) + ((15 * 60) * 1000) + (42 * 1000) + 231), axis.normalize(test7));
+
+        axis.setMaximum(new goog.date.UtcDateTime(2010, goog.date.month.AUG, 27, 10, 0, 0, 0));
+        var test8 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 23, 10, 0, 0, 0);
+        var test9 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 25, 12, 15, 0, 0);
+        var test10 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 25, 18, 00, 0, 0);
+        var test11 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 25, 05, 00, 0, 0);
+        var test12 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 14, 14, 00, 0, 0);
+        var test13 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 15, 14, 00, 0, 0);
+        
+        assertEquals("Weeks later", (3 * 162000000), axis.normalize(test8));
+        assertEquals("Week and days later", 558900000, axis.normalize(test9));
+        
+        axis.setStartOfHours(new goog.date.UtcDateTime(2010, 1, 1, 7, 15, 0, 0));
+        axis.setEndOfHours(new goog.date.UtcDateTime(2010, 1, 1, 16, 30, 0, 0));
+        
+        var test14 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 20, 16, 30, 0, 0);
+        var test15 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 23, 7, 15, 0, 0);
+        
+        assertEquals("Last thing friday and first thing monday are the same", axis.normalize(test14), axis.normalize(test15));
+    }*/
+    
+    function testCachedNormalize() {
+      var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);
+      var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 0, 0, 0);
+      var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 0, 0, 0);
+      var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 0, 0, 0);
+      var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+      axis.setStartOfHours(start);
+      axis.setEndOfHours(end);
+      axis.setMinimum(min);
+      axis.setMaximum(max);
+      axis.initialize();
+      
+      var baseTest = new goog.date.UtcDateTime(new Date(32400000));
+      assertEquals("Epoch + 1 hour", 32400000, axis.normalize(baseTest));
+      
+      var test1 = new goog.date.UtcDateTime(2007, goog.date.month.JAN, 1, 8);
+      var test1_result = axis.normalizeFrom_(test1 , new goog.date.UtcDateTime(new Date(0)));
+      assertEquals("Test 1", test1_result, axis.normalize(test1));
+      
+      var test2 = new goog.date.UtcDateTime(2009, goog.date.month.MAY, 14, 12, 04, 12);
+      var test2_result = axis.normalizeFrom_(test2, new goog.date.UtcDateTime(new Date(0)));
+      assertEquals("Test 2", test2_result, axis.normalize(test2));
+    }
+    
+    function testCachedDenormalize() {
+      var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);
+      var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 0, 0, 0);
+      var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 0, 0, 0);
+      var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 0, 0, 0);
+      var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+      axis.setStartOfHours(start);
+      axis.setEndOfHours(end);
+      axis.setMinimum(min);
+      axis.setMaximum(max);
+      axis.initialize();
+      
+      assertEquals("Epoch", new goog.date.UtcDateTime(new Date(0)).getTime(), axis.denormalize(0).getTime());
+      
+      var test1 = new goog.date.UtcDateTime(2007, goog.date.month.JAN, 1, 8);
+      assertEquals("Back and forth", test1.getTime(), axis.denormalize(axis.normalize(test1)).getTime());
+      
+      var test2 = new goog.date.UtcDateTime(new Date());
+      assertEquals("Now", test2.getTime(), axis.denormalize(axis.normalize(test2)).getTime());	
+    }
+
+    /*function testDenormalize(){
+        var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 0, 0, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 0, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 0, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.initialize();
+
+        var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 12, 15, 0, 200);
+        var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 10, 0, 0, 0);
+        var test3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 12, 15, 0, 200);
+        var test4 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 10, 0, 0, 0);
+        var test5 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 13, 12, 15, 0, 200);
+        
+        assertEquals("Before the end of the min day", test1.getTime(), axis.denormalize(8100200).getTime());
+        assertEquals("Day after min", test2.getTime(), axis.denormalize(32400000).getTime());
+        assertEquals("Some days and some hours after min", test3.getTime(), axis.denormalize((3 * 32400000) + 8100200).getTime());
+        assertEquals("Week after min", test4.getTime(), axis.denormalize(162000000).getTime());
+        assertEquals("Some weeks, some days and some hours after min", test5.getTime(), axis.denormalize((162000000 +  (4 * 32400000) + (2 * 3600000) + 900000 + 200)).getTime());
+
+        axis.setMinimum(new goog.date.UtcDateTime(2010, goog.date.month.AUG, 31, 10, 0, 0, 0));
+
+        var test6 = new goog.date.UtcDateTime(2010, goog.date.month.SEP, 2, 10, 0, 0, 0);
+
+        assertEquals("Month cross-over", test6.getTime(), axis.denormalize(64800000).getTime());
+        
+        axis.setStartOfHours(new goog.date.UtcDateTime(2010, 1, 1, 7, 15, 0, 0));
+        axis.setEndOfHours(new goog.date.UtcDateTime(2010, 1, 1, 16, 30, 0, 0));
+        
+        var test7 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 13, 16, 30, 0, 0);
+        var test8 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 16, 7, 15, 0, 0);
+        var test7_norm = axis.normalize(test7); 
+        var test8_norm = axis.normalize(test8);
+        
+        assertEquals("Normalized values are equal", test7_norm, test8_norm);
+        assertEquals("denormalize last thing friday", test8.getTime(), axis.denormalize(test7_norm).getTime());
+        assertEquals("denormalize first thing monday gives monday", test8.getTime(), axis.denormalize(test8_norm).getTime());
+    }*/
+
+    function testIncrement(){
+    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 0, 0, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 0, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 0, 0, 0);
+        var interval = new goog.date.Interval(0, 0, 0, 1, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.intervalStep = interval;
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.initialize();
+
+        var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 13, 0, 0, 0);
+        var test1_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 14, 0, 0, 0);
+
+        var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 17, 0, 0, 0);
+        var test2_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 9, 0, 0, 0);
+
+        var test3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 6, 17, 0, 0, 0);
+        var test3_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 9, 0, 0, 0);
+
+        assertEquals("Get the next valid value when both are in working hours", axis.normalize(test1_result), axis.increment(axis.normalize(test1)));
+        assertEquals("Get the next valid value when on the next day", axis.normalize(test2_result), axis.increment(axis.normalize(test2)));
+        assertEquals("Get the next valid vaule when in the next week", axis.normalize(test3_result), axis.increment(axis.normalize(test3)));
+        
+        var test4 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 12, 8, 0, 0, 0);
+        axis.intervalStep = new goog.date.Interval(0, 0, 2, 0, 0, 0);
+        var test4_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 16, 8, 0, 0, 0);
+        assertEquals("Over a weekend", axis.normalize(test4_result), axis.increment(axis.normalize(test4)));
+        
+        var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 7, 15, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 0, 0, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 7, 15, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 30, 0, 0);
+        var interval = new goog.date.Interval(0, 0, 0, 1, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.setEndOfHours(end);
+        axis.setStartOfHours(start);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.intervalStep = interval;
+        axis.initialize();
+        
+        var test5 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 17, 20, 0, 0);
+        var test5_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 8, 5, 0, 0);
+        assertEquals("Next day with off start and end dates", axis.normalize(test5_result), axis.increment(axis.normalize(test5)));
+        
+        axis.intervalStep = new goog.date.Interval(0, 0, 2, 0, 0, 0);
+        var test6 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 6, 8, 15, 0, 0);
+        var test6_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 10, 8, 15, 0, 0);
+        assertEquals("Over a weekend with off start and end dates", axis.normalize(test6_result), axis.increment(axis.normalize(test6)));
+        
+        var test7 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 17, 30, 0, 0);
+        var test7_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 4, 17, 30, 0, 0);
+        assertEquals("Multiple days with off start and end times", axis.normalize(test7_result), axis.increment(axis.normalize(test7)));
+        
+        var test8 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 31, 17, 30, 0, 0);
+        var test8_result = new goog.date.UtcDateTime(2010, goog.date.month.SEP, 2, 17, 30, 0, 0);
+        assertEquals("Over a month", axis.normalize(test8_result), axis.increment(axis.normalize(test8)));
+        
+        var test9 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 17, 30, 0, 0);
+        var test9_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 17, 30, 0, 0);
+        assertEquals("Thursday to monday", axis.normalize(test9_result), axis.increment(axis.normalize(test9)));
+        
+        axis.intervalStep = new goog.date.Interval(0, 0, 0, 12);
+        var test10 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 4, 10, 00, 0, 0);
+        var test10_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 11, 45, 0, 0);
+        assertEquals("over a night, same week", axis.normalize(test10_result), axis.increment(axis.normalize(test10)));
+        
+        var test11 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 4, 16, 00, 0, 0);
+        var test11_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 6, 7, 30, 0, 0);
+        assertEquals("over 2 nights, same week", axis.normalize(test11_result), axis.increment(axis.normalize(test11)));
+        
+        var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 10, 7, 0, 5, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 17, 7, 23, 2, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 7, 00, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 15, 30, 0, 0);
+        var interval = new goog.date.Interval(0, 0, 2, 0, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.intervalStep = interval;
+        axis.initialize();
+        
+        var test12 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 12, 7, 00, 5, 0);
+        var test12_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 16, 7, 00, 5, 0);
+
+        assertEquals("Weekend test", axis.normalize(test12_result), axis.increment(axis.normalize(test12)));
+        
+        var min = new goog.date.UtcDateTime(2009, goog.date.month.AUG, 10, 7, 0, 5, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 17, 7, 23, 2, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 7, 00, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 15, 30, 0, 0);
+        var interval = new goog.date.Interval(0, 3, 0, 0, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.intervalStep = interval;
+        axis.initialize();
+        
+        var test13 = new goog.date.UtcDateTime(2009, goog.date.month.NOV, 20, 7, 0, 0, 0);
+        var test13_result = new goog.date.UtcDateTime(2010, goog.date.month.FEB, 1, 7, 0, 0, 0);
+        assertEquals("Year test", axis.normalize(test13_result), axis.increment(axis.normalize(test13)))
+
+    }   
+    
+    function testGetFirstLabelTick(){
+    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 13, 17, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 32, 0, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 0, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 0, 0, 0);
+        var interval = new goog.date.Interval(0, 0, 0, 1, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.intervalStep = interval;
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.initialize();
+        
+        var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 14, 0, 0, 0);
+        assertEquals("Simple test", axis.normalize(test1), axis.getFirstLabelTick());
+        
+        axis.setMinimum(new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 19, 0, 0, 0));
+        axis.initialize();
+        var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 8, 0, 0, 0);
+        assertEquals("After working hours", axis.normalize(test2), axis.getFirstLabelTick());
+        
+        axis.setMinimum(new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 5, 0, 0, 0));
+        axis.initialize();
+        var test3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 8, 0, 0, 0);
+        assertEquals("Before working hours", axis.normalize(test3), axis.getFirstLabelTick());
+        
+        axis.setMinimum(new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0));
+        axis.initialize();
+        var test4 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);
+        assertEquals("Min is a valid tick (hours)", axis.normalize(test4), axis.getFirstLabelTick()); 
+        
+        axis.intervalStep = new goog.date.Interval(0, 0, 1, 0, 0, 0);
+        axis.setMinimum(new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 13, 0, 0, 0));
+        axis.initialize();
+        var test4 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 4, 8, 0, 0, 0);
+        assertEquals("Days interval", axis.normalize(test4), axis.getFirstLabelTick());
+        
+        axis.setMinimum(new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 8, 0, 0, 0));
+        axis.initialize();
+        var test5 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 8, 0, 0, 0);
+        assertEquals("Min is a valid label tick (days)", axis.normalize(test5), axis.getFirstLabelTick());
+        
+        axis.intervalStep = new goog.date.Interval(0, 1, 0, 0, 0, 0);
+        var test6 = new goog.date.UtcDateTime(2010, goog.date.month.SEP, 1, 8, 0, 0, 0);
+        assertEquals("Advanced a month", axis.normalize(test6), axis.getFirstLabelTick());
+        
+        axis.setMinimum(new goog.date.UtcDateTime(2010, goog.date.month.SEP, 1, 8, 0, 0, 0));
+        axis.initialize();
+        var test7 = new goog.date.UtcDateTime(2010, goog.date.month.SEP, 1, 8, 0, 0, 0);
+        assertEquals("Min is a valid month", axis.normalize(test7), axis.getFirstLabelTick());
+    }
+    
+    function testIsInWorkingHours(){
+    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 13, 17, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 32, 0, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 0, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 30, 0, 0);
+        var interval = new goog.date.Interval(0, 0, 0, 1, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.intervalStep = interval;
+        axis.initialize();
+        
+        var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 7, 0, 0, 0);
+        var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 18, 0, 0, 0);
+        var test3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 14, 13, 0, 0, 0);
+        var test4 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 15, 13, 0, 0, 0);
+        var test5 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 17, 40, 0, 0);
+        
+        assertEquals("Before starting hours", false, axis.isInWorkingHours(test1));
+        assertEquals("After ending hours", false, axis.isInWorkingHours(test2));
+        assertEquals("Saturday", false, axis.isInWorkingHours(test3));
+        assertEquals("Sunday", false, axis.isInWorkingHours(test4));
+        assertEquals("Minutes considered", false, axis.isInWorkingHours(test5));
+    }
+    
+    function testMinuteImplementation(){
+    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 13, 17, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 32, 0, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 15, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 30, 0, 0);
+        var interval = new goog.date.Interval(0, 0, 0, 1, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.intervalStep = interval;
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.initialize();
+        
+        assertEquals("Ms in a working day", 33300000, axis.millisecondsInAWorkingDay_);
+        assertEquals("Ms in a working week", 33300000 * 5, axis.millisecondsInAWorkingWeek_);
+        
+        var labelStart = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 14, 0, 0, 0);
+        assertEquals("Correct label starting point", axis.normalize(labelStart), axis.getFirstLabelTick());
+        
+        var beforeStart = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 8, 12, 0, 0);
+        var afterEnd = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 17, 31, 0, 0);
+        var mid = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 9, 17, 0, 0);
+        
+        assertEquals("Before starting point", false, axis.isInWorkingHours(beforeStart));
+        assertEquals("After ending point", false, axis.isInWorkingHours(afterEnd));
+        assertEquals("Middle point", true, axis.isInWorkingHours(mid));
+        
+        // test incrementing
+        var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 14, 17, 0, 0);
+        assertEquals("increment min", axis.normalize(test1), axis.increment(axis.normalize(min)));
+        
+        var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 17, 20, 0, 0);  
+        var test2_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 9, 5, 0, 0);
+        assertEquals("End of day", axis.normalize(test2_result), axis.increment(axis.normalize(test2)));
+        
+        var test3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 13, 17, 20, 0, 0);
+    	var test3_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 16, 9, 5, 0, 0);
+    	assertEquals("Over the weekend", axis.normalize(test3_result), axis.increment(axis.normalize(test3)));
+    	
+    	var test4 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 17, 27, 0, 0);
+    	var test4_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 10, 9, 12, 0, 0);
+    	assertEquals("Over a night", axis.normalize(test4_result), axis.increment(axis.normalize(test4)));
+    }
+    
+    function testMoveForward() {
+    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 13, 17, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 32, 0, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 15, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 30, 0, 0);
+        var interval = new goog.date.Interval(0, 0, 0, 1, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.intervalStep = interval;
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.initialize();
+
+        assertEquals("When date is fine", min.getTime(), axis.moveForward_(min).getTime());
+        
+        var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 18, 20, 0, 0);
+        var test1_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 8, 15, 0, 0);
+        assertEquals("Moved to next day", test1_result.getTime(), axis.moveForward_(test1).getTime());
+        
+        var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 7, 20, 0, 0);
+        var test2_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 8, 15, 0, 0);
+        assertEquals("Move to start of day", test2_result.getTime(), axis.moveForward_(test2).getTime());
+        
+        var test3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 6, 18, 20, 0, 0);
+        var test3_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 8, 15, 0, 0);
+        assertEquals("Move to monday from friday", test3_result.getTime(), axis.moveForward_(test3).getTime());
+        
+        var test4 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 7, 18, 20, 0, 0);
+        var test4_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 8, 15, 0, 0);
+        assertEquals("Move to monday from sat", test4_result.getTime(), axis.moveForward_(test4).getTime());
+        
+        var test5 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 8, 18, 20, 0, 0);
+        var test5_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 8, 15, 0, 0);
+        assertEquals("Move to monday from sun", test5_result.getTime(), axis.moveForward_(test5).getTime());
+    }
+    
+    function testGetEndOfWeek() {
+    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 13, 17, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 32, 0, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 15, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 30, 0, 0);
+        var interval = new goog.date.Interval(0, 0, 0, 1, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.intervalStep = interval;
+        axis.initialize();
+
+        var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 13, 17, 0, 0);
+        var test1_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 6, 17, 30, 0, 0);       
+        assertEquals("A simple move", test1_result.getTime(), axis.getEndOfWeek_(test1).getTime());
+        
+        var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 31, 13, 17, 0, 0);
+        var test2_result = new goog.date.UtcDateTime(2010, goog.date.month.SEP, 3, 17, 30, 0, 0);       
+        assertEquals("Across a month", test2_result.getTime(), axis.getEndOfWeek_(test2).getTime());
+    }
+    
+    function testGetMsToEndOfWeek() {
+      var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 13, 17, 0, 0);
+      var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 32, 0, 0);
+      var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 15, 0, 0);
+      var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 30, 0, 0);
+      var interval = new goog.date.Interval(0, 0, 0, 1, 0, 0);
+      var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+      axis.intervalStep = interval;
+      axis.setStartOfHours(start);
+      axis.setEndOfHours(end);
+      axis.setMinimum(min);
+      axis.setMaximum(max);
+      axis.initialize();
+      
+      var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 13, 17, 0, 0);
+      assertEquals("Across a few days", 99900000, axis.getMsToEndOfWeek_(test1));
+      
+      var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 6, 13, 0, 0, 0);
+      assertEquals("Simple test should be 0 as on friday", 0, axis.getMsToEndOfWeek_(test2));
+    }
+    
+    function testGetMsToEndOfDay() {
+      var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 13, 17, 0, 0);
+      var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 32, 0, 0);
+      var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 15, 0, 0);
+      var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 30, 0, 0);
+      var interval = new goog.date.Interval(0, 0, 0, 1, 0, 0);
+      var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+      axis.intervalStep = interval;
+      axis.setStartOfHours(start);
+      axis.setEndOfHours(end);
+      axis.setMinimum(min);
+      axis.setMaximum(max);
+      axis.initialize();
+      
+      var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 6, 13, 0, 0, 0);
+      assertEquals("Simple test", 16200000, axis.getMsToEndOfDay_(test2));
+    }
+    
+    function testGetStartOfWeek() {
+    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 13, 17, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 32, 0, 0);
+        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 15, 0, 0);
+        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 30, 0, 0);
+        var interval = new goog.date.Interval(0, 0, 0, 1, 0, 0);
+        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+        axis.intervalStep = interval;
+        axis.setStartOfHours(start);
+        axis.setEndOfHours(end);
+        axis.setMinimum(min);
+        axis.setMaximum(max);
+        axis.initialize();
+
+        var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 11, 13, 17, 0, 0);
+        var test1_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 8, 15, 0, 0);       
+        assertEquals("A simple move", test1_result.getTime(), axis.getStartOfWeek_(test1).getTime());
+        
+        var test2 = new goog.date.UtcDateTime(2010, goog.date.month.SEP, 2, 13, 17, 0, 0);
+        var test2_result = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 30, 8, 15, 0, 0);       
+        assertEquals("Across a month", test2_result.getTime(), axis.getStartOfWeek_(test2).getTime());
+    }
+    
+    function testUnusualDates() {
+      var chart = new scottlogic.chart.Chart("canvas", [300, 300]);
+      chart.setXRender(false);
+      chart.setYRender(false);
+      chart.xAxisData.setStartOfHours(new goog.date.UtcDateTime(1990, 0, 0, 7, 0,
+          0, 0));
+      chart.xAxisData.setEndOfHours(new goog.date.UtcDateTime(1990, 0, 0, 15, 30,
+          0, 0));
+      
+      
+      //1st - 6th may
+      var first = new goog.date.UtcDateTime(2010, goog.date.month.MAY, 1, 23);
+      var second = new goog.date.UtcDateTime(2010, goog.date.month.MAY, 2, 23);
+      var third = new goog.date.UtcDateTime(2010, goog.date.month.MAY, 3, 23);
+      var fourth = new goog.date.UtcDateTime(2010, goog.date.month.MAY, 4, 23);
+      var fifth = new goog.date.UtcDateTime(2010, goog.date.month.MAY, 5, 23);
+      var sixth = new goog.date.UtcDateTime(2010, goog.date.month.MAY, 6, 23);
+      
+      assertTrue("first on sat", chart.xAxisData.isWeekend(first));
+      assertTrue("second on sun", chart.xAxisData.isWeekend(second));
+      
+      third = chart.xAxisData.moveForward_(third);
+      fourth = chart.xAxisData.moveForward_(fourth);
+      fifth = chart.xAxisData.moveForward_(fifth);
+      sixth = chart.xAxisData.moveForward_(sixth);
+      
+      assertTrue("third", chart.xAxisData.isInWorkingHours(third));
+      assertTrue("fourth", chart.xAxisData.isInWorkingHours(fourth));
+      assertTrue("fifth", chart.xAxisData.isInWorkingHours(fifth));
+      assertTrue("sixth", chart.xAxisData.isInWorkingHours(sixth));
+    }
+   
+</script>
+<div id="canvas"></div>
+</body>
+</html>

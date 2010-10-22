@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>JavaScript Charting Unit Tests - Numerical Axis</title>
+<script type="text/javascript" src="http://localhost/closure-library/js/goog/base.js"></script>
+<script type="text/javascript" src="http://localhost/javascript-charting-sample/demo/myDeps.js"></script>
+<script>
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.dom');
+    
+    goog.require('scottlogic.chart.rendering.NumericalAxis');
+
+</script>
+</head>
+<body>
+<script>  
+    // Clear the canvas after the charts have been tested
+    function tearDown(){
+        var canvas = goog.dom.$('canvas');
+        canvas.innerHTML = '';
+    }
+    
+    //holder test
+    function testSetIntervalStep(){
+    	var axis = new scottlogic.chart.rendering.NumericalAxis();
+    	axis.min = 0;
+    	axis.max = 1000;
+    	
+    	var range = axis.max - axis.min;
+    	// Range is 1000, so any proposed intervals should be rounded to hundreds
+    	axis.setIntervalStep(range / 242);
+    	assertEquals("step 1", 300, axis.intervalStep);
+    	
+    	axis.setIntervalStep(range / 0.1);
+    	assertEquals("step 2", 100, axis.intervalStep);
+    	
+    	axis.min = 0;
+    	axis.max = 1;
+    	var range = axis.max - axis.min;
+    	
+    	// range is 1
+    	axis.setIntervalStep(range / 0.231);
+    	assertEquals("step 3", 0.3, axis.intervalStep);
+    	
+    	axis.setIntervalStep(range / 0.0123);
+    	assertEquals("step 4", 0.1, axis.intervalStep);
+    	
+    	axis.min = 2134.12312;
+    	axis.max = 5324.34212;
+    	var range = axis.max - axis.min;
+    	
+    	// range is 3190.219
+    	axis.setIntervalStep(range / 1033.311);
+    	assertEquals("step 5", 1100, axis.intervalStep);
+    	
+    	axis.min = -1000;
+    	axis.max = 10000;
+    	
+    	var range = axis.max - axis.min;
+    	// range is 11000
+    	axis.setIntervalStep(range / 1);
+    	assertEquals("step 6", 1000, axis.intervalStep);
+    	
+    	axis.setIntervalStep(range / 1000);
+    	assertEquals("step 7", 1000, axis.intervalStep);
+    }
+   
+</script>
+<div id="canvas"></div>
+</body>
+</html>

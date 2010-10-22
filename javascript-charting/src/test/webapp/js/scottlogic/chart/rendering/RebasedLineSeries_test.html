@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>JavaScript Charting Unit Tests - Rebased Line Series</title>
+<script type="text/javascript" src="http://localhost/closure-library/js/goog/base.js"></script>
+<script type="text/javascript" src="http://localhost/javascript-charting-sample/demo/myDeps.js"></script>
+<script>
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.dom');
+    
+    goog.require('scottlogic.chart.rendering.RebasedLineSeries');
+</script>
+</head>
+<body>
+<script>  
+    // Clear the canvas after the charts have been tested
+    function tearDown(){
+        var canvas = goog.dom.$('canvas');
+        canvas.innerHTML = '';
+    }
+    
+    function testRebasing(){
+        var series = new scottlogic.chart.rendering.RebasedLineSeries("id", [[1, 1],[2, 2],[3, 3],[4, 4]]);
+        
+        assertEquals("Correct rebase value", 1, series.rebaseValue_);
+        assertEquals("Rebased correctly", 0, series.points[0][1]);
+        assertEquals("Second point rebased correctly", 100, series.points[1][1]);
+        assertEquals("Fourth point rebased correctly", 300, series.points[3][1]);
+    }
+   
+</script>
+<div id="canvas"></div>
+</body>
+</html>

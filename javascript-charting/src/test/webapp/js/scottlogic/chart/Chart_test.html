@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>JavaScript Charting Unit Tests - Chart</title>
+<script type="text/javascript" src="http://localhost/closure-library/js/goog/base.js"></script>
+<script type="text/javascript" src="http://localhost/javascript-charting-sample/demo/myDeps.js"></script>
+<script>
+	goog.require('goog.testing.jsunit');
+	goog.require('goog.dom');
+	
+	goog.require('goog.date');
+	goog.require('goog.color');
+	
+	goog.require('scottlogic.chart.Chart');
+	goog.require('scottlogic.chart.rendering.DateTimeAxis');
+	goog.require('scottlogic.chart.rendering.NumericalAxis');
+	goog.require('scottlogic.chart.rendering.LineSeries');
+</script>
+</head>
+<body>
+<script>  
+    // Clear the canvas after the charts have been tested
+    function tearDown(){
+        var canvas = goog.dom.$('canvas');
+        canvas.innerHTML = '';
+    }
+    
+    function testYBounds(){
+    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 12, 0, 0, 0);
+        var midway1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 13, 0, 0, 0);
+        var midway2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 14, 0, 0, 0);
+        var midway3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 15, 0, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 16, 0, 0, 0);
+        var x = new scottlogic.chart.rendering.DateTimeAxis();
+        x.setMinimum(min);
+    	x.setMaximum(max);
+        var y = new scottlogic.chart.rendering.NumericalAxis();
+        
+        var chart = new scottlogic.chart.Chart("canvas", [300, 300]);
+        var series = new scottlogic.chart.rendering.LineSeries("", [[min, 0],[midway1, 3],[midway2, 1],[midway3, 7],[max, 10]]);
+        chart.addLineSeries(series);
+        chart.redraw();
+        
+        assertEquals("Min yBounds correct", -0, chart.getYBounds_()[0]);
+        assertEquals("Max yBounds correct", 10, chart.getYBounds_()[1]);
+    }
+    
+    function testRemoveLineSeries(){
+    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 12, 0, 0, 0);
+        var midway1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 13, 0, 0, 0);
+        var midway2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 14, 0, 0, 0);
+        var midway3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 15, 0, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 16, 0, 0, 0);
+        var x = new scottlogic.chart.rendering.DateTimeAxis();
+        x.setMinimum(min);
+    	x.setMaximum(max);
+        var y = new scottlogic.chart.rendering.NumericalAxis();
+        
+        var chart = new scottlogic.chart.Chart("canvas", [300, 300]);
+        var series = new scottlogic.chart.rendering.LineSeries("test", [[min, 0],[midway1, 3],[midway2, 1],[midway3, 7],[max, 10]]);
+        chart.addLineSeries(series);
+        chart.redraw();
+        
+        chart.removeLineSeriesById("test");
+        assertEquals("Series removed by id", 0, chart.series_.length);
+        
+        chart.addLineSeries(series);
+        chart.removeLineSeries(series);
+        assertEquals("Series remove by object reference", 0, chart.series_.length);
+    }
+    
+    function testDuplicateSeriesID(){
+    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 12, 0, 0, 0);
+        var midway1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 13, 0, 0, 0);
+        var midway2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 14, 0, 0, 0);
+        var midway3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 15, 0, 0, 0);
+        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 16, 0, 0, 0);
+        var x = new scottlogic.chart.rendering.DateTimeAxis();
+        x.setMinimum(min);
+    	x.setMaximum(max);
+        var y = new scottlogic.chart.rendering.NumericalAxis();
+        
+        var chart = new scottlogic.chart.Chart("canvas", [300, 300], x, y);
+        var series = new scottlogic.chart.rendering.LineSeries("test", [[min, 0],[max, 10]]);
+        var series2 = new scottlogic.chart.rendering.LineSeries("test", [[min, 5],[max, 10]]);
+        
+        chart.addLineSeries(series);
+        
+        assertEquals("Series is there", series, chart.getLineSeriesById("test"));
+
+        chart.addLineSeries(series2);
+        
+        assertEquals("Series was overwritten", series2, chart.getLineSeriesById("test"));
+        assertEquals("Completely removed", 1, chart.series_.length);
+    }
+</script>
+<div id="canvas"></div>
+</body>
+</html>
