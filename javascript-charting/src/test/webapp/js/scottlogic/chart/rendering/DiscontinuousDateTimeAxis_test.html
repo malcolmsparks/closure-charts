@@ -1,8 +1,27 @@
 <html>
+<!-- 
+  Copyright 2010 Scott Logic Ltd.
+  http://www.scottlogic.co.uk
+  
+  This file is part of Closure Charts.
+
+  Closure Charts is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Closure Charts is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with Closure Charts.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <head>
 <title>JavaScript Charting Unit Tests - DiscontinuousDateTimeAxis</title>
-<script type="text/javascript" src="http://localhost/closure-library/js/goog/base.js"></script>
-<script type="text/javascript" src="http://localhost/javascript-charting-sample/demo/myDeps.js"></script>
+<script type="text/javascript" src="../../../../../../../../closure-library/src/main/webapp/js/goog/base.js"></script>
+<script type="text/javascript" src="../unitTestDependencies.js"></script>
 <script>
     goog.require('goog.testing.jsunit');
 
@@ -164,58 +183,6 @@
         assertEquals("Over a year", 72000000, axis.normalizeFrom_(test4, test4_from));
     }
     
-    /*function testNormalize(){
-        var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);
-        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 6, 10, 0, 0, 0);
-        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 0, 0, 0);
-        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 0, 0, 0);
-        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
-        axis.setStartOfHours(start);
-        axis.setEndOfHours(end);
-        axis.setMinimum(min);
-        axis.setMaximum(max);
-        axis.initialize();
-
-        var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 100);
-        var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 10, 0, 0, 0);
-        var test3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 14, 12, 32, 323);
-
-        assertEquals("Milliseconds in a working day", 32400000, axis.millisecondsInAWorkingDay_);
-        assertEquals("Milliseconds in a working week", 162000000, axis.millisecondsInAWorkingWeek_);
-        
-        assertEquals("Minimum value normalized to 0", 0, axis.normalize(min));
-        assertEquals("100 ms after minimum normalized to 100", 100, axis.normalize(test1));
-        assertEquals("One day later normalized to 32400000", 32400000, axis.normalize(test2));
-        assertEquals("Maximum date normalized to 129600000", 129600000, axis.normalize(max));
-        assertEquals("Random value normalized", (32400000 + ((((4 * 60) * 60) * 1000)) + (((12 * 60) * 1000)) + (32 * 1000) + 323), axis.normalize(test3));
-
-        axis.setMaximum(new goog.date.UtcDateTime(2010, goog.date.month.AUG, 11, 10, 0, 0, 0));
-
-        var test6 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 10, 0, 0, 0);
-        var test7 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 12, 15, 42, 231); 
-        assertEquals("One week later normalized to 162000000", 162000000, axis.normalize(test6));
-        assertEquals("One week and some random hours later normalized", (162000000 + ((((2 * 60) * 60) * 1000)) + ((15 * 60) * 1000) + (42 * 1000) + 231), axis.normalize(test7));
-
-        axis.setMaximum(new goog.date.UtcDateTime(2010, goog.date.month.AUG, 27, 10, 0, 0, 0));
-        var test8 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 23, 10, 0, 0, 0);
-        var test9 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 25, 12, 15, 0, 0);
-        var test10 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 25, 18, 00, 0, 0);
-        var test11 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 25, 05, 00, 0, 0);
-        var test12 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 14, 14, 00, 0, 0);
-        var test13 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 15, 14, 00, 0, 0);
-        
-        assertEquals("Weeks later", (3 * 162000000), axis.normalize(test8));
-        assertEquals("Week and days later", 558900000, axis.normalize(test9));
-        
-        axis.setStartOfHours(new goog.date.UtcDateTime(2010, 1, 1, 7, 15, 0, 0));
-        axis.setEndOfHours(new goog.date.UtcDateTime(2010, 1, 1, 16, 30, 0, 0));
-        
-        var test14 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 20, 16, 30, 0, 0);
-        var test15 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 23, 7, 15, 0, 0);
-        
-        assertEquals("Last thing friday and first thing monday are the same", axis.normalize(test14), axis.normalize(test15));
-    }*/
-    
     function testCachedNormalize() {
       var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);
       var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 0, 0, 0);
@@ -260,49 +227,6 @@
       var test2 = new goog.date.UtcDateTime(new Date());
       assertEquals("Now", test2.getTime(), axis.denormalize(axis.normalize(test2)).getTime());	
     }
-
-    /*function testDenormalize(){
-        var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);
-        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 18, 10, 0, 0, 0);
-        var start = new goog.date.UtcDateTime(2010, 1, 1, 8, 0, 0, 0);
-        var end = new goog.date.UtcDateTime(2010, 1, 1, 17, 0, 0, 0);
-        var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
-        axis.setStartOfHours(start);
-        axis.setEndOfHours(end);
-        axis.setMinimum(min);
-        axis.setMaximum(max);
-        axis.initialize();
-
-        var test1 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 12, 15, 0, 200);
-        var test2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 3, 10, 0, 0, 0);
-        var test3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 12, 15, 0, 200);
-        var test4 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 9, 10, 0, 0, 0);
-        var test5 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 13, 12, 15, 0, 200);
-        
-        assertEquals("Before the end of the min day", test1.getTime(), axis.denormalize(8100200).getTime());
-        assertEquals("Day after min", test2.getTime(), axis.denormalize(32400000).getTime());
-        assertEquals("Some days and some hours after min", test3.getTime(), axis.denormalize((3 * 32400000) + 8100200).getTime());
-        assertEquals("Week after min", test4.getTime(), axis.denormalize(162000000).getTime());
-        assertEquals("Some weeks, some days and some hours after min", test5.getTime(), axis.denormalize((162000000 +  (4 * 32400000) + (2 * 3600000) + 900000 + 200)).getTime());
-
-        axis.setMinimum(new goog.date.UtcDateTime(2010, goog.date.month.AUG, 31, 10, 0, 0, 0));
-
-        var test6 = new goog.date.UtcDateTime(2010, goog.date.month.SEP, 2, 10, 0, 0, 0);
-
-        assertEquals("Month cross-over", test6.getTime(), axis.denormalize(64800000).getTime());
-        
-        axis.setStartOfHours(new goog.date.UtcDateTime(2010, 1, 1, 7, 15, 0, 0));
-        axis.setEndOfHours(new goog.date.UtcDateTime(2010, 1, 1, 16, 30, 0, 0));
-        
-        var test7 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 13, 16, 30, 0, 0);
-        var test8 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 16, 7, 15, 0, 0);
-        var test7_norm = axis.normalize(test7); 
-        var test8_norm = axis.normalize(test8);
-        
-        assertEquals("Normalized values are equal", test7_norm, test8_norm);
-        assertEquals("denormalize last thing friday", test8.getTime(), axis.denormalize(test7_norm).getTime());
-        assertEquals("denormalize first thing monday gives monday", test8.getTime(), axis.denormalize(test8_norm).getTime());
-    }*/
 
     function testIncrement(){
     	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 2, 10, 0, 0, 0);

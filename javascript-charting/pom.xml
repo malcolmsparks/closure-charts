@@ -54,6 +54,40 @@
 			</plugins>
 		</build>
 	</profile>
+	<profile>
+		<id>generate-deps-file</id>
+		<activation>
+			<activeByDefault>true</activeByDefault>
+		</activation>
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.1.1</version>
+					<executions>
+						<execution>
+							<id>generate-deps-file</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<configuration>
+								<executable>python</executable>
+								<!--  Ensure that the original file is updated, not the target file -->
+								<workingDirectory>${basedir}</workingDirectory>
+								<arguments>
+									<argument>../closure-library/bin/build/depswriter.py</argument>
+									<argument>--root_with_prefix=src/main ../../../../../../javascript-charting/src/main</argument>
+									<argument>--output_file=src/test/webapp/js/scottlogic/chart/unitTestDependenciesFile.js</argument>
+								</arguments>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
   </profiles>
   
   <build>

@@ -1,3 +1,21 @@
+//  Copyright 2010 Scott Logic Ltd.
+//  http://www.scottlogic.co.uk
+//
+//  This file is part of Closure Charts.
+//
+//  Closure Charts is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Closure Charts is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with Closure Charts.  If not, see <http://www.gnu.org/licenses/>.
+
 goog.provide('scottlogic.chart.rendering.DiscontinuousDateTimeCache');
 
 goog.require('goog.date.UtcDateTime');
@@ -87,9 +105,15 @@ scottlogic.chart.rendering.DiscontinuousDateTimeCache.prototype.findKey =
 scottlogic.chart.rendering.DiscontinuousDateTimeCache.prototype.getKey =
     function(i) {
   /** @type {goog.date.UtcDateTime} */
-  var date = new goog.date.UtcDateTime(new Date(this.keys_[i]));
+  var date;
+  
+  if(i>=0) {
+    date = new goog.date.UtcDateTime(new Date(this.keys_[i]));
+  } else {
+    date = new goog.date.UtcDateTime(new Date(0));
+  }
 
-  return date || null;
+  return date;
 };
 
 /**
@@ -99,7 +123,7 @@ scottlogic.chart.rendering.DiscontinuousDateTimeCache.prototype.getKey =
  */
 scottlogic.chart.rendering.DiscontinuousDateTimeCache.prototype.getVal =
     function(i) {
-  return this.vals_[i] || null;
+  return this.vals_[i];
 };
 
 /**

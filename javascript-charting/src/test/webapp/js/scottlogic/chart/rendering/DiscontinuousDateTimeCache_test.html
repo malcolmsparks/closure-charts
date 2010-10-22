@@ -1,8 +1,27 @@
 <html>
+<!-- 
+  Copyright 2010 Scott Logic Ltd.
+  http://www.scottlogic.co.uk
+  
+  This file is part of Closure Charts.
+
+  Closure Charts is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Closure Charts is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with Closure Charts.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <head>
 <title>JavaScript Charting Unit Tests - DiscontinuousDateTimeAxis</title>
-<script type="text/javascript" src="http://localhost/closure-library/js/goog/base.js"></script>
-<script type="text/javascript" src="http://localhost/javascript-charting-sample/demo/myDeps.js"></script>
+<script type="text/javascript" src="../../../../../../../../closure-library/src/main/webapp/js/goog/base.js"></script>
+<script type="text/javascript" src="../unitTestDependencies.js"></script>
 <script>
     goog.require('goog.testing.jsunit');
 
@@ -14,17 +33,25 @@
 </head>
 <body>
 <script>  
+	// CURRENTLY BROKEN - NEEDS PROPER INITIALIZATION
+	
     // Clear the canvas after the charts have been tested
-    function tearDown(){
+    /*function tearDown(){
         var canvas = goog.dom.$('canvas');
         canvas.innerHTML = '';
     }
    
     function testGenerate() {
-      var axis = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
-      var cache = new scottlogic.chart.rendering.DiscontinuousDateTimeCache(axis);
+      var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 12, 0, 0, 0);
+      var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 16, 0, 0, 0);
+      var chart = new scottlogic.chart.Chart("canvas", [300, 300]);
+      chart.xAxisData.setMinimum(min);
+      chart.xAxisData.setMaximum(max);
+      chart.redraw();
       
-      cache.generate();
+      var cache = chart.xAxisData.cache_;
+      
+      console.log(cache);
       
       var allInWorkingHours = true;
       for(var i = 0; i<cache.keys_.length; i++) {
@@ -85,7 +112,7 @@
       
       var middleVal = new goog.date.UtcDateTime(2008, goog.date.month.AUG, 15, 8);
       assertEquals("Middle value correct", middleVal.getTime(), cache.getKey(326491200000).getTime())
-    }
+    }*/
 </script>
 <div id="canvas"></div>
 </body>

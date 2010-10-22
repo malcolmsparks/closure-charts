@@ -1,3 +1,21 @@
+//  Copyright 2010 Scott Logic Ltd.
+//  http://www.scottlogic.co.uk
+//
+//  This file is part of Closure Charts.
+//
+//  Closure Charts is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Closure Charts is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with Closure Charts.  If not, see <http://www.gnu.org/licenses/>.
+
 goog.provide('scottlogic.chart.rendering.Context');
 
 goog.require('goog.math');
@@ -146,17 +164,18 @@ scottlogic.chart.rendering.Context.prototype.convertPoints = function(pts) {
  * @return {goog.graphics.Path} The clipped path.
  */
 scottlogic.chart.rendering.Context.prototype.convertPath = function(path) {
+  console.log(path);
   /** @type {scottlogic.chart.rendering.Context} */
   var that = this;
 
-  /** @type {Array.<number>} */
+  /** @type {Array.<goog.math.Coordinate>} */
   var points = [];
 
   // Get the points from the input path
   path.forEachSegment(function(type, segments) {
-    for (var i = 0; i < segments.length; i++) {
+    for (var i = 0; i < segments.length; i+=2) {
       if (segments[i]) {
-        points.push(segments[i]);
+        points.push(new goog.math.Coordinate(segments[i], segments[i+1]));
       }
     }
   });

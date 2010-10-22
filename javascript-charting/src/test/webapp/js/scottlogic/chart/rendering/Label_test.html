@@ -1,8 +1,27 @@
 <html>
+<!-- 
+  Copyright 2010 Scott Logic Ltd.
+  http://www.scottlogic.co.uk
+  
+  This file is part of Closure Charts.
+
+  Closure Charts is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Closure Charts is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with Closure Charts.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <head>
 <title>JavaScript Charting Unit Tests - Label</title>
-<script type="text/javascript" src="http://localhost/closure-library/js/goog/base.js"></script>
-<script type="text/javascript" src="http://localhost/javascript-charting-sample/demo/myDeps.js"></script>
+<script type="text/javascript" src="../../../../../../../../closure-library/src/main/webapp/js/goog/base.js"></script>
+<script type="text/javascript" src="../unitTestDependencies.js"></script>>
 <script>
 	goog.require('goog.testing.jsunit');
 	goog.require('goog.dom');
@@ -22,31 +41,6 @@
     function tearDown(){
         var canvas = goog.dom.$('canvas');
         canvas.innerHTML = '';
-    }
-    
-    function testCenterLocation() {
-    	var min = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 12, 0, 0, 0);
-        var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 6, 12, 0, 0, 0);
-        var x = new scottlogic.chart.rendering.DateTimeAxis();
-        x.setMinimum(min);
-    	x.setMaximum(max);
-        
-        var y = new scottlogic.chart.rendering.NumericalAxis();
-        
-        var chart = new scottlogic.chart.Chart("canvas", [300, 300]);
-        var series = new scottlogic.chart.rendering.LineSeries("", [[min, -1],[max, 10]]);
-        chart.addLineSeries(series);
-        chart.redraw();
-        
-        // padding (40) + tick width (7)
-        assertEquals("x Axis - First label center x", chart.xAxis.convertNormalized(chart.xAxisData.getFirstLabelTick()), chart.xAxis.labels[0].center[0]);
-        
-        // height(300) - padding (20)
-        assertEquals("x Axis - First label center y", 300 - chart.paddingX, chart.xAxis.labels[0].center[1]);
-        
-        assertEquals("yAxis first label point x", chart.paddingY, chart.yAxis.labels[0].center[0]);
-        // first point should be -1, so first label should be at this point
-        assertEquals("yAxis first label point y", chart.yAxis.convert(-1), chart.yAxis.labels[0].center[1]);
     }
     
     function testIncrement() {

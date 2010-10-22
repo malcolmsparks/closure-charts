@@ -1,3 +1,21 @@
+//  Copyright 2010 Scott Logic Ltd.
+//  http://www.scottlogic.co.uk
+//
+//  This file is part of Closure Charts.
+//
+//  Closure Charts is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Closure Charts is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with Closure Charts.  If not, see <http://www.gnu.org/licenses/>.
+
 goog.provide('scottlogic.chart.rendering.DiscontinuousDateTimeAxis');
 
 goog.require('goog.date.Interval');
@@ -208,6 +226,7 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.
    * @type {number}
    */
   this.millisecondsInAWorkingWeek_ = this.millisecondsInAWorkingDay_ * 5;
+  console.log(' herp ' + this.millisecondsInAWorkingWeek_);
 
   /**
    * The end of the min day
@@ -687,6 +706,7 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.moveForward_ =
  */
 scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalizeFrom_ =
     function(date, baseDate) {
+  console.log('normalizing ' + date.toString() + ' from ' + baseDate.toString())
   // Check whether the working ms has been assigned already
   if (date.workingMs > -1) {
     return date.workingMs;
@@ -765,6 +785,12 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalizeFrom_ =
               (scottlogic.chart.rendering.DiscontinuousDateTimeAxis.
                   MILLISECONDS_IN_AN_HOUR * 24 * 7));
 
+      console.log(toEndOfBaseDay);
+      console.log(toEndOfBaseWeek);
+      console.log(weeksBetween);
+      console.log(this.millisecondsInAWorkingWeek_);
+      console.log(toBeginningOfInputDay);
+      console.log(toInput);
       // Total values up and return
       result = toEndOfBaseDay + toEndOfBaseWeek +
           (weeksBetween * this.millisecondsInAWorkingWeek_) +
@@ -807,6 +833,7 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalizeFrom_ =
  */
 scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalize =
     function(inputObj) {
+  
   /** @type {goog.date.UtcDateTime} */
   var input = new goog.date.UtcDateTime(new Date(inputObj));
 
@@ -957,15 +984,19 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.increment =
  */
 scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.denormalize =
     function(input) {
+  console.log('denormalize ' + input)
   /** @type {number} */
   var index = this.cache_.findVal(input);
+  
 
+  console.log(index);
   /** @type {goog.date.UtcDateTime} */
-  var baseDate = this.cache_.getKey(index) ||
-      new goog.date.UtcDateTime(new Date(0));
+  var baseDate = this.cache_.getKey(index);
+  console.log(baseDate);
 
   /** @type {number} */
-  var baseNormalized = this.cache_.getVal(index) || 0;
+  var baseNormalized = this.cache_.getVal(index);
+  console.log(baseNormalized);
 
   /** @type {number} */
   var inter = input - baseNormalized;
