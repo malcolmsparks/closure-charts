@@ -224,6 +224,7 @@
       var test1 = new goog.date.UtcDateTime(2007, goog.date.month.JAN, 1, 8);
       assertEquals("Back and forth", test1.getTime(), axis.denormalize(axis.normalize(test1)).getTime());
       
+	  // TODO: this test fails outside of working hours... it should neither fail nor be non-deterministic
       var test2 = new goog.date.UtcDateTime(new Date());
       assertEquals("Now", test2.getTime(), axis.denormalize(axis.normalize(test2)).getTime());	
     }
