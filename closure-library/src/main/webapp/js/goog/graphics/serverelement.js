@@ -79,7 +79,7 @@ goog.graphics.ServerGroupElement.prototype.appendChild = function(element) {
 
 /**
  * Draw the group.
- * @param {ServerRenderingContext2D} ctx The context to draw the element in.
+ * @param {CanvasRenderingContext2D} ctx The context to draw the element in.
  */
 goog.graphics.ServerGroupElement.prototype.draw = function(ctx) {
   for (var i = 0, len = this.children_.length; i < len; i++) {
@@ -199,7 +199,7 @@ goog.graphics.ServerEllipseElement.prototype.setRadius = function(rx, ry) {
 
 /**
  * Draw the ellipse.  Should be treated as package scope.
- * @param {ServerRenderingContext2D} ctx The context to draw the element in.
+ * @param {CanvasRenderingContext2D} ctx The context to draw the element in.
  */
 goog.graphics.ServerEllipseElement.prototype.draw = function(ctx) {
   this.pathElement_.draw(ctx);
@@ -299,7 +299,7 @@ goog.graphics.ServerRectElement.prototype.setSize = function(width, height) {
 
 /**
  * Draw the rectangle.  Should be treated as package scope.
- * @param {ServerRenderingContext2D} ctx The context to draw the element in.
+ * @param {CanvasRenderingContext2D} ctx The context to draw the element in.
  */
 goog.graphics.ServerRectElement.prototype.draw = function(ctx) {
   this.drawn_ = true;
@@ -366,7 +366,7 @@ goog.graphics.ServerPathElement.prototype.setPath = function(path) {
 
 /**
  * Draw the path.  Should be treated as package scope.
- * @param {ServerRenderingContext2D} ctx The context to draw the element in.
+ * @param {CanvasRenderingContext2D} ctx The context to draw the element in.
  */
 goog.graphics.ServerPathElement.prototype.draw = function(ctx) {
   this.drawn_ = true;
@@ -605,7 +605,7 @@ goog.graphics.ServerImageElement.prototype.setSource = function(src) {
 
 /**
  * Draw the image.  Should be treated as package scope.
- * @param {ServerRenderingContext2D} ctx The context to draw the element in.
+ * @param {CanvasRenderingContext2D} ctx The context to draw the element in.
  */
 goog.graphics.ServerImageElement.prototype.draw = function(ctx) {
   if (this.img_) {

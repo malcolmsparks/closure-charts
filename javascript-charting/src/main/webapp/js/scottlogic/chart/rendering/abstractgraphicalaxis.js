@@ -334,7 +334,7 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.convertArray =
       }) + 1);
 
   // we need to go to the one before the min position
-  minPos = minPos <= 0 ? 1 : minPos--;
+  minPos = minPos <= 0 ? 1 : minPos - 1;
 
   /** @type {number} */
   var maxPos = Math.abs(goog.array.binarySearch(
@@ -345,9 +345,9 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.convertArray =
       }) + 1) + minPos;
 
   // we need to go to the one after the max position
-  maxPos = maxPos >= input.length - 1 ? input.length - 1 : maxPos++;
+  maxPos = maxPos >= input.length - 1 ? input.length - 1 : maxPos + 1;
 
-  for (var i = minPos - 1; i <= maxPos; i++) {
+  for (var i = minPos; i <= maxPos; i++) {
     /* this will fill the array in the correct places, leaving all other
      * values as undefined */
     result[i] = this.convert(input[i]);

@@ -61,7 +61,7 @@ goog.graphics.createGraphics = function(width, height, opt_coordWidth,
         opt_coordWidth, opt_coordHeight, opt_domHelper);
   } else if (goog.userAgent.RHINO) {
     graphics = new goog.graphics.ServerGraphics(width, height,
-        opt_coordWidth, opt_coordHeight, opt_domHelper);
+        opt_coordWidth, opt_coordHeight);
   } else {
     graphics = new goog.graphics.SvgGraphics(width, height,
         opt_coordWidth, opt_coordHeight, opt_domHelper);

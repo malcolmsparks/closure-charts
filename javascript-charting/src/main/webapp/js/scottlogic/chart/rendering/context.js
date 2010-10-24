@@ -164,7 +164,6 @@ scottlogic.chart.rendering.Context.prototype.convertPoints = function(pts) {
  * @return {goog.graphics.Path} The clipped path.
  */
 scottlogic.chart.rendering.Context.prototype.convertPath = function(path) {
-  console.log(path);
   /** @type {scottlogic.chart.rendering.Context} */
   var that = this;
 

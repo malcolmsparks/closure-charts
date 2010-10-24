@@ -29,6 +29,7 @@ goog.require('goog.math.Rect');
 goog.require('scottlogic.chart.rendering.Context');
 goog.require('scottlogic.chart.rendering.DiscontinuousDateTimeAxis');
 goog.require('scottlogic.chart.rendering.Gridlines');
+goog.require('scottlogic.chart.rendering.LineSeries');
 goog.require('scottlogic.chart.rendering.NonRenderedGraphicalAxis');
 goog.require('scottlogic.chart.rendering.NumericalAxis');
 goog.require('scottlogic.chart.rendering.RenderedGraphicalAxis');

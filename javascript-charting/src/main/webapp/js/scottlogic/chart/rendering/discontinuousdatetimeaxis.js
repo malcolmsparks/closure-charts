@@ -48,14 +48,7 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis = function() {
    * @private
    */
   this.startOfHours_ = new goog.date.UtcDateTime(1990, 6, 22, 8, 0, 0, 0);
-
-  /**
-   * Maximum value of the axis - defaults to the current time
-   *
-   * @type {goog.date.UtcDateTime}
-   * @public
-   */
-  this.max = new goog.date.UtcDateTime(new Date());
+  this.calculateValuesForStart_();
 
   /**
    * Store the end of hours date (only the time is important)
@@ -64,6 +57,7 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis = function() {
    * @private
    */
   this.endOfHours_ = new goog.date.UtcDateTime(1990, 6, 22, 17, 0, 0, 0);
+  this.calculateValuesForEnd_();
 
   /**
    * Minimum value of the axis - defaults to this time yesterday
@@ -74,6 +68,14 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis = function() {
   this.min = new goog.date.UtcDateTime(new Date());
   this.min.add(new goog.date.Interval(0, 0, -1));
 
+  /**
+   * Maximum value of the axis - defaults to the current time
+   *
+   * @type {goog.date.UtcDateTime}
+   * @public
+   */
+  this.max = new goog.date.UtcDateTime(new Date());
+  
   /**
    * @type {scottlogic.chart.rendering.DiscontinuousDateTimeCache}
    * @private
@@ -226,7 +228,6 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.
    * @type {number}
    */
   this.millisecondsInAWorkingWeek_ = this.millisecondsInAWorkingDay_ * 5;
-  console.log(' herp ' + this.millisecondsInAWorkingWeek_);
 
   /**
    * The end of the min day
@@ -515,9 +516,9 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.getEndOfWeek_ =
   /** @type {goog.date.UtcDateTime} */
   var result = new goog.date.UtcDateTime(input);
   result.add(moveToFriday);
-  result.setHours(this.endHours_);
-  result.setMinutes(this.endMinutes_);
-  result.setSeconds(this.endSeconds_);
+  result.setHours(this.endOfHours_.getHours());
+  result.setMinutes(this.endOfHours_.getMinutes());
+  result.setSeconds(this.endOfHours_.getSeconds());
   result.setMilliseconds(this.endOfHours_.getMilliseconds());
 
   return result;
@@ -706,7 +707,6 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.moveForward_ =
  */
 scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalizeFrom_ =
     function(date, baseDate) {
-  console.log('normalizing ' + date.toString() + ' from ' + baseDate.toString())
   // Check whether the working ms has been assigned already
   if (date.workingMs > -1) {
     return date.workingMs;
@@ -785,12 +785,6 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalizeFrom_ =
               (scottlogic.chart.rendering.DiscontinuousDateTimeAxis.
                   MILLISECONDS_IN_AN_HOUR * 24 * 7));
 
-      console.log(toEndOfBaseDay);
-      console.log(toEndOfBaseWeek);
-      console.log(weeksBetween);
-      console.log(this.millisecondsInAWorkingWeek_);
-      console.log(toBeginningOfInputDay);
-      console.log(toInput);
       // Total values up and return
       result = toEndOfBaseDay + toEndOfBaseWeek +
           (weeksBetween * this.millisecondsInAWorkingWeek_) +
@@ -984,19 +978,15 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.increment =
  */
 scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.denormalize =
     function(input) {
-  console.log('denormalize ' + input)
   /** @type {number} */
   var index = this.cache_.findVal(input);
   
 
-  console.log(index);
   /** @type {goog.date.UtcDateTime} */
   var baseDate = this.cache_.getKey(index);
-  console.log(baseDate);
 
   /** @type {number} */
-  var baseNormalized = this.cache_.getVal(index);
-  console.log(baseNormalized);
+  var baseNormalized = /** @type {number} */(this.cache_.getVal(index));
 
   /** @type {number} */
   var inter = input - baseNormalized;
