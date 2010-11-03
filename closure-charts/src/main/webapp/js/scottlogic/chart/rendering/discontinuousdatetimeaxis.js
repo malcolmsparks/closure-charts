@@ -75,7 +75,7 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis = function() {
    * @public
    */
   this.max = new goog.date.UtcDateTime(new Date());
-  
+
   /**
    * @type {scottlogic.chart.rendering.DiscontinuousDateTimeCache}
    * @private
@@ -827,7 +827,7 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalizeFrom_ =
  */
 scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalize =
     function(inputObj) {
-  
+
   /** @type {goog.date.UtcDateTime} */
   var input = new goog.date.UtcDateTime(new Date(inputObj));
 
@@ -980,7 +980,6 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.denormalize =
     function(input) {
   /** @type {number} */
   var index = this.cache_.findVal(input);
-  
 
   /** @type {goog.date.UtcDateTime} */
   var baseDate = this.cache_.getKey(index);

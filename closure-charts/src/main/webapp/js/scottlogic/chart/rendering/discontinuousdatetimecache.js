@@ -106,8 +106,8 @@ scottlogic.chart.rendering.DiscontinuousDateTimeCache.prototype.getKey =
     function(i) {
   /** @type {goog.date.UtcDateTime} */
   var date;
-  
-  if(i>=0) {
+
+  if (i >= 0) {
     date = new goog.date.UtcDateTime(new Date(this.keys_[i]));
   } else {
     date = new goog.date.UtcDateTime(new Date(0));

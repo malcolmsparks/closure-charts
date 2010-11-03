@@ -625,7 +625,7 @@ scottlogic.chart.rendering.LineSeries.prototype.getCurrentTrackballPoint =
 /**
  * Updates the trackball (not part of redraw as considered a separate graphical
  * component)
- * 
+ *
  * @param {*} dataPoint
  *                    the data point to update the trackball onto.
  * @public

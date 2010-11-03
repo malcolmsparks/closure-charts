@@ -172,9 +172,9 @@ scottlogic.chart.rendering.Context.prototype.convertPath = function(path) {
 
   // Get the points from the input path
   path.forEachSegment(function(type, segments) {
-    for (var i = 0; i < segments.length; i+=2) {
+    for (var i = 0; i < segments.length; i += 2) {
       if (segments[i]) {
-        points.push(new goog.math.Coordinate(segments[i], segments[i+1]));
+        points.push(new goog.math.Coordinate(segments[i], segments[i + 1]));
       }
     }
   });
