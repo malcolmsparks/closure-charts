@@ -135,7 +135,7 @@ goog.inherits(scottlogic.chart.Chart, goog.events.EventTarget);
  * Returns the Data X Axis of the Chart.
  * @see abstractaxis.js
  * @public
- * @return {scottlogic.chart.rendering.AbstractAxis}
+ * @return {scottlogic.chart.rendering.AbstractAxis} the data x Axis.
  * @export
  */
 scottlogic.chart.Chart.prototype.getXAxisData = function() {
@@ -146,7 +146,7 @@ scottlogic.chart.Chart.prototype.getXAxisData = function() {
  * Returns the Data Y Axis of the Chart.
  * @see abstractaxis.js
  * @public
- * @return {scottlogic.chart.rendering.AbstractAxis}
+ * @return {scottlogic.chart.rendering.AbstractAxis} the data y Axis.
  * @export
  */
 scottlogic.chart.Chart.prototype.getYAxisData = function() {
@@ -158,6 +158,7 @@ scottlogic.chart.Chart.prototype.getYAxisData = function() {
  * @see abstractaxis.js
  * @public
  * @return {scottlogic.chart.rendering.AbstractGraphicalAxis}
+ *    the graphical x Axis.
  * @export
  */
 scottlogic.chart.Chart.prototype.getXAxis = function() {
@@ -169,6 +170,7 @@ scottlogic.chart.Chart.prototype.getXAxis = function() {
  * @see abstractgraphicalaxis.js
  * @public
  * @return {scottlogic.chart.rendering.AbstractGraphicalAxis}
+ *    the graphical y Axis.
  * @export
  */
 scottlogic.chart.Chart.prototype.getYAxis = function() {
@@ -178,7 +180,7 @@ scottlogic.chart.Chart.prototype.getYAxis = function() {
 /**
  * Returns the Gridlines object of the Chart.
  * @public
- * @return {scottlogic.chart.rendering.Gridlines}
+ * @return {scottlogic.chart.rendering.Gridlines} the gridlines object.
  * @export
  */
 scottlogic.chart.Chart.prototype.getGridlines = function() {
@@ -286,15 +288,18 @@ scottlogic.chart.Chart.prototype.redraw = function() {
   if (!(this.xAxisData.userHasDefinedMin && this.xAxisData.userHasDefinedMax) ||
       this.xAxisData.min.equals(this.xAxisData.max)) {
 
+    /** @type {boolean} */
+    var invalidInputs = this.xAxisData.min.equals(this.xAxisData.max);
+
     /** @type {Array.<goog.date.UtcDateTime>} */
     var xbounds = this.getXBounds_();
 
-    if (!this.xAxisData.userHasDefinedMin) {
+    if (!this.xAxisData.userHasDefinedMin || invalidInputs) {
       this.xAxisData.setMinimum(xbounds[0]);
       this.xAxisData.userHasDefinedMin = false;
     }
 
-    if (!this.xAxisData.userHasDefinedMax) {
+    if (!this.xAxisData.userHasDefinedMax || invalidInputs) {
       this.xAxisData.setMaximum(xbounds[1]);
       this.xAxisData.userHasDefinedMax = false;
     }
@@ -302,15 +307,19 @@ scottlogic.chart.Chart.prototype.redraw = function() {
 
   if (!(this.yAxisData.userHasDefinedMin && this.yAxisData.userHasDefinedMax) ||
       this.yAxisData.min === this.yAxisData.max) {
+
+    /** @type {boolean} */
+    var invalidInputs = (this.yAxisData.min === this.yAxisData.max);
+
     /** @type {Array.<number>} */
     var ybounds = this.getYBounds_();
 
-    if (!this.yAxisData.userHasDefinedMin) {
+    if (!this.yAxisData.userHasDefinedMin || invalidInputs) {
       this.yAxisData.setMinimum(ybounds[0]);
       this.yAxisData.userHasDefinedMin = false;
     }
 
-    if (!this.yAxisData.userHasDefinedMax) {
+    if (!this.yAxisData.userHasDefinedMax || invalidInputs) {
       this.yAxisData.setMaximum(ybounds[1]);
       this.yAxisData.userHasDefinedMax = false;
     }
@@ -538,7 +547,7 @@ scottlogic.chart.Chart.prototype.getYBounds_ = function() {
     }
   }
 
-  return min === undefined || max === undefined ? [0, 1] :
+  return min === undefined || max === undefined || min === max ? [0, 1] :
       [this.yAxisData.padRight(min, min, max),
        this.yAxisData.padLeft(max, min, max)];
 };
@@ -578,7 +587,7 @@ scottlogic.chart.Chart.prototype.getXBounds_ = function() {
     }
   }
 
-  if (min === undefined || max === undefined) {
+  if (min === undefined || max === undefined || min.equals(max)) {
     /** @type {goog.date.UtcDateTime} */
     var yester = new goog.date.UtcDateTime(new Date());
     yester.add(new goog.date.Interval(0, 0, -1));
