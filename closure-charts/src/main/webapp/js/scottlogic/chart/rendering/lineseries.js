@@ -35,6 +35,7 @@ goog.require('scottlogic.chart.rendering.lineoptimization');
  * @param {Array.<[*, *]>} input The array of input absolute coordinates.
  * @extends {goog.Disposable}
  * @constructor
+ * @export
  */
 scottlogic.chart.rendering.LineSeries = function(id, input) {
   goog.Disposable.call(this);
@@ -145,6 +146,7 @@ goog.inherits(scottlogic.chart.rendering.LineSeries, goog.Disposable);
  *
  * @param {boolean} input whether or not to render the trackball.
  * @public
+ * @export
  */
 scottlogic.chart.rendering.LineSeries.prototype.setTrackballRender = function(
     input) {
@@ -161,6 +163,7 @@ scottlogic.chart.rendering.LineSeries.prototype.setTrackballRender = function(
  *
  * @param {!goog.graphics.Stroke} stroke The stroke to set.
  * @public
+ * @export
  */
 scottlogic.chart.rendering.LineSeries.prototype.setStroke = function(stroke) {
   this.style_.setStroke(stroke);
@@ -199,6 +202,7 @@ scottlogic.chart.rendering.LineSeries.prototype.setGraphicalAxisY = function(
  *
  * @param {boolean} input whether or not to render the points.
  * @public
+ * @export
  */
 scottlogic.chart.rendering.LineSeries.prototype.setMarkerPointsRender =
     function(input) {
@@ -404,6 +408,7 @@ scottlogic.chart.rendering.LineSeries.prototype.hide_ = function() {
 /**
  * Returns whether the series is visible
  * @public
+ * @export
  * @return {boolean} whether the line series is visible.
  */
 scottlogic.chart.rendering.LineSeries.prototype.isVisible = function() {
@@ -414,6 +419,7 @@ scottlogic.chart.rendering.LineSeries.prototype.isVisible = function() {
  * Sets the visibility of the line series (done before a redraw, unlike hide)
  * @public
  * @param {boolean} vis whether the line series should be visible.
+ * @export
  */
 scottlogic.chart.rendering.LineSeries.prototype.setVisible = function(vis) {
   this.isVisible_ = vis;
@@ -461,7 +467,7 @@ scottlogic.chart.rendering.LineSeries.prototype.drawTrackball_ = function() {
 
 /**
  * Toggles the highlight of the line series
- *
+ * @export
  * @public
  */
 scottlogic.chart.rendering.LineSeries.prototype.toggleHighlight = function() {
@@ -478,7 +484,7 @@ scottlogic.chart.rendering.LineSeries.prototype.toggleHighlight = function() {
 
 /**
  * Toggles the dim of the line series
- *
+ * @export
  * @public
  */
 scottlogic.chart.rendering.LineSeries.prototype.toggleDim = function() {
@@ -606,7 +612,7 @@ scottlogic.chart.rendering.LineSeries.prototype.initialize_ = function(
 
 /**
  * Returns the current co-ordinate that the trackball lies on
- *
+ * @export
  * @public
  * @return {[*, *]}
  *                        The value of the current trackball point.
@@ -619,7 +625,7 @@ scottlogic.chart.rendering.LineSeries.prototype.getCurrentTrackballPoint =
 /**
  * Updates the trackball (not part of redraw as considered a separate graphical
  * component)
- *
+ * 
  * @param {*} dataPoint
  *                    the data point to update the trackball onto.
  * @public
@@ -804,7 +810,6 @@ goog.inherits(scottlogic.chart.rendering.Trackball, goog.Disposable);
 
 /**
  * sets the stroke of the trackball
- *
  * @param {!goog.graphics.Stroke} stroke The stroke to set.
  * @public
  */

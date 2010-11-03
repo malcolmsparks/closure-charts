@@ -79,6 +79,7 @@ scottlogic.chart.rendering.Gridlines = function(style) {
  * Sets the stroke of the style
  *
  * @public
+ * @export
  * @param {!goog.graphics.Stroke} stroke The stroke to set.
  */
 scottlogic.chart.rendering.Gridlines.prototype.setGridlineStroke = function(
@@ -90,6 +91,7 @@ scottlogic.chart.rendering.Gridlines.prototype.setGridlineStroke = function(
  * Sets the stroke of the style
  *
  * @public
+ * @export
  * @param {!goog.graphics.Stroke} stroke The stroke to set.
  */
 scottlogic.chart.rendering.Gridlines.prototype.setZeroLineStroke = function(

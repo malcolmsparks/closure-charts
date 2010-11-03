@@ -79,6 +79,7 @@ scottlogic.chart.rendering.AbstractAxis.prototype.normalize =
  * Sets the maximum on the axis
  *
  * @param {*} input The time to set.
+ * @export
  * @public
  */
 scottlogic.chart.rendering.AbstractAxis.prototype.setMinimum = function(input) {
@@ -90,6 +91,7 @@ scottlogic.chart.rendering.AbstractAxis.prototype.setMinimum = function(input) {
  * Sets the maximum on the axis
  *
  * @param {*} input The time to set.
+ * @export
  * @public
  */
 scottlogic.chart.rendering.AbstractAxis.prototype.setMaximum = function(input) {
@@ -120,6 +122,7 @@ scottlogic.chart.rendering.AbstractAxis.prototype.denormalize =
  * Sets the formatter of this AbstractAxis
  *
  * @public
+ * @export
  * @param {function(*):string} formatter the normalized value to denormalize.
  */
 scottlogic.chart.rendering.AbstractAxis.prototype.setFormatter =

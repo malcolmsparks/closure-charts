@@ -96,6 +96,7 @@ goog.inherits(
  * Sets the stroke of the axis
  *
  * @param {!goog.graphics.Stroke} stroke The stroke to set.
+ * @export
  * @public
  */
 scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.setAxisStroke =
@@ -105,6 +106,7 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.setAxisStroke =
  * Sets the font of the label style
  *
  * @param {!goog.graphics.Font} font The font to set.
+ * @export
  * @public
  */
 scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.setLabelFont =
@@ -114,6 +116,7 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.setLabelFont =
  * Sets the font colour of the label style
  *
  * @param {string} fontColour The font colour to set.
+ * @export
  * @public
  */
 scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.setLabelFontColour =
@@ -123,6 +126,7 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.setLabelFontColour =
  * Sets the stroke of the label style
  *
  * @param {!goog.graphics.Stroke} stroke The stroke to set.
+ * @export
  * @public
  */
 scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.setLabelStroke =

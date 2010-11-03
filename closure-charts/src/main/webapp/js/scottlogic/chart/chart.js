@@ -39,6 +39,7 @@ goog.require('scottlogic.chart.rendering.Style');
  * The Chart object is the manager of the Chart, instantiating all components
  * and allowing the user the redraw, edit the components directly etc.
  *
+ * @export
  * @extends {goog.events.EventTarget}
  * @param {string} id The element ID to draw to.
  * @param {Array.<number>} size The size to draw.
@@ -130,7 +131,59 @@ scottlogic.chart.Chart = function(id, size) {
 };
 goog.inherits(scottlogic.chart.Chart, goog.events.EventTarget);
 
+/**
+ * Returns the Data X Axis of the Chart.
+ * @see abstractaxis.js
+ * @public
+ * @return {scottlogic.chart.rendering.AbstractAxis}
+ * @export
+ */
+scottlogic.chart.Chart.prototype.getXAxisData = function() {
+  return this.xAxisData;
+};
 
+/**
+ * Returns the Data Y Axis of the Chart.
+ * @see abstractaxis.js
+ * @public
+ * @return {scottlogic.chart.rendering.AbstractAxis}
+ * @export
+ */
+scottlogic.chart.Chart.prototype.getYAxisData = function() {
+  return this.yAxisData;
+};
+
+/**
+ * Returns the Graphical X Axis of the Chart.
+ * @see abstractaxis.js
+ * @public
+ * @return {scottlogic.chart.rendering.AbstractGraphicalAxis}
+ * @export
+ */
+scottlogic.chart.Chart.prototype.getXAxis = function() {
+  return this.xAxis;
+};
+
+/**
+ * Returns the Graphical Y Axis of the Chart.
+ * @see abstractgraphicalaxis.js
+ * @public
+ * @return {scottlogic.chart.rendering.AbstractGraphicalAxis}
+ * @export
+ */
+scottlogic.chart.Chart.prototype.getYAxis = function() {
+  return this.yAxis;
+};
+
+/**
+ * Returns the Gridlines object of the Chart.
+ * @public
+ * @return {scottlogic.chart.rendering.Gridlines}
+ * @export
+ */
+scottlogic.chart.Chart.prototype.getGridlines = function() {
+  return this.gridlines;
+};
 
 /**
  * Generates the graphical axis
@@ -171,6 +224,7 @@ scottlogic.chart.Chart.prototype.generateGraphicalAxis_ = function() {
  * any style values.
  * If you wish to toggle the visibility of the Axis, but keep the underlying
  * graphical components, you should use showXAxis / showYAxis.
+ * @export
  * @param {boolean} input whether or not to render the x axis.
  * @public
  */
@@ -184,6 +238,7 @@ scottlogic.chart.Chart.prototype.setXRender = function(input) {
 
 /**
  * Returns the Array of Line Series associated with the chart
+ * @export
  * @return {Array.<scottlogic.chart.rendering.LineSeries>} all the series.
  * @public
  */
@@ -193,6 +248,7 @@ scottlogic.chart.Chart.prototype.getAllLineSeries = function() {
 
 /**
  * Returns the number of line series on the chart
+ * @export
  * @return {number} number of line series.
  * @public
  */
@@ -207,6 +263,7 @@ scottlogic.chart.Chart.prototype.getSeriesCount = function() {
  * any style values.
  * If you wish to toggle the visibility of the Axis, but keep the underlying
  * graphical components, you should use showXAxis / showYAxis.
+ * @export
  * @param {boolean} input whether or not to render the y axis.
  * @public
  */
@@ -219,8 +276,8 @@ scottlogic.chart.Chart.prototype.setYRender = function(input) {
 };
 
 /**
- * initializes and redraws the Chart
- *
+ * Initializes and redraws the Chart
+ * @export
  * @public
  */
 scottlogic.chart.Chart.prototype.redraw = function() {
@@ -345,6 +402,7 @@ scottlogic.chart.Chart.prototype.calculatePadding_ = function() {
  *
  * @param {scottlogic.chart.rendering.Style} inputStyle The style object to
  *        merge with the Chart.
+ * @export
  * @public
  */
 scottlogic.chart.Chart.prototype.applyStyle = function(inputStyle) {
@@ -536,6 +594,7 @@ scottlogic.chart.Chart.prototype.getXBounds_ = function() {
  * Removes all the Line Series' from the Chart
  *
  * @public
+ * @export
  */
 scottlogic.chart.Chart.prototype.removeAllLineSeries = function() {
   for (var i = 0; i < this.series_.length; i++) {
@@ -550,6 +609,7 @@ scottlogic.chart.Chart.prototype.removeAllLineSeries = function() {
  *
  * @param {scottlogic.chart.rendering.LineSeries} lineSeriesIn The input values.
  * @public
+ * @export
  */
 scottlogic.chart.Chart.prototype.addLineSeries = function(lineSeriesIn) {
   // Add the Line Series to the inner reference
@@ -580,6 +640,7 @@ scottlogic.chart.Chart.prototype.removeLineSeriesByIndex_ = function(
  * @param {string} idToRemove The line series to remove.
  * @return {scottlogic.chart.rendering.LineSeries} the removed line series.
  * @public
+ * @export
  */
 scottlogic.chart.Chart.prototype.removeLineSeriesById = function(idToRemove) {
   // Find the Line Series to remove
@@ -596,6 +657,7 @@ scottlogic.chart.Chart.prototype.removeLineSeriesById = function(idToRemove) {
  * @param {string} id the id to search for.
  * @return {scottlogic.chart.rendering.LineSeries} The matched line series.
  * @public
+ * @export
  */
 scottlogic.chart.Chart.prototype.getLineSeriesById = function(id) {
   for (var i = 0; i < this.series_.length; i++) {
@@ -610,6 +672,7 @@ scottlogic.chart.Chart.prototype.getLineSeriesById = function(id) {
  *        series to remove.
  * @return {scottlogic.chart.rendering.LineSeries} the removed line series.
  * @public
+ * @export
  */
 scottlogic.chart.Chart.prototype.removeLineSeries = function(
     lineSeriesToRemove) {
