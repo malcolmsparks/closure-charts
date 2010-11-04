@@ -59,16 +59,16 @@
         
         var chartPoint = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 13, 14, 25, 0);
         series.updateTrackball(chartPoint);
-        assertEquals("Correctly assigned midway through", midway2, series.getCurrentTrackballPoint()[0]);
-        assertEquals("Correctly assigned midway through", 1, series.getCurrentTrackballPoint()[1]);
+        assertEquals("Correctly assigned midway through", midway1, series.getCurrentTrackballPoint()[0]);
+        assertEquals("Correctly assigned midway through", 3, series.getCurrentTrackballPoint()[1]);
         
         var chartPoint2 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 12, 12, 0, 0);
         series.updateTrackball(chartPoint2);
-        assertEquals("Correctly assigned midway through 2", midway1, series.getCurrentTrackballPoint()[0]);
+        assertEquals("Correctly assigned midway through 2", min, series.getCurrentTrackballPoint()[0]);
         
         var chartPoint3 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 15, 23, 1, 0);
         series.updateTrackball(chartPoint3);
-        assertEquals("Correctly assigned midway through 3", max, series.getCurrentTrackballPoint()[0]);
+        assertEquals("Correctly assigned midway through 3", midway3, series.getCurrentTrackballPoint()[0]);
         
         var chartPoint4 = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 14, 51, 0, 0);
         series.updateTrackball(chartPoint4);
