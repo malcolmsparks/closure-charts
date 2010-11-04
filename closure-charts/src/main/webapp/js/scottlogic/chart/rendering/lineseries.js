@@ -726,7 +726,29 @@ scottlogic.chart.rendering.LineSeries.prototype.getNearestPoint_ = function(
         return that.graphicalAxisX_.axis.compare(a, b[index]);
       }) + 1);
 
-  return pos >= points.length ? points.length - 1 : pos;
+  // Perform some out-of-range checks.
+  pos = pos >= points.length ? points.length - 1 : pos;
+
+  // Check the previous point to get the closest point.
+  if (pos > 0) {
+    /** @type {number} */
+    var normalizedPoint = that.graphicalAxisX_.axis.normalize(dataPoint);
+
+    /** @type {number} */
+    var differenceFromPrevious = normalizedPoint -
+        that.graphicalAxisX_.axis.normalize(points[pos - 1][index]);
+
+    /** @type {number} */
+    var differenceToNext =
+        that.graphicalAxisX_.axis.normalize(points[pos][index]) -
+        normalizedPoint;
+
+    if (differenceFromPrevious < differenceToNext) {
+      pos = pos - 1;
+    }
+  }
+
+  return pos;
 };
 
 /**

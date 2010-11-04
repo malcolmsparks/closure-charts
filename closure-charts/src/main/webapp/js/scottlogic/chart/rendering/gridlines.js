@@ -180,12 +180,12 @@ scottlogic.chart.rendering.Gridlines.prototype.redraw = function(graphics,
   // Draw the paths
   this.gridlineGraphic_.setPath(this.path_);
 
-  /* this will make sure the path is erased (any calls to an empty path being 
+  /* this will make sure the path is erased (any calls to an empty path being
    * drawn are ignored in the SVG) */
-  if(this.zeroPath_.isEmpty()) {
+  if (this.zeroPath_.isEmpty()) {
     this.zeroPath_.moveTo(0, 0);
   }
-  
+
   this.zeroLineGraphic_.setPath(this.zeroPath_);
 };
 
