@@ -24,18 +24,18 @@ goog.require('scottlogic.chart.rendering.AbstractGraphicalAxis');
  * A Graphical Axis that will not render itself on the Chart.
  *
  * @extends {scottlogic.chart.rendering.AbstractGraphicalAxis}
- * @param {scottlogic.chart.Chart.Orientation} orientation the orientation of
- *        the axis.
- * @param {scottlogic.chart.rendering.AbstractAxis} axis
- *    the underlying axis data.
- * @param {goog.graphics.AbstractGraphics} graphics The graphics to use whilst
- *        rendering.
+ * @param {scottlogic.chart.Chart.Orientation} orientation
+ * 		the orientation of the axis.
+ * @param {scottlogic.chart.rendering.AbstractAxis} axis 
+ * 		the underlying axis data.
+ * @param {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} alignment
+ * 		the alignment of the axis.
  * @constructor
  */
 scottlogic.chart.rendering.NonRenderedGraphicalAxis = function(orientation, 
-    axis, graphics) {
+    axis, alignment) {
   scottlogic.chart.rendering.AbstractGraphicalAxis.call(this,
-      orientation, axis, null, graphics);
+      orientation, axis, null, alignment);
   /**
    * The length of the tick
    *
@@ -52,13 +52,6 @@ goog.inherits(scottlogic.chart.rendering.NonRenderedGraphicalAxis,
  */
 scottlogic.chart.rendering.NonRenderedGraphicalAxis.prototype.redrawInternal =
     goog.nullFunction;
-
-/**
- * @override
- */
-scottlogic.chart.rendering.NonRenderedGraphicalAxis.prototype.
-    initializeInternal = goog.nullFunction;
-
 
 /**
  * @override

@@ -48,7 +48,7 @@ scottlogic.chart.examples.example2.load = function (id) {
   chart.xAxis.setLabelFontColour("#0b333c");
   chart.yAxis.setLabelFontColour("#0b333c");
   chart.gridlines.setGridlineStroke(new goog.graphics.Stroke(1,
-    "#ededed"));
+   "#ededed"));
   chart.gridlines.setZeroLineStroke(new goog.graphics.Stroke(1,
     "#b0c1d0"));
   

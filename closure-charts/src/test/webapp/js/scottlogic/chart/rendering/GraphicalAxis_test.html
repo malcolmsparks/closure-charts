@@ -47,6 +47,7 @@
     	var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 16, 0, 0, 0);
     	
     	var chart = new scottlogic.chart.Chart("canvas", [300, 300]);
+    	chart.alignment_Yaxis = scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFT;
     	chart.xAxisData.setMinimum(min);
     	chart.xAxisData.setMaximum(max);
     	chart.xAxisData.setStartOfHours(new goog.date.UtcDateTime(1990, 06, 22, 08));
@@ -56,13 +57,13 @@
     	
     	//TODO : rewrite these, they only work with default padding
     	// padding (40) + tick width (7)
-    	assertEquals("Convert minimum x", chart.paddingY, chart.xAxis.convert(min));
+    	assertEquals("Convert minimum x", chart.widthY, chart.xAxis.convert(min));
     	
     	// height (300) - tick length (7) - font size (13)
     	assertEquals("Convert minimum y", 300 - chart.paddingX, chart.yAxis.convert(0));
     	
     	// width (300) - half of padding (20)
-    	assertTrue("convert maximum x", goog.math.nearlyEquals(300 - chart.paddingRight, chart.xAxis.convert(max)));
+    	assertTrue("convert maximum x", goog.math.nearlyEquals(300 - chart.paddingHorizontal, chart.xAxis.convert(max)));
     	
     	// half of font size (13)
     	assertTrue("convert maximum y", goog.math.nearlyEquals(chart.paddingTop, chart.yAxis.convert(1)));

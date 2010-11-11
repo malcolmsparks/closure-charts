@@ -22,8 +22,7 @@ goog.require('goog.Disposable');
 goog.require('goog.graphics');
 
 /**
- * Represents a label object. A label is a graphical component and so follows
- * the redraw/initialize structure.
+ * Represents a label object. 
  *
  * @param {string} text The text to display.
  * @param {goog.math.Rect} rect the rectangle in which to display the label.
@@ -37,6 +36,12 @@ scottlogic.chart.rendering.Label = function(
     text, rect, axis, tickLength, style) {
 
   goog.Disposable.call(this);
+  
+  /**
+   * @private
+   * @type {goog.math.Rect}
+   */
+  this.labelArea_ = rect;
 
   /**
    * @private
@@ -114,7 +119,14 @@ scottlogic.chart.rendering.Label = function(
    * @type {Array.<number>}
    */
   this.center = [];
-
+  if (this.axisOrientation_ === scottlogic.chart.Chart.Orientation.X) {
+	  this.center[0] = this.x_ + (this.width_ / 2);
+	  this.center[1] = this.y_;
+  } else if (this.axisOrientation_ === scottlogic.chart.Chart.Orientation.Y) {
+	  this.center[0] = this.x_ + (this.width_);
+	  this.center[1] = this.y_ + (this.height_ / 2);
+  }
+ 
   /**
    * The length of the tick
    *
@@ -122,6 +134,7 @@ scottlogic.chart.rendering.Label = function(
    * @type {number}
    */
   this.tickLength_ = tickLength;
+  
 };
 goog.inherits(scottlogic.chart.rendering.Label, goog.Disposable);
 
@@ -133,42 +146,8 @@ goog.inherits(scottlogic.chart.rendering.Label, goog.Disposable);
  *        draw upon.
  * @public
  */
-scottlogic.chart.rendering.Label.prototype.redraw = function(graphics) {
-  if (!this.initialized_) {
-    this.initialize_(graphics);
-    this.initialized_ = true;
-  }
-
-  if (this.axisOrientation_ === scottlogic.chart.Chart.Orientation.X) {
-    this.labelText_ = graphics.drawText(this.text_, this.x_,
-        this.y_ + (this.tickLength_ * 1.1), this.width_, this.height_ -
-                                                        this.tickLength_,
-        'center', 'bottom', this.style_.getFont(), this.textStroke_,
-        this.textFill_);
-
-    this.center[0] = this.x_ + (this.width_ / 2);
-    this.center[1] = this.y_;
-  } else if (this.axisOrientation_ === scottlogic.chart.Chart.Orientation.Y) {
-    this.labelText_ = graphics.drawText(this.text_, this.x_, this.y_,
-        this.width_ - this.tickLength_ - 3, this.height_, 'right', 'middle',
-        this.style_.getFont(), this.textStroke_, this.textFill_);
-
-    this.center[0] = this.x_ + (this.width_);
-    this.center[1] = this.y_ + (this.height_ / 2);
-  } else {
-    // Throw an exception if an unrecognised orientation appears
-    throw 'INVALID_ORIENTATION ' + this.axisOrientation_;
-  }
-};
-
-/**
- * Initializes the label
- *
- * @param {goog.graphics.AbstractGraphics} graphics The graphics to draw upon.
- * @private
- */
-scottlogic.chart.rendering.Label.prototype.initialize_ = function(graphics) {
-
+scottlogic.chart.rendering.Label.prototype.addGraphics = function(graphics) {
+	
   /**
    * The graphics to drawn upon
    *
@@ -176,7 +155,7 @@ scottlogic.chart.rendering.Label.prototype.initialize_ = function(graphics) {
    * @type {goog.graphics.AbstractGraphics}
    */
   this.graphics_ = graphics;
-
+  
   /**
    * The fill of the text
    *
@@ -192,6 +171,21 @@ scottlogic.chart.rendering.Label.prototype.initialize_ = function(graphics) {
    * @type {goog.graphics.Stroke}
    */
   this.textStroke_ = new goog.graphics.Stroke(0, this.style_.getFontColour());
+	  
+  if (this.axisOrientation_ === scottlogic.chart.Chart.Orientation.X) {
+    this.labelText_ = graphics.drawText(this.text_, this.x_,
+        this.y_ + (this.tickLength_ * 1.1), this.width_, this.height_ -
+                                                        this.tickLength_,
+        'center', 'bottom', this.style_.getFont(), this.textStroke_,
+        this.textFill_);
+  } else if (this.axisOrientation_ === scottlogic.chart.Chart.Orientation.Y) {
+    this.labelText_ = graphics.drawText(this.text_, this.x_, this.y_,
+        this.width_ - this.tickLength_ - 3, this.height_, 'right', 'middle',
+        this.style_.getFont(), this.textStroke_, this.textFill_);
+  } else {
+    // Throw an exception if an unrecognised orientation appears
+    throw 'INVALID_ORIENTATION ' + this.axisOrientation_;
+  }
 };
 
 /**
@@ -223,4 +217,15 @@ scottlogic.chart.rendering.Label.prototype.disposeInternal = function() {
   if (this.initialized_) {
     this.graphics_.removeElement(this.labelText_);
   }
+};
+
+/**
+ * Getter: return the label's area 
+ * @public
+ * @return {goog.math.Rect}
+ *    the graphical y Axis.
+ * @export
+ */
+scottlogic.chart.rendering.Label.prototype.getLabelArea = function() {
+	return this.labelArea_;
 };

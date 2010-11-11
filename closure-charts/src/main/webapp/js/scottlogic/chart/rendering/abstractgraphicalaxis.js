@@ -20,7 +20,6 @@ goog.provide('scottlogic.chart.rendering.AbstractGraphicalAxis');
 
 goog.require('goog.Disposable');
 
-
 /**
  * This GraphicalAxis object will contain the data representing the graphical
  * axis. It is the duty of the graphical axis to be able to convert between
@@ -34,36 +33,21 @@ goog.require('goog.Disposable');
  *                                                    the underlying axis data.
  * @param {scottlogic.chart.rendering.Style} style The parent style of this
  *        style.
- * @param {goog.graphics.AbstractGraphics} graphics The graphics to use whilst
- *        rendering.
+ * @param {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} 
+ *        alignment of the axis. 
  * @constructor
  */
 scottlogic.chart.rendering.AbstractGraphicalAxis = function(orientation, axis, 
-    style, graphics) {
+    style, alignment) {
   goog.Disposable.call(this);
+  
   /**
-   * Stores whether the Graphical Axis has been initialized
+   * The alignment of the axis
    *
-   * @private
-   * @type {boolean}
+   * @public
+   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
    */
-  this.initialized_ = false;
-
-  /**
-   * The graphics of the object
-   *
-   * @type {goog.graphics.AbstractGraphics}
-   * @protected
-   */
-  this.graphics = graphics;
-
-  /**
-   * Height of the canvas
-   *
-   * @protected
-   * @type {number}
-   */
-  this.height = this.graphics.getPixelSize().height;
+  this.alignment = alignment;
 
   /**
    * The axis to draw / pull data from
@@ -92,6 +76,8 @@ scottlogic.chart.rendering.AbstractGraphicalAxis = function(orientation, axis,
 goog.inherits(
     scottlogic.chart.rendering.AbstractGraphicalAxis, goog.Disposable);
 
+
+
 /**
  * Sets the stroke of the axis
  *
@@ -100,6 +86,17 @@ goog.inherits(
  * @public
  */
 scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.setAxisStroke =
+    goog.abstractMethod;
+
+/**
+ * Sets the graphics
+ *
+ * @param {goog.graphics.AbstractGraphics} graphics The graphics to use whilst
+ *        rendering.
+ * @export
+ * @public
+ */
+scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.addGraphics =
     goog.abstractMethod;
 
 /**
@@ -123,7 +120,7 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.setLabelFontColour =
     goog.abstractMethod;
 
 /**
- * Sets the stroke of the label style
+ * Sets the label stroke
  *
  * @param {!goog.graphics.Stroke} stroke The stroke to set.
  * @export
@@ -132,21 +129,18 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.setLabelFontColour =
 scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.setLabelStroke =
     goog.abstractMethod;
 
+
 /**
  * If the Graphical Axis has not been intialized, this function will initialize
- * it. Either way, redraws the Graphical Axis.
+ * it. Either way, rebuilds the Graphical Axis.
  *
- * @public
+ * @private
  * @param {goog.math.Rect} boundingBox the bounding box to use when drawing the
  *        axis.
  */
-scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.redraw = function(
+scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.rebuild = function(
     boundingBox) {
-  if (!this.initialized_) {
-    this.initialize_();
-    this.initialized_ = true;
-  }
-
+ 
   /**
    * The bounding box of the axis.
    *
@@ -174,8 +168,21 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.redraw = function(
    */
   this.normalizedMax_ = this.axis.normalize(this.axis.max);
 
-  this.redrawInternal();
+  this.rebuildInternal();
 };
+
+/**
+ * Redraw for axis
+ * @param {goog.math.Rect} boundingBox the bounding box to use when drawing the
+ *        axis.
+ * @public
+ * @export
+ */
+scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.redraw = function(
+	    boundingBox) {
+	  this.rebuild(boundingBox);
+	  this.redrawInternal();
+	};
 
 /**
  * Assigns the beginning and ending co-ordinates. Also assigns the axis length
@@ -201,10 +208,18 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.assignBeginAndEnd =
     this.axisLength = this.ending_[0] - this.begin_[0];
 
   } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
-    this.begin_ = [this.boundingBox.left + this.boundingBox.width,
-      this.boundingBox.top];
-    this.ending_ = [this.boundingBox.left + this.boundingBox.width,
-      this.boundingBox.top + this.boundingBox.height];
+	  if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
+	    this.begin_ = [this.boundingBox.left,
+			       	      this.boundingBox.top];
+	    this.ending_ = [this.boundingBox.left,
+			       	      this.boundingBox.top + this.boundingBox.height];
+	  }
+	  else {
+		  this.begin_ = [this.boundingBox.left + this.boundingBox.width,
+		       	      this.boundingBox.top];
+		  this.ending_ = [this.boundingBox.left + this.boundingBox.width,
+		       	      this.boundingBox.top + this.boundingBox.height];
+	  }
 
     this.axisLength = this.ending_[1] - this.begin_[1];
   } else {
@@ -212,27 +227,6 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.assignBeginAndEnd =
     throw 'INVALID_ORIENTATION ' + this.orientation;
   }
 };
-
-/**
- * Initializes the Graphical Axis
- *
- * @private
- */
-scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.initialize_ =
-    function() {
-  this.initialized_ = true;
-
-  this.initializeInternal();
-};
-
-/**
- * This performs any internal initialization, and is called when initialize_
- * is called
- *
- * @protected
- */
-scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.initializeInternal =
-    goog.abstractMethod;
 
 /**
  * This performs any internal redraw, and is called when redraw
@@ -414,4 +408,16 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.disposeInternal =
     function() {
   scottlogic.chart.rendering.AbstractGraphicalAxis.superClass_.disposeInternal
       .call(this);
+};
+
+/**
+ * Enumerated type to represent axis alignment.
+ *
+ * @enum {number}
+ */
+scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment = {
+  TOP: 0,
+  BOTTOM: 1,
+  LEFT: 2,
+  RIGHT: 3
 };

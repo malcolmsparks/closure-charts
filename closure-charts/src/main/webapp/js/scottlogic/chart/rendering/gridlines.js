@@ -35,12 +35,6 @@ goog.require('goog.graphics');
 scottlogic.chart.rendering.Gridlines = function(style) {
 
   /**
-   * @private
-   * @type {boolean}
-   */
-  this.initialized_ = false;
-
-  /**
    * The style of the gridlines
    *
    * @const
@@ -100,10 +94,8 @@ scottlogic.chart.rendering.Gridlines.prototype.setZeroLineStroke = function(
 };
 
 /**
- * Redraws and initializes (if necessary) the object
+ * Redraws the object
  *
- * @param {goog.graphics.AbstractGraphics} graphics the graphics to draw the
- *        gridlines on.
  * @param {goog.math.Rect} rect the rectangle in which to draw the grid lines.
  * @param {scottlogic.chart.rendering.AbstractGraphicalAxis} xAxis
  *                                                          the x Axis to use.
@@ -111,13 +103,9 @@ scottlogic.chart.rendering.Gridlines.prototype.setZeroLineStroke = function(
  *                                                          the y Axis to use.
  * @public
  */
-scottlogic.chart.rendering.Gridlines.prototype.redraw = function(graphics,
+scottlogic.chart.rendering.Gridlines.prototype.redraw = function(
     rect, xAxis, yAxis) {
-  if (!this.initialized_) {
-    this.initialize_(graphics);
-    this.initialized_ = true;
-  }
-
+  
   /**
    * The rectangle in which to draw the lines
    *
@@ -143,37 +131,23 @@ scottlogic.chart.rendering.Gridlines.prototype.redraw = function(graphics,
 
   // Add the x Axis grid lines to the path
   for (var i = 0; i < this.xAxis.labels.length; i++) {
-    // Stop the gridline drawing over the axis
-    if (this.xAxis.labels[i].center[0] > (this.rect.left + this.style_
-        .getStroke().getWidth())) {
-      this.path_.moveTo(this.xAxis.labels[i].center[0],
-          this.xAxis.labels[i].center[1] - this.style_.getStroke().getWidth() /
-              2);
-      this.path_.lineTo(this.xAxis.labels[i].center[0],
-          this.xAxis.labels[i].center[1] - this.rect.height);
-    }
+    this.path_.moveTo(this.xAxis.labels[i].center[0],
+      this.xAxis.labels[i].center[1] - this.style_.getStroke().getWidth() /
+      2);
+    this.path_.lineTo(this.xAxis.labels[i].center[0],
+      this.xAxis.labels[i].center[1] - this.rect.height);
   }
 
   // Add the y Axis grid lines to the path, and check for the zero line
   for (var j = 0; j < this.yAxis.labels.length; j++) {
-    // Stop the gridline drawing over the axis
-    if (this.yAxis.labels[j].center[1] < ((this.rect.top + this.rect.height) -
-        this.style_.getStroke().getWidth())) {
-
-      if (!(this.yAxis.zeroLineLabel === this.yAxis.labels[j])) {
-        this.path_.moveTo(this.yAxis.labels[j].center[0] +
-                          this.style_.getStroke().getWidth() / 2,
-            this.yAxis.labels[j].center[1]);
-        this.path_.lineTo(this.yAxis.labels[j].center[0] + this.rect.width,
-            this.yAxis.labels[j].center[1]);
-      } else {
-        this.zeroPath_.moveTo(this.yAxis.zeroLineLabel.center[0] +
-                              this.style_.getStroke().getWidth() / 2,
-            this.yAxis.zeroLineLabel.center[1]);
-        this.zeroPath_.lineTo(this.yAxis.zeroLineLabel.center[0] +
-                              this.rect.width,
-            this.yAxis.zeroLineLabel.center[1]);
-      }
+    if (!(this.yAxis.zeroLineLabel === this.yAxis.labels[j])) {
+      this.path_.moveTo(this.rect.left, this.yAxis.labels[j].center[1]);
+      this.path_.lineTo(this.rect.left + this.rect.width, this.yAxis.labels[j].center[1]);
+    } else {
+      this.zeroPath_.moveTo(this.rect.left,
+        this.yAxis.zeroLineLabel.center[1]);
+      this.zeroPath_.lineTo(this.rect.left + this.rect.width,
+        this.yAxis.zeroLineLabel.center[1]);
     }
   }
 
@@ -190,14 +164,14 @@ scottlogic.chart.rendering.Gridlines.prototype.redraw = function(graphics,
 };
 
 /**
- * Initializes the Gridlines object
+ * Adds graphics to the Gridlines object
  *
  * @param {goog.graphics.AbstractGraphics} graphics The graphics to draw the
  *        path upon.
- * @private
+ * @public
  */
-scottlogic.chart.rendering.Gridlines.prototype.initialize_ = function(
-    graphics) {
+scottlogic.chart.rendering.Gridlines.prototype.addGraphics = function(
+		graphics) {
   /**
    * The graphical path of the gridlines
    *
@@ -205,7 +179,7 @@ scottlogic.chart.rendering.Gridlines.prototype.initialize_ = function(
    * @type {goog.graphics.PathElement}
    */
   this.gridlineGraphic_ = graphics.drawPath(this.path_,
-      this.style_.getStroke(), null);
+	    this.style_.getStroke(), null);
 
   /**
    * The graphical path of the zero line
@@ -213,8 +187,8 @@ scottlogic.chart.rendering.Gridlines.prototype.initialize_ = function(
    * @private
    * @type {goog.graphics.PathElement}
    */
-  this.zeroLineGraphic_ = graphics.drawPath(this.zeroPath_, this.zeroLineStyle_
-      .getStroke(), null);
+   this.zeroLineGraphic_ = graphics.drawPath(this.zeroPath_, this.zeroLineStyle_
+     .getStroke(), null);
 };
 
 /**

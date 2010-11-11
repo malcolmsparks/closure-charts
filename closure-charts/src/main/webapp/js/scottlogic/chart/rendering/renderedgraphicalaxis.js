@@ -28,20 +28,20 @@ goog.require('scottlogic.chart.rendering.Label');
  * A Graphical Axis that will render itself on the Chart
  *
  * @extends {scottlogic.chart.rendering.AbstractGraphicalAxis}
- * @param {scottlogic.chart.Chart.Orientation} orientation the orientation of
- *        the axis.
+ * @param {scottlogic.chart.Chart.Orientation} orientation
+ * 		the orientation of the axis.
  * @param {scottlogic.chart.rendering.AbstractAxis} axis
- *    the underlying axis data.
- * @param {scottlogic.chart.rendering.Style} style The parent style of this
- *        style.
- * @param {goog.graphics.AbstractGraphics} graphics The graphics to use whilst
- *        rendering.
+ * 		the underlying axis data.
+ * @param {scottlogic.chart.rendering.Style} style
+ * 		the parent style of this style.
+ * @param {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} alignment 
+ * 		the alignment of the axis. 
  * @constructor
  */
 scottlogic.chart.rendering.RenderedGraphicalAxis = function(orientation, axis,
-    style, graphics) {
+    style, alignment) {
   scottlogic.chart.rendering.AbstractGraphicalAxis.call(this,
-      orientation, axis, style, graphics);
+      orientation, axis, style, alignment);
   /**
    * The style of the graphical axis
    *
@@ -49,7 +49,7 @@ scottlogic.chart.rendering.RenderedGraphicalAxis = function(orientation, axis,
    * @type {scottlogic.chart.rendering.Style}
    */
   this.style_ = new scottlogic.chart.rendering.Style(style, null, null, null);
-
+  
   /**
    * The style of the label
    *
@@ -107,6 +107,15 @@ scottlogic.chart.rendering.RenderedGraphicalAxis = function(orientation, axis,
    * @type {number}
    */
   this.labelSize_ = 0;
+  
+  /**
+   * The labels tick path
+   *
+   * @private
+   * @type {goog.graphics.Path}
+   */
+  this.labelTicks_ = new goog.graphics.Path();
+
 };
 goog.inherits(scottlogic.chart.rendering.RenderedGraphicalAxis,
     scottlogic.chart.rendering.AbstractGraphicalAxis);
@@ -146,18 +155,54 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.setLabelStroke =
 /**
  * @override
  */
-scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.redrawInternal =
+scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.addGraphics = function (graphics) {
+	/**
+	   * The graphics of the object
+	   *
+	   * @type {goog.graphics.AbstractGraphics}
+	   * @private
+	   */
+	this.graphics = graphics;
+	/**
+	   * Height of the canvas
+	   *
+	   * @private
+	   * @type {number}
+	   */
+	this.height = this.graphics.getPixelSize().height;
+	
+	 /**
+	   * The drawn path for the label ticks
+	   *
+	   * @private
+	   * @type {goog.graphics.PathElement}
+	   */
+	this.drawnLabelTicks_ = this.graphics.drawPath(this.labelTicks_,
+	      this.style_.getStroke(), null);
+	  
+	/**
+     * The path that represents the axis
+     *
+     * @private
+     * @type {goog.graphics.Path}
+     */
+	this.path_ = new goog.graphics.Path();
+	
+	 /**
+     * Create the drawn path to match the underlying path
+     *
+     * @private
+     * @type {goog.graphics.PathElement}
+     */
+	 this.drawnPath_ = this.graphics.drawPath(this.path_,
+	      this.style_.getStroke(), null);
+};
+
+/**
+ * Rebuild the labels for this axis.
+ */
+scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.rebuildInternal =
     function() {
-
-  // Clear the path, and then redraw it
-  this.path_.clear();
-  this.labelTicks_.clear();
-
-  this.path_.moveTo(this.begin_[0], this.begin_[1]);
-  // Draw just one line to the end of the path
-  this.path_.lineTo(this.ending_[0], this.ending_[1]);
-
-  this.drawnPath_.setPath(this.path_);
 
   // Reset the labels
   for (var i = 0; i < this.labels.length; i++) {
@@ -208,11 +253,6 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.redrawInternal =
           scottlogic.chart.Chart.Orientation.X, this.tickLength,
           this.labelStyle_);
 
-      this.labelTicks_.moveTo(labelArea.left + (labelArea.width / 2),
-          labelArea.top);
-      this.labelTicks_.lineTo(labelArea.left + (labelArea.width / 2),
-          labelArea.top + this.tickLength);
-
       // Try to assign the zero line
       if (goog.math.nearlyEquals(Math.abs(labelValues[j]), Number(0),
           0.0000000000001)) {
@@ -220,22 +260,23 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.redrawInternal =
       }
     } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
       // Create the label area. Rectangle in which to draw the label.
-      labelArea = new goog.math.Rect(
-          0,
-          this.convertNormalized(labelValues[j]) - (this.labelSize_ / 2),
-          this.boundingBox.width, this.labelSize_);
+    	
+      if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
+	      labelArea = new goog.math.Rect(
+	   		  	  this.boundingBox.left ,
+	   	          this.convertNormalized(labelValues[j]) - (this.labelSize_ / 2),
+	   	          this.boundingBox.width, this.labelSize_);
+      } else {
+	      labelArea = new goog.math.Rect(
+	          0,
+	          this.convertNormalized(labelValues[j]) - (this.labelSize_ / 2),
+	          this.boundingBox.width, this.labelSize_);
+      }
 
       this.labels[j] = new scottlogic.chart.rendering.Label(this.axis
           .getLabel(labelValues[j]), labelArea,
           scottlogic.chart.Chart.Orientation.Y, this.tickLength,
           this.labelStyle_);
-
-      this.labelTicks_.moveTo(labelArea.left + (labelArea.width),
-          labelArea.top + (labelArea.height / 2));
-
-      this.labelTicks_.lineTo(
-          (labelArea.left + labelArea.width) - (this.tickLength),
-          labelArea.top + (labelArea.height / 2));
 
       // Try to assign the zero line
       if (goog.math.nearlyEquals(Math.abs(labelValues[j]), Number(0),
@@ -248,13 +289,59 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.redrawInternal =
     }
   }
 
-  this.drawnLabelTicks_.setPath(this.labelTicks_);
+  //
 
-  // Draw all the labels that have been initialized
-  for (var k = 0; k < this.labels.length; k++) {
-    // Draw the label
-    this.labels[k].redraw(this.graphics);
-  }
+};
+
+/**
+ * Performs just a redraw of the axis and of the labels. 
+ * @override
+ */
+
+scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.redrawInternal = 
+	function() {
+		this.path_.clear();
+		this.labelTicks_.clear();
+		this.path_.moveTo(this.begin_[0], this.begin_[1]);
+		// Draw just one line to the end of the path
+		this.path_.lineTo(this.ending_[0], this.ending_[1]);
+		this.drawnPath_.setPath(this.path_);
+		
+		// now draw the labels and ticks
+		for (var k = 0; k < this.labels.length; k++) {
+		    // Draw the label
+		    this.labels[k].addGraphics(this.graphics);
+		    var labelArea = this.labels[k].getLabelArea();
+		    //draw tick for label
+		    if (this.orientation === scottlogic.chart.Chart.Orientation.X) {
+		    	this.labelTicks_.moveTo(labelArea.left + (labelArea.width / 2),
+		    	          labelArea.top);
+    	        this.labelTicks_.lineTo(labelArea.left + (labelArea.width / 2),
+    	          labelArea.top + this.tickLength);
+		    	
+		    } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
+		   
+		    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
+			     
+			      this.labelTicks_.moveTo(labelArea.left,
+			        labelArea.top + (labelArea.height / 2));
+	
+			      this.labelTicks_.lineTo(
+			        labelArea.left  + (this.tickLength),
+			        labelArea.top + (labelArea.height / 2));
+		    	} else {
+		    	  this.labelTicks_.moveTo(labelArea.left + (labelArea.width),
+		    	    labelArea.top + (labelArea.height / 2));
+			
+				  this.labelTicks_.lineTo(
+				    (labelArea.left + labelArea.width) - (this.tickLength),
+					 labelArea.top + (labelArea.height / 2));   
+		    	}
+		    }          
+		}
+		
+		this.drawnLabelTicks_.setPath(this.labelTicks_);
+		
 };
 
 /**
@@ -288,46 +375,6 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.
   }
 
   return result;
-};
-
-/**
- * @override
- */
-scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.initializeInternal =
-    function() {
-  /**
-   * The labels tick path
-   *
-   * @private
-   * @type {goog.graphics.Path}
-   */
-  this.labelTicks_ = new goog.graphics.Path();
-
-  /**
-   * The drawn path for the label ticks
-   *
-   * @private
-   * @type {goog.graphics.PathElement}
-   */
-  this.drawnLabelTicks_ = this.graphics.drawPath(this.labelTicks_,
-      this.style_.getStroke(), null);
-
-  /**
-     * The path that represents the axis
-     *
-     * @private
-     * @type {goog.graphics.Path}
-     */
-  this.path_ = new goog.graphics.Path();
-
-  /**
-     * Create the drawn path to match the underlying path
-     *
-     * @private
-     * @type {goog.graphics.PathElement}
-     */
-  this.drawnPath_ = this.graphics.drawPath(this.path_,
-      this.style_.getStroke(), null);
 };
 
 /**

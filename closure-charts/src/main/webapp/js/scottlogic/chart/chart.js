@@ -93,6 +93,22 @@ scottlogic.chart.Chart = function(id, size) {
    * @type {scottlogic.chart.rendering.Style}
    */
   this.style_ = new scottlogic.chart.rendering.Style(null, null, null, null);
+  
+  /**
+   * alignment of the x-axis
+   *
+   * @public
+   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
+   */
+  this.alignment_Xaxis = scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOM;
+  
+  /**
+   * alignment of the y-axis
+   *
+   * @public
+   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
+   */
+  this.alignment_Yaxis = scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT;
 
   /**
    * The Data Axis of the Chart (X)
@@ -201,9 +217,10 @@ scottlogic.chart.Chart.prototype.generateGraphicalAxis_ = function() {
   this.xAxis = this.renderX_ ?
       new scottlogic.chart.rendering.RenderedGraphicalAxis(
       scottlogic.chart.Chart.Orientation.X, this.xAxisData,
-      this.style_, this.graphics_) :
+      this.style_, this.alignment_Xaxis) :
       new scottlogic.chart.rendering.NonRenderedGraphicalAxis(
-      scottlogic.chart.Chart.Orientation.X, this.xAxisData, this.graphics_);
+      scottlogic.chart.Chart.Orientation.X, this.xAxisData, 
+      this.alignment_Xaxis);
 
   /**
    * The Y Axis of the Chart
@@ -214,9 +231,9 @@ scottlogic.chart.Chart.prototype.generateGraphicalAxis_ = function() {
   this.yAxis = this.renderY_ ?
       new scottlogic.chart.rendering.RenderedGraphicalAxis(
       scottlogic.chart.Chart.Orientation.Y, this.yAxisData,
-      this.style_, this.graphics_) :
+      this.style_, this.alignment_Yaxis) :
       new scottlogic.chart.rendering.NonRenderedGraphicalAxis(
-      scottlogic.chart.Chart.Orientation.Y, this.yAxisData, this.graphics_);
+      scottlogic.chart.Chart.Orientation.Y, this.yAxisData, this.alignment_Yaxis);
 };
 
 /**
@@ -285,11 +302,14 @@ scottlogic.chart.Chart.prototype.setYRender = function(input) {
 scottlogic.chart.Chart.prototype.redraw = function() {
   /* Only skip the boundary computation if the user has defined both a min
    * AND a max, and they do not equal one another */
+  
+  /** @type {boolean} */
+  var invalidInputs = false;
+  
   if (!(this.xAxisData.userHasDefinedMin && this.xAxisData.userHasDefinedMax) ||
       this.xAxisData.min.equals(this.xAxisData.max)) {
 
-    /** @type {boolean} */
-    var invalidInputs = this.xAxisData.min.equals(this.xAxisData.max);
+    invalidInputs = this.xAxisData.min.equals(this.xAxisData.max);
 
     /** @type {Array.<goog.date.UtcDateTime>} */
     var xbounds = this.getXBounds_();
@@ -308,8 +328,7 @@ scottlogic.chart.Chart.prototype.redraw = function() {
   if (!(this.yAxisData.userHasDefinedMin && this.yAxisData.userHasDefinedMax) ||
       this.yAxisData.min === this.yAxisData.max) {
 
-    /** @type {boolean} */
-    var invalidInputs = (this.yAxisData.min === this.yAxisData.max);
+    invalidInputs = (this.yAxisData.min === this.yAxisData.max);
 
     /** @type {Array.<number>} */
     var ybounds = this.getYBounds_();
@@ -327,26 +346,23 @@ scottlogic.chart.Chart.prototype.redraw = function() {
 
   this.yAxisData.initialize();
   this.xAxisData.initialize();
-
+ 
   if (!this.initialized_) {
     // initialize_
     this.initialize_();
     this.initialized_ = true;
   }
-
-  this.calculatePadding_();
-  this.calculateBoundingBoxes_();
-
-  this.context_.plotArea = this.plottingArea;
-
-
+ 
   // Redraw
   this.graphics_.suspend();
 
-  this.xAxis.redraw(this.boundingboxX);
+  this.calculatePadding_();
+  this.calculateBoundingBoxes_();
+  this.context_.plotArea = this.plottingArea;
+  
   this.yAxis.redraw(this.boundingboxY);
-  this.gridlines.redraw(this.graphics_, this.plottingArea, this.xAxis,
-      this.yAxis);
+  this.xAxis.redraw(this.boundingboxX);
+  this.gridlines.redraw(this.plottingArea, this.xAxis, this.yAxis);
 
   // Draw each Line Series onto the canvas.
   for (var i = 0; i < this.series_.length; i++) {
@@ -383,7 +399,7 @@ scottlogic.chart.Chart.prototype.calculatePadding_ = function() {
    * @private
    * @type {number}
    */
-  this.paddingY = Math.floor(
+  this.widthY = Math.floor(
       (this.yAxis.getLabelWidth() + this.yAxis.tickLength) * 1.1) +
       (this.renderY_ ? 0.5 : 3);
 
@@ -402,7 +418,7 @@ scottlogic.chart.Chart.prototype.calculatePadding_ = function() {
    * @private
    * @type {number}
    */
-  this.paddingRight = Math.floor(
+  this.paddingHorizontal = Math.floor(
       (this.xAxis.getLabelWidth() * 1.05) / 2) + (this.renderX_ ? 0.5 : 3);
 };
 
@@ -426,6 +442,24 @@ scottlogic.chart.Chart.prototype.applyStyle = function(inputStyle) {
  * @private
  */
 scottlogic.chart.Chart.prototype.calculateBoundingBoxes_ = function() {
+ 
+  /**
+   * Store the plotting area in a Rectangle (Used for gridlines and context)
+   *
+   * @private
+   * @type {goog.math.Rect}
+   */
+  this.plottingArea = null;
+  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
+	  this.plottingArea = new goog.math.Rect(this.paddingHorizontal, this.paddingTop,
+	      this.graphics_.getPixelSize().width - this.widthY - this.paddingHorizontal,
+	      (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop);
+  } else {
+	  this.plottingArea = new goog.math.Rect(this.widthY, this.paddingTop,
+		  this.graphics_.getPixelSize().width - this.widthY - this.paddingHorizontal,
+		  (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop);
+  }
+  
   /**
    * Bounding boxes are supplied by the Chart for the GraphicalAxis. These will
    * be computed automatically based on the padding values entered above.
@@ -433,28 +467,30 @@ scottlogic.chart.Chart.prototype.calculateBoundingBoxes_ = function() {
    * @private
    * @type {goog.math.Rect}
    */
-  this.boundingboxY = new goog.math.Rect(0, this.paddingTop, this.paddingY,
-      (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop);
-
+  this.boundingboxX = null;
   /**
-   * @private
-   * @type {goog.math.Rect}
-   */
-  this.boundingboxX = new goog.math.Rect(this.paddingY,
-      this.graphics_.getPixelSize().height - this.paddingX,
-      this.graphics_.getPixelSize().width - this.paddingY - this.paddingRight,
-      this.paddingX);
-
-  /**
-   * Store the plotting area in a Rectangle (Used for gridlines and context)
-   *
-   * @private
-   * @type {goog.math.Rect}
-   */
-  this.plottingArea = new goog.math.Rect(this.paddingY, this.paddingTop,
-      this.graphics_.getPixelSize().width - this.paddingY - this.paddingRight,
-      (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop);
+  * @private
+  * @type {goog.math.Rect}
+  */
+  this.boundingboxY = null;
+  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
+	  this.boundingboxY = new goog.math.Rect(this.plottingArea.width + this.paddingHorizontal, this.paddingTop, this.widthY,
+	      (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop);
+	  
+	  this.boundingboxX = new goog.math.Rect(this.paddingHorizontal,
+		  this.graphics_.getPixelSize().height - this.paddingX,
+		  this.plottingArea.width,
+		  this.paddingX);
+  } else {
+	  this.boundingboxY = new goog.math.Rect(0, this.paddingTop, this.widthY,
+	      (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop);
+	  this.boundingboxX = new goog.math.Rect(this.widthY,
+		  this.graphics_.getPixelSize().height - this.paddingX,
+		  this.graphics_.getPixelSize().width - this.widthY - this.paddingHorizontal,
+		  this.paddingX);
+  }  
 };
+
 
 /**
  * initializes the chart
@@ -468,9 +504,11 @@ scottlogic.chart.Chart.prototype.initialize_ = function() {
   // Render the graphics onto the canvas
   this.graphics_.render(this.canvas_);
 
-  this.calculatePadding_();
-  this.calculateBoundingBoxes_();
-
+  // Add graphics for to gridlines and axes. 
+  this.gridlines.addGraphics(this.graphics_);
+  this.xAxis.addGraphics(this.graphics_);
+  this.yAxis.addGraphics(this.graphics_);
+  
   /**
    * Defines the context in which lines can be drawn
    *
