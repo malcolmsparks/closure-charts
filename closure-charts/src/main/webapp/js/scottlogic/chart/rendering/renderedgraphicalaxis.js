@@ -262,28 +262,44 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.rebuildInternal =
     } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
       // Create the label area. Rectangle in which to draw the label.
     	
-      if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
-	      labelArea = new goog.math.Rect(
-	   		  	  this.boundingBox.left ,
-	   	          this.convertNormalized(labelValues[j]) - (this.labelSize_ / 2),
-	   	          this.boundingBox.width, this.labelSize_);
-      } else {
-	      labelArea = new goog.math.Rect(
-	          0,
-	          this.convertNormalized(labelValues[j]) - (this.labelSize_ / 2),
-	          this.boundingBox.width, this.labelSize_);
-      }
+	      if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTOUTSIDE) {
+		      labelArea = new goog.math.Rect(
+		   		  	  this.boundingBox.left ,
+		   	          this.convertNormalized(labelValues[j]) - (this.labelSize_ / 2),
+		   	          this.boundingBox.width, this.labelSize_);
+	      } 
+	      
+	      if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTOUTSIDE) {
+		      labelArea = new goog.math.Rect(
+		          0,
+		          this.convertNormalized(labelValues[j]) - (this.labelSize_ / 2),
+		          this.boundingBox.width, this.labelSize_);
+	      }
+	      
+	      if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTINSIDE) {
+		      labelArea = new goog.math.Rect(
+		          this.boundingBox.left,
+		          this.convertNormalized(labelValues[j]) - (this.labelSize_ / 2),
+		          this.boundingBox.width, this.labelSize_);
+	      }
+	      
+	      if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTINSIDE) {
+	    	  labelArea = new goog.math.Rect(
+		   		  	  this.boundingBox.left,
+		   	          this.convertNormalized(labelValues[j]) - (this.labelSize_ / 2),
+		   	          this.boundingBox.width, this.labelSize_);
+	      }
 
-      this.labels[j] = new scottlogic.chart.rendering.Label(this.axis
-          .getLabel(labelValues[j]), labelArea,
-          scottlogic.chart.Chart.Orientation.Y, this.tickLength,
-          this.labelStyle_);
-
-      // Try to assign the zero line
-      if (goog.math.nearlyEquals(Math.abs(labelValues[j]), Number(0),
-          0.0000000000001)) {
-        this.zeroLineLabel = this.labels[this.labels.length - 1];
-      }
+	      this.labels[j] = new scottlogic.chart.rendering.Label(this.axis
+	          .getLabel(labelValues[j]), labelArea,
+	          scottlogic.chart.Chart.Orientation.Y, this.tickLength,
+	          this.labelStyle_, this.alignment);
+	
+	      // Try to assign the zero line
+	      if (goog.math.nearlyEquals(Math.abs(labelValues[j]), Number(0),
+	          0.0000000000001)) {
+	        this.zeroLineLabel = this.labels[this.labels.length - 1];
+	      }
 
     } else {
       throw 'INVALID_ORIENTATION ' + this.orientation;
@@ -314,36 +330,64 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.redrawInternal =
 		    this.labels[k].addGraphics(this.graphics);
 		    var labelArea = this.labels[k].getLabelArea();
 		    //draw tick for label
-		    if (this.orientation === scottlogic.chart.Chart.Orientation.X) {
-		    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOM) {
-		    		this.labelTicks_.moveTo(labelArea.left + (labelArea.width / 2),
-		    				labelArea.top);
-		    		this.labelTicks_.lineTo(labelArea.left + (labelArea.width / 2),
-		    				labelArea.top + this.tickLength);
-		    	} else {
-		    		this.labelTicks_.moveTo(labelArea.left + (labelArea.width / 2),
-		    				labelArea.top + labelArea.height);
-		    		this.labelTicks_.lineTo(labelArea.left + (labelArea.width / 2),
-		    				labelArea.top + labelArea.height - this.tickLength);
-		    	}
-		    	
-		    } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
-		    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
+		   
+	    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE) {
+	    		this.labelTicks_.moveTo(labelArea.left + (labelArea.width / 2),
+	    				labelArea.top);
+	    		this.labelTicks_.lineTo(labelArea.left + (labelArea.width / 2),
+	    				labelArea.top + this.tickLength);
+	    	}
+	    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPINSIDE) {
+	    		this.labelTicks_.moveTo(labelArea.left + (labelArea.width / 2),
+	    				labelArea.top);
+	    		this.labelTicks_.lineTo(labelArea.left + (labelArea.width / 2),
+	    				labelArea.top + this.tickLength);
+	    	}
+	    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPOUTSIDE) {
+	    		this.labelTicks_.moveTo(labelArea.left + (labelArea.width / 2),
+	    				labelArea.top + labelArea.height);
+	    		this.labelTicks_.lineTo(labelArea.left + (labelArea.width / 2),
+	    				labelArea.top + labelArea.height - this.tickLength);
+	    	}
+	    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMINSIDE) {
+	    		this.labelTicks_.moveTo(labelArea.left + (labelArea.width / 2),
+	    				labelArea.top + labelArea.height);
+	    		this.labelTicks_.lineTo(labelArea.left + (labelArea.width / 2),
+	    				labelArea.top + labelArea.height - this.tickLength);
+	    	}
+	    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTOUTSIDE) {
+		      this.labelTicks_.moveTo(labelArea.left,
+		        labelArea.top + (labelArea.height / 2));
+
+		      this.labelTicks_.lineTo(
+		        labelArea.left  + (this.tickLength),
+		        labelArea.top + (labelArea.height / 2));
+	    	} 
+	    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTINSIDE) {
 			      this.labelTicks_.moveTo(labelArea.left,
 			        labelArea.top + (labelArea.height / 2));
-	
+
 			      this.labelTicks_.lineTo(
 			        labelArea.left  + (this.tickLength),
 			        labelArea.top + (labelArea.height / 2));
-		    	} else {
+		    	} 
+	    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTOUTSIDE) {
+	    	  this.labelTicks_.moveTo(labelArea.left + (labelArea.width),
+	    	    labelArea.top + (labelArea.height / 2));
+		
+			  this.labelTicks_.lineTo(
+			    (labelArea.left + labelArea.width) - (this.tickLength),
+				 labelArea.top + (labelArea.height / 2));   
+	    	}  
+	    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTINSIDE) {
 		    	  this.labelTicks_.moveTo(labelArea.left + (labelArea.width),
 		    	    labelArea.top + (labelArea.height / 2));
 			
 				  this.labelTicks_.lineTo(
 				    (labelArea.left + labelArea.width) - (this.tickLength),
 					 labelArea.top + (labelArea.height / 2));   
-		    	}
-		    }          
+		    }
+	    	
 		}
 		
 		this.drawnLabelTicks_.setPath(this.labelTicks_);

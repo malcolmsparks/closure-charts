@@ -101,7 +101,7 @@ scottlogic.chart.Chart = function(id, size) {
    * @public
    * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
    */
-  this.alignment_Xaxis = scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOP;
+  this.alignment_Xaxis = scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMINSIDE;
   
   /**
    * alignment of the y-axis
@@ -109,24 +109,7 @@ scottlogic.chart.Chart = function(id, size) {
    * @public
    * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
    */
-  this.alignment_Yaxis = scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT;
-  
-  /**
-   * label position the x-axis
-   *
-   * @public
-   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.LabelPosition}
-   */
-  this.labelPositionY = scottlogic.chart.rendering.AbstractGraphicalAxis.LabelPosition.OUTSIDE;
-  
-  /**
-   * label position of the y-axis
-   *
-   * @public
-   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.LabelPosition}
-   */
-  this.labelPositionX = scottlogic.chart.rendering.AbstractGraphicalAxis.LabelPosition.OUTSIDE;
-  
+  this.alignment_Yaxis = scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTINSIDE;
 
   /**
    * The Data Axis of the Chart (X)
@@ -462,13 +445,13 @@ scottlogic.chart.Chart.prototype.applyStyle = function(inputStyle) {
 scottlogic.chart.Chart.prototype.calculateBoundingBoxes_ = function() {
  
   /** @type {goog.math.Coordinate} */
-  var plottingOffset = new goog.math.Coordinate;
+  var plottingOffset = new goog.math.Coordinate();
   
   /** @type {goog.math.Coordinate} */
-  var boundingboxXoffset = new goog.math.Coordinate;
+  var boundingboxXoffset = new goog.math.Coordinate();
   
   /** @type {goog.math.Coordinate} */
-  var boundingboxYoffset = new goog.math.Coordinate;
+  var boundingboxYoffset = new goog.math.Coordinate();
  
   /** @type {number} */
   var plottingAreaWidth = this.graphics_.getPixelSize().width - this.widthY - this.paddingHorizontal;
@@ -476,27 +459,55 @@ scottlogic.chart.Chart.prototype.calculateBoundingBoxes_ = function() {
   /** @type {number} */
   var plottingAreaHeight = (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop;
   
-  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
+  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTOUTSIDE) {
 	  plottingOffset.x = this.paddingHorizontal;
 	  plottingOffset.y = this.paddingTop;
 	  boundingboxYoffset.x = plottingAreaWidth + this.paddingHorizontal;
 	  boundingboxXoffset.x = this.paddingHorizontal;
-  } else {
+  }
+  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTOUTSIDE) {
 	  plottingOffset.x = this.widthY;
 	  plottingOffset.y = this.paddingTop;
 	  boundingboxYoffset.x = 0;
 	  boundingboxXoffset.x = this.widthY;
   }
+  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTINSIDE) {
+	  plottingOffset.x = this.widthY;
+	  plottingOffset.y = this.paddingTop;
+	  boundingboxYoffset.x = plottingAreaWidth;
+	  boundingboxXoffset.x = this.widthY;
+  }
+  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTINSIDE) {
+	  plottingOffset.x = this.paddingHorizontal;
+	  plottingOffset.y = this.paddingTop;
+	  boundingboxYoffset.x = this.paddingHorizontal;
+	  boundingboxXoffset.x = this.paddingHorizontal;
+  }
   
-  if (this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOM) {
+  if (this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE) {
 	  boundingboxXoffset.y = this.graphics_.getPixelSize().height - this.paddingX;
 	  boundingboxYoffset.y = this.paddingTop;
 	  plottingOffset.y = this.paddingTop;
-  } else {
+  } 
+  
+  if (this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPOUTSIDE) {
 	  boundingboxXoffset.y = 0;
 	  boundingboxYoffset.y = this.paddingX;
 	  plottingOffset.y = this.paddingX;
   }
+  
+  if (this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPINSIDE) {
+	  boundingboxXoffset.y = 0;
+	  boundingboxYoffset.y = 0;
+	  plottingOffset.y = 0;
+  }
+  
+  if (this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMINSIDE) {
+	  boundingboxXoffset.y = plottingAreaHeight - this.paddingX + this.paddingTop;
+	  boundingboxYoffset.y = this.paddingTop;
+	  plottingOffset.y = this.paddingTop;
+  } 
+  
   
   /**
    * Store the plotting area in a Rectangle (Used for gridlines and context)

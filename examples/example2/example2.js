@@ -53,7 +53,7 @@ scottlogic.chart.examples.example2.load = function (id) {
     "#b0c1d0"));
   
   chart.yAxisData.setFormatter(function(input) {
-    var input = input.toFixed(2);
+    input = input.toFixed(2);
     if(input.indexOf("-0") !== -1) {
       input = input.substring(1, input.length);
     }

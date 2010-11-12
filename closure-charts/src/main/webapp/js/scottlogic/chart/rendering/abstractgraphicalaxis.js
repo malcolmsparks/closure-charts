@@ -200,37 +200,63 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.assignBeginAndEnd =
   this.axisLength = 0;
 
   // Assign the beginning and ending co-ordinates of the axis
-  if (this.orientation === scottlogic.chart.Chart.Orientation.X) {
-	  if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOM) {
-		  this.begin_ = [this.boundingBox.left, this.boundingBox.top];
-		  this.ending_ = [(this.boundingBox.left + this.boundingBox.width),
-		                  this.boundingBox.top];
-	  } else {
-		  this.begin_ = [this.boundingBox.left, this.boundingBox.top + this.boundingBox.height];
-		  this.ending_ = [(this.boundingBox.left + this.boundingBox.width),
-		                  this.boundingBox.top + this.boundingBox.height];
-	  }
-    this.axisLength = this.ending_[0] - this.begin_[0];
-
-  } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
-	  if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
-	    this.begin_ = [this.boundingBox.left,
-			       	      this.boundingBox.top];
-	    this.ending_ = [this.boundingBox.left,
-			       	      this.boundingBox.top + this.boundingBox.height];
-	  }
-	  else {
-		  this.begin_ = [this.boundingBox.left + this.boundingBox.width,
+ 
+  if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE) {
+	  this.begin_ = [this.boundingBox.left, this.boundingBox.top];
+	  this.ending_ = [(this.boundingBox.left + this.boundingBox.width),
+	                  this.boundingBox.top];
+	  this.axisLength = this.ending_[0] - this.begin_[0];
+  } 
+  if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPINSIDE) {
+	  this.begin_ = [this.boundingBox.left, this.boundingBox.top];
+	  this.ending_ = [(this.boundingBox.left + this.boundingBox.width),
+	                  this.boundingBox.top];
+	  this.axisLength = this.ending_[0] - this.begin_[0];
+  } 
+  if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPOUTSIDE) {
+	  this.begin_ = [this.boundingBox.left, this.boundingBox.top + this.boundingBox.height];
+	  this.ending_ = [(this.boundingBox.left + this.boundingBox.width),
+	                  this.boundingBox.top + this.boundingBox.height];
+	  this.axisLength = this.ending_[0] - this.begin_[0];
+  }
+  if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMINSIDE) {
+	  this.begin_ = [this.boundingBox.left, this.boundingBox.top + this.boundingBox.height];
+	  this.ending_ = [(this.boundingBox.left + this.boundingBox.width),
+	                  this.boundingBox.top + this.boundingBox.height];
+	  this.axisLength = this.ending_[0] - this.begin_[0];
+  }
+  if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTOUTSIDE) {
+    this.begin_ = [this.boundingBox.left,
+		       	      this.boundingBox.top];
+    this.ending_ = [this.boundingBox.left,
+		       	      this.boundingBox.top + this.boundingBox.height];
+    this.axisLength = this.ending_[1] - this.begin_[1];
+  }
+  
+  if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTOUTSIDE) {
+	  this.begin_ = [this.boundingBox.left + this.boundingBox.width,
+	       	      this.boundingBox.top];
+	  this.ending_ = [this.boundingBox.left + this.boundingBox.width,
+	       	      this.boundingBox.top + this.boundingBox.height];
+	  this.axisLength = this.ending_[1] - this.begin_[1];
+  }
+  
+  if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTINSIDE) {
+	  this.begin_ = [this.boundingBox.left + this.boundingBox.width,
 		       	      this.boundingBox.top];
 		  this.ending_ = [this.boundingBox.left + this.boundingBox.width,
 		       	      this.boundingBox.top + this.boundingBox.height];
-	  }
-
-    this.axisLength = this.ending_[1] - this.begin_[1];
-  } else {
-    // Throw an exception if an unrecognised orientation appears
-    throw 'INVALID_ORIENTATION ' + this.orientation;
+		  this.axisLength = this.ending_[1] - this.begin_[1];
   }
+  
+  if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTINSIDE) {
+	  this.begin_ = [this.boundingBox.left,
+		       	      this.boundingBox.top];
+	  this.ending_ = [this.boundingBox.left,
+		       	      this.boundingBox.top + this.boundingBox.height];
+	  this.axisLength = this.ending_[1] - this.begin_[1];
+  }
+
 };
 
 /**
@@ -421,18 +447,12 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.disposeInternal =
  * @enum {number}
  */
 scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment = {
-  TOP: 0,
-  BOTTOM: 1,
-  LEFT: 2,
-  RIGHT: 3
-};
-
-/**
- * Enumerated type to represent placement of labels.
- *
- * @enum {number}
- */
-scottlogic.chart.rendering.AbstractGraphicalAxis.LabelPosition = {
-	INSIDE: 0,
-	OUTSIDE: 1
+  TOPOUTSIDE: 0,
+  TOPINSIDE: 1,
+  RIGHTOUTSIDE: 2,
+  RIGHTINSIDE: 3,
+  BOTTOMOUTSIDE: 4,
+  BOTTOMINSIDE: 5,
+  LEFTOUTSIDE: 6,
+  LEFTINSIDE: 7
 };

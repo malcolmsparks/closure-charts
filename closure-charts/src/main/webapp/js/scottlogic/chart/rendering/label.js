@@ -183,7 +183,8 @@ scottlogic.chart.rendering.Label.prototype.addGraphics = function(graphics) {
   this.textStroke_ = new goog.graphics.Stroke(0, this.style_.getFontColour());
   
   /** @type {string} */
-  var labelAlignment = ((this.alignment_ === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOM) 
+  var labelAlignment = ((this.alignment_ === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE) ||
+		  				(this.alignment_ === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPINSIDE)
 		  ? "bottom" : "top");
  
   if (this.axisOrientation_ === scottlogic.chart.Chart.Orientation.X) {
