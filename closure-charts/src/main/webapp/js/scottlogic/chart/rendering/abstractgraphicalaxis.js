@@ -201,10 +201,15 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.assignBeginAndEnd =
 
   // Assign the beginning and ending co-ordinates of the axis
   if (this.orientation === scottlogic.chart.Chart.Orientation.X) {
-    this.begin_ = [this.boundingBox.left, this.boundingBox.top];
-    this.ending_ = [(this.boundingBox.left + this.boundingBox.width),
-          this.boundingBox.top];
-
+	  if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOM) {
+		  this.begin_ = [this.boundingBox.left, this.boundingBox.top];
+		  this.ending_ = [(this.boundingBox.left + this.boundingBox.width),
+		                  this.boundingBox.top];
+	  } else {
+		  this.begin_ = [this.boundingBox.left, this.boundingBox.top + this.boundingBox.height];
+		  this.ending_ = [(this.boundingBox.left + this.boundingBox.width),
+		                  this.boundingBox.top + this.boundingBox.height];
+	  }
     this.axisLength = this.ending_[0] - this.begin_[0];
 
   } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
@@ -420,4 +425,14 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment = {
   BOTTOM: 1,
   LEFT: 2,
   RIGHT: 3
+};
+
+/**
+ * Enumerated type to represent placement of labels.
+ *
+ * @enum {number}
+ */
+scottlogic.chart.rendering.AbstractGraphicalAxis.LabelPosition = {
+	INSIDE: 0,
+	OUTSIDE: 1
 };

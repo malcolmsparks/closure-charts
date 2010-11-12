@@ -26,6 +26,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.graphics');
 goog.require('goog.math.Rect');
+goog.require('goog.math.Coordinate');
 goog.require('scottlogic.chart.rendering.Context');
 goog.require('scottlogic.chart.rendering.DiscontinuousDateTimeAxis');
 goog.require('scottlogic.chart.rendering.Gridlines');
@@ -100,7 +101,7 @@ scottlogic.chart.Chart = function(id, size) {
    * @public
    * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
    */
-  this.alignment_Xaxis = scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOM;
+  this.alignment_Xaxis = scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOP;
   
   /**
    * alignment of the y-axis
@@ -109,12 +110,29 @@ scottlogic.chart.Chart = function(id, size) {
    * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
    */
   this.alignment_Yaxis = scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT;
+  
+  /**
+   * label position the x-axis
+   *
+   * @public
+   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.LabelPosition}
+   */
+  this.labelPositionY = scottlogic.chart.rendering.AbstractGraphicalAxis.LabelPosition.OUTSIDE;
+  
+  /**
+   * label position of the y-axis
+   *
+   * @public
+   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.LabelPosition}
+   */
+  this.labelPositionX = scottlogic.chart.rendering.AbstractGraphicalAxis.LabelPosition.OUTSIDE;
+  
 
   /**
    * The Data Axis of the Chart (X)
    *
    * @public
-   * @type {scottlogic.chart.rendering.AbstractAxis}
+   * @type {scottlogic.chart.rendering.AbstractAxis} 
    */
   this.xAxisData = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
 
@@ -443,23 +461,54 @@ scottlogic.chart.Chart.prototype.applyStyle = function(inputStyle) {
  */
 scottlogic.chart.Chart.prototype.calculateBoundingBoxes_ = function() {
  
+  /** @type {goog.math.Coordinate} */
+  var plottingOffset = new goog.math.Coordinate;
+  
+  /** @type {goog.math.Coordinate} */
+  var boundingboxXoffset = new goog.math.Coordinate;
+  
+  /** @type {goog.math.Coordinate} */
+  var boundingboxYoffset = new goog.math.Coordinate;
+ 
+  /** @type {number} */
+  var plottingAreaWidth = this.graphics_.getPixelSize().width - this.widthY - this.paddingHorizontal;
+  
+  /** @type {number} */
+  var plottingAreaHeight = (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop;
+  
+  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
+	  plottingOffset.x = this.paddingHorizontal;
+	  plottingOffset.y = this.paddingTop;
+	  boundingboxYoffset.x = plottingAreaWidth + this.paddingHorizontal;
+	  boundingboxXoffset.x = this.paddingHorizontal;
+  } else {
+	  plottingOffset.x = this.widthY;
+	  plottingOffset.y = this.paddingTop;
+	  boundingboxYoffset.x = 0;
+	  boundingboxXoffset.x = this.widthY;
+  }
+  
+  if (this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOM) {
+	  boundingboxXoffset.y = this.graphics_.getPixelSize().height - this.paddingX;
+	  boundingboxYoffset.y = this.paddingTop;
+	  plottingOffset.y = this.paddingTop;
+  } else {
+	  boundingboxXoffset.y = 0;
+	  boundingboxYoffset.y = this.paddingX;
+	  plottingOffset.y = this.paddingX;
+  }
+  
   /**
    * Store the plotting area in a Rectangle (Used for gridlines and context)
    *
    * @private
    * @type {goog.math.Rect}
    */
-  this.plottingArea = null;
-  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
-	  this.plottingArea = new goog.math.Rect(this.paddingHorizontal, this.paddingTop,
-	      this.graphics_.getPixelSize().width - this.widthY - this.paddingHorizontal,
-	      (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop);
-  } else {
-	  this.plottingArea = new goog.math.Rect(this.widthY, this.paddingTop,
-		  this.graphics_.getPixelSize().width - this.widthY - this.paddingHorizontal,
-		  (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop);
-  }
-  
+ 
+  this.plottingArea = new goog.math.Rect(plottingOffset.x, plottingOffset.y,
+	      plottingAreaWidth,
+	      plottingAreaHeight);
+
   /**
    * Bounding boxes are supplied by the Chart for the GraphicalAxis. These will
    * be computed automatically based on the padding values entered above.
@@ -467,28 +516,17 @@ scottlogic.chart.Chart.prototype.calculateBoundingBoxes_ = function() {
    * @private
    * @type {goog.math.Rect}
    */
-  this.boundingboxX = null;
+  this.boundingboxY = new goog.math.Rect(boundingboxYoffset.x, boundingboxYoffset.y, 
+		  this.widthY,
+	      (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop);
   /**
   * @private
   * @type {goog.math.Rect}
-  */
-  this.boundingboxY = null;
-  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
-	  this.boundingboxY = new goog.math.Rect(this.plottingArea.width + this.paddingHorizontal, this.paddingTop, this.widthY,
-	      (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop);
-	  
-	  this.boundingboxX = new goog.math.Rect(this.paddingHorizontal,
-		  this.graphics_.getPixelSize().height - this.paddingX,
+  */ 
+  this.boundingboxX = new goog.math.Rect(boundingboxXoffset.x,
+		  boundingboxXoffset.y,
 		  this.plottingArea.width,
 		  this.paddingX);
-  } else {
-	  this.boundingboxY = new goog.math.Rect(0, this.paddingTop, this.widthY,
-	      (this.graphics_.getPixelSize().height - this.paddingX) - this.paddingTop);
-	  this.boundingboxX = new goog.math.Rect(this.widthY,
-		  this.graphics_.getPixelSize().height - this.paddingX,
-		  this.graphics_.getPixelSize().width - this.widthY - this.paddingHorizontal,
-		  this.paddingX);
-  }  
 };
 
 

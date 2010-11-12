@@ -248,10 +248,11 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.rebuildInternal =
 
       // Create a new label with the appropriate dimensions and add to the
       // array of Labels
+      
       this.labels[j] = new scottlogic.chart.rendering.Label(this.axis
           .getLabel(labelValues[j]), labelArea,
           scottlogic.chart.Chart.Orientation.X, this.tickLength,
-          this.labelStyle_);
+          this.labelStyle_, this.alignment);
 
       // Try to assign the zero line
       if (goog.math.nearlyEquals(Math.abs(labelValues[j]), Number(0),
@@ -314,15 +315,20 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.redrawInternal =
 		    var labelArea = this.labels[k].getLabelArea();
 		    //draw tick for label
 		    if (this.orientation === scottlogic.chart.Chart.Orientation.X) {
-		    	this.labelTicks_.moveTo(labelArea.left + (labelArea.width / 2),
-		    	          labelArea.top);
-    	        this.labelTicks_.lineTo(labelArea.left + (labelArea.width / 2),
-    	          labelArea.top + this.tickLength);
+		    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOM) {
+		    		this.labelTicks_.moveTo(labelArea.left + (labelArea.width / 2),
+		    				labelArea.top);
+		    		this.labelTicks_.lineTo(labelArea.left + (labelArea.width / 2),
+		    				labelArea.top + this.tickLength);
+		    	} else {
+		    		this.labelTicks_.moveTo(labelArea.left + (labelArea.width / 2),
+		    				labelArea.top + labelArea.height);
+		    		this.labelTicks_.lineTo(labelArea.left + (labelArea.width / 2),
+		    				labelArea.top + labelArea.height - this.tickLength);
+		    	}
 		    	
 		    } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
-		   
 		    	if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHT) {
-			     
 			      this.labelTicks_.moveTo(labelArea.left,
 			        labelArea.top + (labelArea.height / 2));
 	

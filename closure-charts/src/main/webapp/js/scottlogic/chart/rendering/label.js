@@ -29,11 +29,13 @@ goog.require('goog.graphics');
  * @param {scottlogic.chart.Chart.Orientation} axis The orientation of the axis.
  * @param {number} tickLength the length of the tick on the label.
  * @param {scottlogic.chart.rendering.Style} style The style of the label.
+ * @param {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} 
+ *        alignment of the axis on which this label will be displayed. 
  * @extends {goog.Disposable}
  * @constructor
  */
 scottlogic.chart.rendering.Label = function(
-    text, rect, axis, tickLength, style) {
+    text, rect, axis, tickLength, style, alignment) {
 
   goog.Disposable.call(this);
   
@@ -57,6 +59,14 @@ scottlogic.chart.rendering.Label = function(
    * @type {scottlogic.chart.rendering.Style}
    */
   this.style_ = style;
+  
+  /**
+   * The alignment of the axis the label is displayed on.
+   * 
+   * @private
+   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
+   */
+  this.alignment_ = alignment;
 
   /**
    * @private
@@ -171,13 +181,24 @@ scottlogic.chart.rendering.Label.prototype.addGraphics = function(graphics) {
    * @type {goog.graphics.Stroke}
    */
   this.textStroke_ = new goog.graphics.Stroke(0, this.style_.getFontColour());
-	  
+  
+  /** @type {string} */
+  var labelAlignment = ((this.alignment_ === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOM) 
+		  ? "bottom" : "top");
+ 
   if (this.axisOrientation_ === scottlogic.chart.Chart.Orientation.X) {
-    this.labelText_ = graphics.drawText(this.text_, this.x_,
-        this.y_ + (this.tickLength_ * 1.1), this.width_, this.height_ -
-                                                        this.tickLength_,
-        'center', 'bottom', this.style_.getFont(), this.textStroke_,
-        this.textFill_);
+	  if (labelAlignment === "bottom") {
+	  	this.labelText_ = graphics.drawText(this.text_, this.x_,
+	  			this.y_ + (this.tickLength_ * 1.1), this.width_, 
+	  			this.height_ - this.tickLength_,
+                'center', labelAlignment, this.style_.getFont(), this.textStroke_,
+                this.textFill_);
+  	  } else {
+  		this.labelText_ = graphics.drawText(this.text_, this.x_,
+		        this.y_ , this.width_, this.height_ - this.tickLength_,
+		        'center', labelAlignment, this.style_.getFont(), this.textStroke_,
+		        this.textFill_);
+  	  }
   } else if (this.axisOrientation_ === scottlogic.chart.Chart.Orientation.Y) {
     this.labelText_ = graphics.drawText(this.text_, this.x_, this.y_,
         this.width_ - this.tickLength_ - 3, this.height_, 'right', 'middle',

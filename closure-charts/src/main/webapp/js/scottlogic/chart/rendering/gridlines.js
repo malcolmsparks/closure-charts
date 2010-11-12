@@ -131,11 +131,10 @@ scottlogic.chart.rendering.Gridlines.prototype.redraw = function(
 
   // Add the x Axis grid lines to the path
   for (var i = 0; i < this.xAxis.labels.length; i++) {
-    this.path_.moveTo(this.xAxis.labels[i].center[0],
-      this.xAxis.labels[i].center[1] - this.style_.getStroke().getWidth() /
-      2);
-    this.path_.lineTo(this.xAxis.labels[i].center[0],
-      this.xAxis.labels[i].center[1] - this.rect.height);
+	 this.path_.moveTo(this.xAxis.labels[i].center[0],
+		     this.rect.top);
+	 this.path_.lineTo(this.xAxis.labels[i].center[0],
+		     this.rect.top + this.rect.height);
   }
 
   // Add the y Axis grid lines to the path, and check for the zero line
