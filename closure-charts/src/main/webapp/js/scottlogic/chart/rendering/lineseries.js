@@ -669,37 +669,6 @@ scottlogic.chart.rendering.LineSeries.prototype.getNearestY =
   return this.points[this.getNearestPoint_(dataPoint, 1, this.points)];
 };
 
-/**
- * Returns the point that is nearest the given date (forward looking)
- * Looks in the original data points
- *
- * @param {*} dataPoint the point to search for.
- * @return {[*, *]}
- *                               the point the param is closest to.
- * @public
- */
-scottlogic.chart.rendering.LineSeries.prototype.getNearestOriginalX =
-    function(dataPoint) {
-  return this.isVisible() ? this.originalPoints_[this.getNearestPoint_(
-      dataPoint, 0, this.originalPoints_)] : null;
-};
-
-/**
- * Returns the point that is nearest the given value (forward looking)
- * Looks in the original data points
- *
- * @param {*} dataPoint the point to search for.
- * @return {[*, *]}
- *                           the point the param is closest to.
- * @public
- */
-scottlogic.chart.rendering.LineSeries.prototype.getNearestOriginalY =
-    function(dataPoint) {
-  return this.isVisible() ? this.originalPoints_[this.getNearestPoint_(
-      dataPoint, 1, this.originalPoints_)] : null;
-};
-
-
 
 /**
  * Gets the nearest point, given an axis and a data point
