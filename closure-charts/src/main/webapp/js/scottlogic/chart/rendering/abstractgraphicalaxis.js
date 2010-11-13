@@ -418,13 +418,13 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.convertNormalized =
   // Now convert relative position into a canvas point
   if (this.orientation === scottlogic.chart.Chart.Orientation.X) {
     return Math.floor(
-        (this.axisLength * input) + this.boundingBox.left) + 0.5;
+        (this.axisLength * input) + this.boundingBox.left);
   } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
     return Math
         .floor((this.height -
                (this.axisLength * input)) -
                (this.height -
-               (this.boundingBox.top + this.boundingBox.height))) + 0.5;
+               (this.boundingBox.top + this.boundingBox.height)));
   } else {
     // Throw an exception if an unrecognised orientation appears
     throw 'INVALID_ORIENTATION ' + this.orientation;
