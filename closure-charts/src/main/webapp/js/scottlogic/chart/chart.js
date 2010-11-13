@@ -149,6 +149,30 @@ scottlogic.chart.Chart = function(id, size) {
 goog.inherits(scottlogic.chart.Chart, goog.events.EventTarget);
 
 /**
+ * Sets the alignment of the X Axis on the Chart.
+ * @param {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} xAlign
+ * 		the Alignment to set.
+ * @public
+ * @export
+ */
+scottlogic.chart.Chart.prototype.setXAlignment = function(xAlign) {
+  this.alignment_Xaxis = xAlign;
+  this.xAxis.alignment = xAlign;
+};
+
+/**
+ * Sets the alignment of the Y Axis on the Chart.
+ * @param {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} yAlign
+ * 		the Alignment to set.
+ * @public
+ * @export
+ */
+scottlogic.chart.Chart.prototype.setYAlignment = function(yAlign) {
+	this.alignment_Yaxis = yAlign;
+	this.yAxis.alignment = yAlign;
+};
+
+/**
  * Returns the Data X Axis of the Chart.
  * @see abstractaxis.js
  * @public
@@ -485,7 +509,7 @@ scottlogic.chart.Chart.prototype.calculateBoundingBoxes_ = function() {
   }
   
   if (this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE) {
-	  boundingboxXoffset.y = this.graphics_.getPixelSize().height - this.paddingX;
+	  boundingboxXoffset.y = plottingAreaHeight + this.paddingTop;
 	  boundingboxYoffset.y = this.paddingTop;
 	  plottingOffset.y = this.paddingTop;
   } 

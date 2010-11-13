@@ -240,7 +240,8 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.rebuildInternal =
   for (var j = 0; j < labelValues.length; j++) {
     if (this.orientation === scottlogic.chart.Chart.Orientation.X) {
       // Create the label area. Rectangle in which to draw the label
-      labelArea = new goog.math.Rect(
+      
+    	labelArea = new goog.math.Rect(
           this.convertNormalized(labelValues[j]) - (this.labelSize_ / 2),
           this.boundingBox.top,
           this.labelSize_,
@@ -248,7 +249,6 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.rebuildInternal =
 
       // Create a new label with the appropriate dimensions and add to the
       // array of Labels
-      
       this.labels[j] = new scottlogic.chart.rendering.Label(this.axis
           .getLabel(labelValues[j]), labelArea,
           scottlogic.chart.Chart.Orientation.X, this.tickLength,
