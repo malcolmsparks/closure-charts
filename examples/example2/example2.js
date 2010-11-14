@@ -39,14 +39,14 @@ scottlogic.chart.examples.example2.load = function (id) {
       0, 0));
   chart.xAxisData.setEndOfHours(new goog.date.UtcDateTime(1990, 0, 0, 15, 30,
       0, 0));
-  chart.xAxis.setAxisStroke(new goog.graphics.Stroke(1, "#999999"));
-  chart.yAxis.setAxisStroke(new goog.graphics.Stroke(1, "#999999"));
-  chart.xAxis.setLabelFont(new goog.graphics.Font(10,
+  chart.getXAxis().setAxisStroke(new goog.graphics.Stroke(1, "#999999"));
+  chart.getYAxis().setAxisStroke(new goog.graphics.Stroke(1, "#999999"));
+  chart.getXAxis().setLabelFont(new goog.graphics.Font(10,
     "Arial,helvetica,sans-serif"));
-  chart.yAxis.setLabelFont(new goog.graphics.Font(10,
+  chart.getYAxis().setLabelFont(new goog.graphics.Font(10,
     "Arial,helvetica,sans-serif"));
-  chart.xAxis.setLabelFontColour("#0b333c");
-  chart.yAxis.setLabelFontColour("#0b333c");
+  chart.getXAxis().setLabelFontColour("#0b333c");
+  chart.getYAxis().setLabelFontColour("#0b333c");
   chart.gridlines.setGridlineStroke(new goog.graphics.Stroke(1,
    "#ededed"));
   chart.gridlines.setZeroLineStroke(new goog.graphics.Stroke(1,

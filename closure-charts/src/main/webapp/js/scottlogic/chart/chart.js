@@ -198,7 +198,7 @@ scottlogic.chart.Chart.prototype.generateGraphicalAxis_ = function() {
   /**
    * The X Axis of the Chart
    *
-   * @public
+   * @private
    * @type {scottlogic.chart.rendering.AbstractGraphicalAxis}
    */
   this.xAxis = this.renderX_ ?
@@ -212,7 +212,7 @@ scottlogic.chart.Chart.prototype.generateGraphicalAxis_ = function() {
   /**
    * The Y Axis of the Chart
    *
-   * @public
+   * @private
    * @type {scottlogic.chart.rendering.AbstractGraphicalAxis}
    */
   this.yAxis = this.renderY_ ?
