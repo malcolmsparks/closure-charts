@@ -28,20 +28,18 @@ goog.require('scottlogic.chart.rendering.Label');
  * A Graphical Axis that will render itself on the Chart
  *
  * @extends {scottlogic.chart.rendering.AbstractGraphicalAxis}
- * @param {scottlogic.chart.Chart.Orientation} orientation
- * 		the orientation of the axis.
  * @param {scottlogic.chart.rendering.AbstractAxis} axis
  * 		the underlying axis data.
  * @param {scottlogic.chart.rendering.Style} style
  * 		the parent style of this style.
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} alignment 
+ * @param {!scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} alignment 
  * 		the alignment of the axis. 
  * @constructor
  */
-scottlogic.chart.rendering.RenderedGraphicalAxis = function(orientation, axis,
+scottlogic.chart.rendering.RenderedGraphicalAxis = function(axis,
     style, alignment) {
   scottlogic.chart.rendering.AbstractGraphicalAxis.call(this,
-      orientation, axis, style, alignment);
+      axis, style, alignment);
   /**
    * The style of the graphical axis
    *
@@ -213,12 +211,12 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.rebuildInternal =
   this.labels.length = 0;
   this.zeroLineLabel = null;
 
-  if (this.orientation === scottlogic.chart.Chart.Orientation.X) {
+  if (this.isXAxis()) {
     this.labelSize_ = this.getLabelWidth() * 1.1;
-  } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
+  } else if (this.isYAxis()) {
     this.labelSize_ = this.getLabelHeight() * 1.1;
   } else {
-    throw 'INVALID_ORIENTATION ' + this.orientation;
+    throw 'INVALID_ORIENTATION ' + this.alignment;
   }
 
   // Set the interval on the axis
@@ -238,7 +236,7 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.rebuildInternal =
   var labelValues = this.generateLabelValues_();
 
   for (var j = 0; j < labelValues.length; j++) {
-    if (this.orientation === scottlogic.chart.Chart.Orientation.X) {
+    if (this.isXAxis()) {
       // Create the label area. Rectangle in which to draw the label
       
     	labelArea = new goog.math.Rect(
@@ -259,7 +257,7 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.rebuildInternal =
           0.0000000000001)) {
         this.zeroLineLabel = this.labels[this.labels.length - 1];
       }
-    } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
+    } else if (this.isYAxis()) {
       // Create the label area. Rectangle in which to draw the label.
     	
 	      if (this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTOUTSIDE) {
@@ -302,7 +300,7 @@ scottlogic.chart.rendering.RenderedGraphicalAxis.prototype.rebuildInternal =
 	      }
 
     } else {
-      throw 'INVALID_ORIENTATION ' + this.orientation;
+      throw 'INVALID_ORIENTATION ' + this.alignment;
     }
   }
 

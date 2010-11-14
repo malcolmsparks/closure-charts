@@ -24,18 +24,16 @@ goog.require('scottlogic.chart.rendering.AbstractGraphicalAxis');
  * A Graphical Axis that will not render itself on the Chart.
  *
  * @extends {scottlogic.chart.rendering.AbstractGraphicalAxis}
- * @param {scottlogic.chart.Chart.Orientation} orientation
- * 		the orientation of the axis.
  * @param {scottlogic.chart.rendering.AbstractAxis} axis 
  * 		the underlying axis data.
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} alignment
+ * @param {!scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} alignment
  * 		the alignment of the axis.
  * @constructor
  */
-scottlogic.chart.rendering.NonRenderedGraphicalAxis = function(orientation, 
+scottlogic.chart.rendering.NonRenderedGraphicalAxis = function( 
     axis, alignment) {
   scottlogic.chart.rendering.AbstractGraphicalAxis.call(this,
-      orientation, axis, null, alignment);
+      axis, null, alignment);
   /**
    * The length of the tick
    *

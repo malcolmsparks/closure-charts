@@ -27,25 +27,23 @@ goog.require('goog.Disposable');
  * of the context and how to convert between canvas and data.
  *
  * @extends {goog.Disposable}
- * @param {scottlogic.chart.Chart.Orientation} orientation the orientation of
- *        the axis.
  * @param {scottlogic.chart.rendering.AbstractAxis} axis
  *                                                    the underlying axis data.
  * @param {scottlogic.chart.rendering.Style} style The parent style of this
  *        style.
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} 
+ * @param {!scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} 
  *        alignment of the axis. 
  * @constructor
  */
-scottlogic.chart.rendering.AbstractGraphicalAxis = function(orientation, axis, 
+scottlogic.chart.rendering.AbstractGraphicalAxis = function(axis, 
     style, alignment) {
   goog.Disposable.call(this);
   
   /**
    * The alignment of the axis
    *
-   * @public
-   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
+   * @protected
+   * @type {!scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
    */
   this.alignment = alignment;
 
@@ -58,14 +56,6 @@ scottlogic.chart.rendering.AbstractGraphicalAxis = function(orientation, axis,
   this.axis = axis;
 
   /**
-   * The orientation of the axis. Currently either 'x' or 'y'
-   *
-   * @public
-   * @type {scottlogic.chart.Chart.Orientation}
-   */
-  this.orientation = orientation;
-
-  /**
    * Array storing the labels
    *
    * @public
@@ -76,7 +66,29 @@ scottlogic.chart.rendering.AbstractGraphicalAxis = function(orientation, axis,
 goog.inherits(
     scottlogic.chart.rendering.AbstractGraphicalAxis, goog.Disposable);
 
+/**
+ * Sets the alignment of the axis
+ *
+ * @param {!scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} alignment The alignment to set.
+ * @export
+ * @public
+ */
+scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.setAlignment =
+    function(alignment) {
+  this.alignment = alignment;
+};
 
+/**
+ * Gets the alignment of the axis
+ *
+ * @return {!scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} alignment The alignment to set.
+ * @export
+ * @public
+ */
+scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.getAlignment =
+    function() {
+  return this.alignment;
+};
 
 /**
  * Sets the stroke of the axis
@@ -303,6 +315,32 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.hide =
     goog.abstractMethod;
 
 /**
+ * @public
+ * @export
+ * @return {boolean} if the chart is an x axis
+ */
+scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.isXAxis =
+    function() {
+  return this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPOUTSIDE
+	|| this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPINSIDE
+	|| this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE
+	|| this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMINSIDE;
+};
+
+/**
+ * @public
+ * @export
+ * @return {boolean} if the chart is a y axis
+ */
+scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.isYAxis =
+    function() {
+  return this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTOUTSIDE
+	|| this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTINSIDE
+	|| this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTOUTSIDE
+	|| this.alignment === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTINSIDE;
+};
+
+/**
  * Converts a canvas point into a data point
  *
  * @public
@@ -319,16 +357,16 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.convertCanvasToData =
   var relative;
 
   // Get the relative value
-  if (this.orientation === scottlogic.chart.Chart.Orientation.X) {
+  if (this.isXAxis()) {
     relative = (input - this.boundingBox.left) / this.axisLength;
-  } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
+  } else if (this.isYAxis()) {
     relative = (this.height -
             (input +
             (this.height -
             (this.boundingBox.top + this.boundingBox.height)))) /
                this.axisLength;
   } else {
-    throw 'Invalid orientation ' + this.orientation;
+    throw 'INVALID_ORIENTATION ' + this.alignment;
   }
 
   if (relative < 0) {
@@ -416,10 +454,10 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.convertNormalized =
   input = tempVal / tempMax;
 
   // Now convert relative position into a canvas point
-  if (this.orientation === scottlogic.chart.Chart.Orientation.X) {
+  if (this.isXAxis()) {
     return Math.floor(
         (this.axisLength * input) + this.boundingBox.left);
-  } else if (this.orientation === scottlogic.chart.Chart.Orientation.Y) {
+  } else if (this.isYAxis()) {
     return Math
         .floor((this.height -
                (this.axisLength * input)) -
@@ -427,7 +465,7 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.convertNormalized =
                (this.boundingBox.top + this.boundingBox.height)));
   } else {
     // Throw an exception if an unrecognised orientation appears
-    throw 'INVALID_ORIENTATION ' + this.orientation;
+    throw 'INVALID_ORIENTATION ' + this.alignment;
   }
 };
 

@@ -98,22 +98,6 @@ scottlogic.chart.Chart = function(id, size) {
   this.style_ = new scottlogic.chart.rendering.Style(null, null, null, null);
   
   /**
-   * alignment of the x-axis
-   *
-   * @public
-   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
-   */
-  this.alignment_Xaxis = scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMINSIDE;
-  
-  /**
-   * alignment of the y-axis
-   *
-   * @public
-   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
-   */
-  this.alignment_Yaxis = scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTINSIDE;
-
-  /**
    * The Data Axis of the Chart (X)
    *
    * @public
@@ -149,30 +133,6 @@ scottlogic.chart.Chart = function(id, size) {
 
 };
 goog.inherits(scottlogic.chart.Chart, goog.events.EventTarget);
-
-/**
- * Sets the alignment of the X Axis on the Chart.
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} xAlign
- * 		the Alignment to set.
- * @public
- * @export
- */
-scottlogic.chart.Chart.prototype.setXAlignment = function(xAlign) {
-  this.alignment_Xaxis = xAlign;
-  this.xAxis.alignment = xAlign;
-};
-
-/**
- * Sets the alignment of the Y Axis on the Chart.
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} yAlign
- * 		the Alignment to set.
- * @public
- * @export
- */
-scottlogic.chart.Chart.prototype.setYAlignment = function(yAlign) {
-	this.alignment_Yaxis = yAlign;
-	this.yAxis.alignment = yAlign;
-};
 
 /**
  * Returns the Data X Axis of the Chart.
@@ -243,11 +203,11 @@ scottlogic.chart.Chart.prototype.generateGraphicalAxis_ = function() {
    */
   this.xAxis = this.renderX_ ?
       new scottlogic.chart.rendering.RenderedGraphicalAxis(
-      scottlogic.chart.Chart.Orientation.X, this.xAxisData,
-      this.style_, this.alignment_Xaxis) :
+      this.xAxisData, this.style_, 
+	  scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE) :
       new scottlogic.chart.rendering.NonRenderedGraphicalAxis(
-      scottlogic.chart.Chart.Orientation.X, this.xAxisData, 
-      this.alignment_Xaxis);
+      this.xAxisData, 
+	  scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE);
 
   /**
    * The Y Axis of the Chart
@@ -257,10 +217,11 @@ scottlogic.chart.Chart.prototype.generateGraphicalAxis_ = function() {
    */
   this.yAxis = this.renderY_ ?
       new scottlogic.chart.rendering.RenderedGraphicalAxis(
-      scottlogic.chart.Chart.Orientation.Y, this.yAxisData,
-      this.style_, this.alignment_Yaxis) :
+      this.yAxisData, this.style_, 
+	  scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTOUTSIDE) :
       new scottlogic.chart.rendering.NonRenderedGraphicalAxis(
-      scottlogic.chart.Chart.Orientation.Y, this.yAxisData, this.alignment_Yaxis);
+      this.yAxisData, 
+	  scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTOUTSIDE);
 };
 
 /**
@@ -452,62 +413,62 @@ scottlogic.chart.Chart.prototype.calculateBoundingBoxes_ = function() {
  
   /** @type {number} */
   var plottingAreaWidth = this.graphics_.getPixelSize().width - (2 * xAxisHorizontalMargin);
-  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTOUTSIDE
-      || this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTOUTSIDE) {
+  if (this.yAxis.getAlignment() === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTOUTSIDE
+      || this.yAxis.getAlignment() === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTOUTSIDE) {
     plottingAreaWidth -= yAxisWidth;
   }
   
   /** @type {number} */
   var plottingAreaHeight = this.graphics_.getPixelSize().height - (2 * yAxisVerticalMargin);
-  if (this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPOUTSIDE
-      || this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE) {
+  if (this.xAxis.getAlignment() === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPOUTSIDE
+      || this.xAxis.getAlignment() === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE) {
     plottingAreaHeight -= xAxisHeight;
   }
   
-  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTOUTSIDE) {
+  if (this.yAxis.getAlignment() === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTOUTSIDE) {
 	  plottingOffset.x = xAxisHorizontalMargin;
 	  plottingOffset.y = yAxisVerticalMargin;
 	  boundingboxYoffset.x = plottingAreaWidth + xAxisHorizontalMargin;
 	  boundingboxXoffset.x = xAxisHorizontalMargin;
   }
-  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTOUTSIDE) {
+  if (this.yAxis.getAlignment() === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTOUTSIDE) {
 	  plottingOffset.x = yAxisWidth;
 	  plottingOffset.y = yAxisVerticalMargin;
 	  boundingboxYoffset.x = 0;
 	  boundingboxXoffset.x = yAxisWidth;
   }
-  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTINSIDE) {
+  if (this.yAxis.getAlignment() === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTINSIDE) {
 	  plottingOffset.x = xAxisHorizontalMargin;
 	  plottingOffset.y = yAxisVerticalMargin;
 	  boundingboxYoffset.x = xAxisHorizontalMargin + plottingAreaWidth - yAxisWidth;
 	  boundingboxXoffset.x = xAxisHorizontalMargin;
   }
-  if (this.alignment_Yaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTINSIDE) {
+  if (this.yAxis.getAlignment() === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.LEFTINSIDE) {
 	  plottingOffset.x = xAxisHorizontalMargin;
 	  plottingOffset.y = yAxisVerticalMargin;
 	  boundingboxYoffset.x = xAxisHorizontalMargin;
 	  boundingboxXoffset.x = xAxisHorizontalMargin;
   }
   
-  if (this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE) {
+  if (this.xAxis.getAlignment() === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE) {
 	  boundingboxXoffset.y = plottingAreaHeight + yAxisVerticalMargin;
 	  boundingboxYoffset.y = yAxisVerticalMargin;
 	  plottingOffset.y = yAxisVerticalMargin;
   } 
   
-  if (this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPOUTSIDE) {
+  if (this.xAxis.getAlignment() === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPOUTSIDE) {
 	  boundingboxXoffset.y = 0;
 	  boundingboxYoffset.y = xAxisHeight;
 	  plottingOffset.y = xAxisHeight;
   }
   
-  if (this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPINSIDE) {
+  if (this.xAxis.getAlignment() === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPINSIDE) {
 	  boundingboxXoffset.y = 0;
 	  boundingboxYoffset.y = 0;
 	  plottingOffset.y = 0;
   }
   
-  if (this.alignment_Xaxis === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMINSIDE) {
+  if (this.xAxis.getAlignment() === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMINSIDE) {
 	  boundingboxXoffset.y = plottingAreaHeight - xAxisHeight + yAxisVerticalMargin;
 	  boundingboxYoffset.y = yAxisVerticalMargin;
 	  plottingOffset.y = yAxisVerticalMargin;
