@@ -1,0 +1,13 @@
+### Eclipse Workspace Patch 1.0
+#P closure-library-readonly
+Index: closure/goog/deps.js
+===================================================================
+--- closure/goog/deps.js	(revision 329)
++++ closure/goog/deps.js	(working copy)
+@@ -639,3 +639,6 @@
+ goog.addDependency('../../third_party/closure/goog/loremipsum/text/loremipsum.js', ['goog.text.LoremIpsum'], ['goog.array', 'goog.math', 'goog.string', 'goog.structs.Map', 'goog.structs.Set']);
+ goog.addDependency('../../third_party/closure/goog/mochikit/async/deferred.js', ['goog.async.Deferred', 'goog.async.Deferred.AlreadyCalledError', 'goog.async.Deferred.CancelledError'], ['goog.array', 'goog.asserts', 'goog.debug.Error']);
+ goog.addDependency('../../third_party/closure/goog/mochikit/async/deferredlist.js', ['goog.async.DeferredList'], ['goog.array', 'goog.async.Deferred']);
++
++goog.addDependency('graphics/servergraphics.js', ['goog.graphics.ServerGraphics'], ['goog.dom', 'goog.graphics.AbstractGraphics', 'goog.graphics.ServerEllipseElement', 'goog.graphics.ServerGroupElement', 'goog.graphics.ServerImageElement', 'goog.graphics.ServerPathElement', 'goog.graphics.ServerRectElement', 'goog.graphics.ServerTextElement', 'goog.graphics.Font', 'goog.graphics.LinearGradient', 'goog.graphics.SolidFill', 'goog.graphics.Stroke', 'goog.math.Size']);
++goog.addDependency('graphics/serverelement.js', ['goog.graphics.ServerEllipseElement', 'goog.graphics.ServerGroupElement', 'goog.graphics.ServerImageElement', 'goog.graphics.ServerPathElement', 'goog.graphics.ServerRectElement', 'goog.graphics.ServerTextElement'], ['goog.array', 'goog.dom', 'goog.graphics.EllipseElement', 'goog.graphics.GroupElement', 'goog.graphics.ImageElement', 'goog.graphics.Path', 'goog.graphics.PathElement', 'goog.graphics.RectElement', 'goog.graphics.TextElement']);

@@ -1,0 +1,24 @@
+### Eclipse Workspace Patch 1.0
+#P closure-library-readonly
+Index: closure/goog/graphics/graphics.js
+===================================================================
+--- closure/goog/graphics/graphics.js	(revision 329)
++++ closure/goog/graphics/graphics.js	(working copy)
+@@ -28,6 +28,7 @@
+ goog.provide('goog.graphics');
+ 
+ goog.require('goog.graphics.CanvasGraphics');
++goog.require('goog.graphics.ServerGraphics');
+ goog.require('goog.graphics.SvgGraphics');
+ goog.require('goog.graphics.VmlGraphics');
+ goog.require('goog.userAgent');
+@@ -58,6 +59,9 @@
+       goog.userAgent.MOBILE)) {
+     graphics = new goog.graphics.CanvasGraphics(width, height,
+         opt_coordWidth, opt_coordHeight, opt_domHelper);
++  } else if (goog.userAgent.RHINO) {
++    graphics = new goog.graphics.ServerGraphics(width, height,
++        opt_coordWidth, opt_coordHeight, opt_domHelper);
+   } else {
+     graphics = new goog.graphics.SvgGraphics(width, height,
+         opt_coordWidth, opt_coordHeight, opt_domHelper);

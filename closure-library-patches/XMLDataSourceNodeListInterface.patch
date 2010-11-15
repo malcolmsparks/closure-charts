@@ -1,0 +1,16 @@
+### Eclipse Workspace Patch 1.0
+#P closure-library-readonly
+Index: closure/goog/datasource/xmldatasource.js
+===================================================================
+--- closure/goog/datasource/xmldatasource.js	(revision 329)
++++ closure/goog/datasource/xmldatasource.js	(working copy)
+@@ -97,7 +97,8 @@
+   var childNodeList = new goog.ds.BasicNodeList();
+   if (this.node_ != null) {
+     var childNodes = this.node_.childNodes;
+-    for (var i = 0, childNode; childNode = childNodes[i]; i++) {
++    for (var i = 0, childNode; 
++    (childNode = goog.userAgent.RHINO ? childNodes.item(i) : childNodes[i]); i++) {
+       if (childNode.nodeType != goog.dom.NodeType.TEXT ||
+           !goog.ds.XmlDataSource.isEmptyTextNodeValue_(childNode.nodeValue)) {
+         var newNode = new goog.ds.XmlDataSource(childNode,

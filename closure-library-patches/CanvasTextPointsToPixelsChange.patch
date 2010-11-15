@@ -1,0 +1,24 @@
+### Eclipse Workspace Patch 1.0
+#P closure-library-readonly
+Index: closure/goog/graphics/canvaselement.js
+===================================================================
+--- closure/goog/graphics/canvaselement.js	(revision 329)
++++ closure/goog/graphics/canvaselement.js	(working copy)
+@@ -585,7 +585,7 @@
+     style.width = Math.round(w) + 'px';
+     style.height = Math.abs(y1 - y2) * scaleY + 'px';
+ 
+-    style.fontSize = font.size * 0.6 * scaleY + 'pt';
++    style.fontSize = font.size * 0.6 * scaleY + 'px';
+   } else {
+     style.lineHeight = '100%';
+     this.innerElement_.style.verticalAlign = 'top';
+@@ -596,7 +596,7 @@
+     style.width = Math.round(Math.abs(x2 - x1) * scaleX) + 'px';
+     style.height = 'auto';
+ 
+-    style.fontSize = font.size * scaleY + 'pt';
++    style.fontSize = font.size * scaleY + 'px';
+   }
+ 
+   style.fontWeight = font.bold ? 'bold' : 'normal';

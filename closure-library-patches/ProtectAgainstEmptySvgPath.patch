@@ -1,0 +1,46 @@
+### Eclipse Workspace Patch 1.0
+#P closure-library-readonly
+Index: closure/goog/graphics/svggraphics.js
+===================================================================
+--- closure/goog/graphics/svggraphics.js	(revision 329)
++++ closure/goog/graphics/svggraphics.js	(working copy)
+@@ -615,12 +615,16 @@
+  */
+ goog.graphics.SvgGraphics.prototype.drawPath = function(
+     path, stroke, fill, opt_group) {
+-
+-  var element = this.createSvgElement_('path',
+-      {'d': goog.graphics.SvgGraphics.getSvgPath(path)});
+-  var wrapper = new goog.graphics.SvgPathElement(element, this, stroke, fill);
+-  this.append_(wrapper, opt_group);
+-  return wrapper;
++  /* Check whether the path is empty. Do not add attributes to the element
++   *  if it is */
++   var attributes = path.isEmpty() ? {} : 
++     {'d': goog.graphics.SvgGraphics.getSvgPath(path)};
++   
++   var element = this.createSvgElement_('path', attributes);
++   
++   var wrapper = new goog.graphics.SvgPathElement(element, this, stroke, fill);
++   this.append_(wrapper, opt_group);
++   return wrapper;
+ };
+ 
+ 
+Index: closure/goog/graphics/svgelement.js
+===================================================================
+--- closure/goog/graphics/svgelement.js	(revision 329)
++++ closure/goog/graphics/svgelement.js	(working copy)
+@@ -178,8 +178,11 @@
+  * @param {goog.graphics.Path} path The path object to draw.
+  */
+ goog.graphics.SvgPathElement.prototype.setPath = function(path) {
++  var attributes = path.isEmpty() ? {} : 
++  {'d': goog.graphics.SvgGraphics.getSvgPath(path)};
++  
+   this.getGraphics().setElementAttributes(this.getElement(),
+-      {'d': goog.graphics.SvgGraphics.getSvgPath(path)});
++      attributes);
+ };
+ 
+ 
