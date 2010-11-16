@@ -44,9 +44,15 @@ goog.require('scottlogic.chart.rendering.Style');
  * @extends {goog.events.EventTarget}
  * @param {string} id The element ID to draw to.
  * @param {Array.<number>} size The size to draw.
+ * @param {*} xAxisConstructor the x data axis to use.
+ * @param {*} yAxisConstructor the y data axis to use.
+ *
+ * TODO(shall) : temporary solution to being unable to select data axis. Eventually
+ * will have getters define default values and setters to allow setting the axis.
+ *
  * @constructor
  */
-scottlogic.chart.Chart = function(id, size) {
+scottlogic.chart.Chart = function(id, size, xAxisConstructor, yAxisConstructor) {
   goog.events.EventTarget.call(this);
   /**
    * Has the Chart been initialized?
@@ -103,7 +109,8 @@ scottlogic.chart.Chart = function(id, size) {
    * @public
    * @type {scottlogic.chart.rendering.AbstractAxis} 
    */
-  this.xAxisData = new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
+  this.xAxisData = xAxisConstructor ? new xAxisConstructor() : 
+      new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
 
   /**
    * The Data Axis of the Chart (Y)
@@ -111,7 +118,8 @@ scottlogic.chart.Chart = function(id, size) {
    * @public
    * @type {scottlogic.chart.rendering.AbstractAxis}
    */
-  this.yAxisData = new scottlogic.chart.rendering.NumericalAxis();
+  this.yAxisData = yAxisConstructor ? new yAxisConstructor() :
+      new scottlogic.chart.rendering.NumericalAxis();
 
   /**
    * The array of Line Series that the chart contains
@@ -292,41 +300,40 @@ scottlogic.chart.Chart.prototype.redraw = function() {
    * AND a max, and they do not equal one another */
   
   /** @type {boolean} */
-  var invalidInputs = false;
+  var invalidX = this.xAxisData.equals(this.xAxisData.max, this.xAxisData.min);
+  
+  /** @type {boolean} */
+  var invalidY = this.yAxisData.equals(this.yAxisData.min, this.yAxisData.max);
   
   if (!(this.xAxisData.userHasDefinedMin && this.xAxisData.userHasDefinedMax) ||
-      this.xAxisData.min.equals(this.xAxisData.max)) {
-
-    invalidInputs = this.xAxisData.min.equals(this.xAxisData.max);
+      invalidX) {
 
     /** @type {Array.<goog.date.UtcDateTime>} */
     var xbounds = this.getXBounds_();
 
-    if (!this.xAxisData.userHasDefinedMin || invalidInputs) {
+    if (!this.xAxisData.userHasDefinedMin || invalidX) {
       this.xAxisData.setMinimum(xbounds[0]);
       this.xAxisData.userHasDefinedMin = false;
     }
 
-    if (!this.xAxisData.userHasDefinedMax || invalidInputs) {
+    if (!this.xAxisData.userHasDefinedMax || invalidX) {
       this.xAxisData.setMaximum(xbounds[1]);
       this.xAxisData.userHasDefinedMax = false;
     }
   }
 
   if (!(this.yAxisData.userHasDefinedMin && this.yAxisData.userHasDefinedMax) ||
-      this.yAxisData.min === this.yAxisData.max) {
-
-    invalidInputs = (this.yAxisData.min === this.yAxisData.max);
+      invalidY) {
 
     /** @type {Array.<number>} */
     var ybounds = this.getYBounds_();
 
-    if (!this.yAxisData.userHasDefinedMin || invalidInputs) {
+    if (!this.yAxisData.userHasDefinedMin || invalidY) {
       this.yAxisData.setMinimum(ybounds[0]);
       this.yAxisData.userHasDefinedMin = false;
     }
 
-    if (!this.yAxisData.userHasDefinedMax || invalidInputs) {
+    if (!this.yAxisData.userHasDefinedMax || invalidY) {
       this.yAxisData.setMaximum(ybounds[1]);
       this.yAxisData.userHasDefinedMax = false;
     }
@@ -600,7 +607,9 @@ scottlogic.chart.Chart.prototype.getYBounds_ = function() {
     }
   }
 
-  return min === undefined || max === undefined || min === max ? [0, 1] :
+  // TODO(shall): Get the default values from the Data axis.
+  return min === undefined || max === undefined || 
+    this.yAxisData.equals(min, max) ? [0, 1] :
       [this.yAxisData.padRight(min, min, max),
        this.yAxisData.padLeft(max, min, max)];
 };
@@ -640,7 +649,9 @@ scottlogic.chart.Chart.prototype.getXBounds_ = function() {
     }
   }
 
-  if (min === undefined || max === undefined || min.equals(max)) {
+  // TODO(shall) : Get the default values from the Data axis.
+  if (min === undefined || max === undefined || 
+        this.xAxisData.equals(min, max)) {
     /** @type {goog.date.UtcDateTime} */
     var yester = new goog.date.UtcDateTime(new Date());
     yester.add(new goog.date.Interval(0, 0, -1));

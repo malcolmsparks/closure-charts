@@ -401,7 +401,7 @@ scottlogic.chart.rendering.AbstractGraphicalAxis.prototype.convertArray =
       }) + 1);
 
   // we need to go to the one before the min position
-  minPos = minPos <= 0 ? 1 : minPos - 1;
+  minPos = minPos <= 0 ? 0 : minPos - 1;
 
   /** @type {number} */
   var maxPos = Math.abs(goog.array.binarySearch(

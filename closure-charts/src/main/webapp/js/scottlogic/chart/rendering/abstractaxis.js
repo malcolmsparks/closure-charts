@@ -215,6 +215,17 @@ scottlogic.chart.rendering.AbstractAxis.prototype.padRight =
 scottlogic.chart.rendering.AbstractAxis.prototype.compare = goog.abstractMethod;
 
 /**
+ * Returns true if the 2 parameter objects are equal.
+ * @public
+ * @param {*} obj1 the left hand side of the equals
+ * @param {*} obj2 the right hand side of the equals
+ * @return {boolean} whether obj1 === obj2
+ */
+scottlogic.chart.rendering.AbstractAxis.prototype.equals = function(obj1, obj2) {
+  return this.compare(obj1, obj2) === 0;
+};
+
+/**
  * Will increment a normalized value and return the new normalized value
  *
  * @public
