@@ -226,6 +226,15 @@ scottlogic.chart.rendering.AbstractAxis.prototype.equals = function(obj1, obj2) 
 };
 
 /**
+ * Returns an array of 2 objects, one being the default minimum value, and the
+ * other the default maximum value.
+ *
+ * @public
+ * @return {Array.<*>} the minimum and maximum default values.
+ */
+scottlogic.chart.rendering.AbstractAxis.prototype.getDefaultBounds = goog.abstractMethod;
+
+/**
  * Will increment a normalized value and return the new normalized value
  *
  * @public
