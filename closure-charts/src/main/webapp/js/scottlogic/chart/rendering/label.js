@@ -158,6 +158,10 @@ goog.inherits(scottlogic.chart.rendering.Label, goog.Disposable);
  */
 scottlogic.chart.rendering.Label.prototype.addGraphics = function(graphics) {
 	
+  /** 
+   * This label should be considered initialized if graphics have been added
+   */
+  this.initialized_ = true;
   /**
    * The graphics to drawn upon
    *
