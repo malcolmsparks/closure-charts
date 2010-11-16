@@ -1,0 +1,1 @@
+In order to function correctly in some browsers, this example needs to be run from a webserver due to cross-domain restrictions. Chrome allows you to bypass the restriction by setting the following flag --allow-file-access-from-files when launching Chrome.
