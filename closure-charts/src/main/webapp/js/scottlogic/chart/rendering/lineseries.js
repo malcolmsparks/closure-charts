@@ -223,8 +223,7 @@ scottlogic.chart.rendering.LineSeries.prototype.setMarkerPointsRender =
 scottlogic.chart.rendering.LineSeries.prototype.getMinimumX = function() {
 	if (this.isVisible() && this.points.length > 0) {
 		return this.points[0][0];
-	}
-	else {
+	} else {
 		return null;
 	}
 };
@@ -238,8 +237,7 @@ scottlogic.chart.rendering.LineSeries.prototype.getMinimumX = function() {
 scottlogic.chart.rendering.LineSeries.prototype.getMaximumX = function() {
 	if (this.isVisible() && this.points.length > 0) {
 		return this.points[this.points.length -1][0];
-	}
-	else {
+	} else {
 		return null;
 	}
 };
