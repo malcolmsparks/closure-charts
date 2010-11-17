@@ -82,7 +82,7 @@ scottlogic.chart.Chart = function(id, size, xAxisConstructor, yAxisConstructor) 
    * @private
    * @type {Element}
    */
-  this.canvas_ = goog.dom.$(id);
+  this.canvas_ = goog.dom.getElement(id);
 
   /**
    * Create the graphics to be manipulated
@@ -524,6 +524,7 @@ scottlogic.chart.Chart.prototype.initialize_ = function() {
   var that = this;
 
   // Render the graphics onto the canvas
+ 
   this.graphics_.render(this.canvas_);
 
   // Add graphics for to gridlines and axes. 

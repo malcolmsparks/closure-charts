@@ -221,7 +221,12 @@ scottlogic.chart.rendering.LineSeries.prototype.setMarkerPointsRender =
  * @public
  */
 scottlogic.chart.rendering.LineSeries.prototype.getMinimumX = function() {
-  return this.isVisible() ? this.points[0][0] : null;
+	if (this.isVisible() && this.points.length > 0) {
+		return this.points[0][0];
+	}
+	else {
+		return null;
+	}
 };
 
 /**
@@ -231,7 +236,12 @@ scottlogic.chart.rendering.LineSeries.prototype.getMinimumX = function() {
  * @public
  */
 scottlogic.chart.rendering.LineSeries.prototype.getMaximumX = function() {
-  return this.isVisible() ? this.points[this.points.length - 1][0] : null;
+	if (this.isVisible() && this.points.length > 0) {
+		return this.points[this.points.length -1][0];
+	}
+	else {
+		return null;
+	}
 };
 
 /**
@@ -331,7 +341,7 @@ scottlogic.chart.rendering.LineSeries.prototype.redraw = function(graphics,
     this.initialize_(graphics, graphicalAxisX, graphicalAxisY, context);
     this.initialized_ = true;
   }
-  if (this.isVisible_) {
+  if (this.isVisible_ && this.points.length > 0) {
     this.drawTrackball_();
 
     // Clear the existing path
