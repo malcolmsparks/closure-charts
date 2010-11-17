@@ -17,6 +17,8 @@
 //  along with Closure Charts.  If not, see <http://www.gnu.org/licenses/>.
 
 goog.provide('scottlogic.chart.examples.imageDataExample');
+goog.require('scottlogic.chart.Chart');
+goog.require('scottlogic.chart.rendering.LineSeries');
 
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
@@ -27,8 +29,62 @@ goog.require('goog.style');
 
 /**
  * @param {string} id The id of the canvas element
+ * @param {string} chartid The id of the chart element
  */
-scottlogic.chart.examples.imageDataExample.load = function (id) {
+scottlogic.chart.examples.imageDataExample.load = function (id, chartid) {
+	
+	// Chart initialisation
+	scottlogic.chart.examples.imageDataExample.chart = new scottlogic.chart.Chart(chartid, [280, 200], 
+			scottlogic.chart.rendering.NumericalAxis, 
+			scottlogic.chart.rendering.NumericalAxis);
+	
+	scottlogic.chart.examples.imageDataExample.chart.yAxisData.setMinimum(0);
+	scottlogic.chart.examples.imageDataExample.chart.gridlines.setGridlineStroke(new goog.graphics.Stroke(1,
+	 "#ededed"));
+	scottlogic.chart.examples.imageDataExample.chart.gridlines.setZeroLineStroke(new goog.graphics.Stroke(1,
+	  "#b0c1d0"));
+	
+	scottlogic.chart.examples.imageDataExample.chart.xAxisData.setFormatter(function(input) {
+			    input = input.toFixed(0);
+			    return input;
+	});
+		  
+	scottlogic.chart.examples.imageDataExample.chart.yAxisData.setFormatter(function(input) {
+	    input = input.toFixed(0);
+	    return input;
+	});
+	
+	scottlogic.chart.examples.imageDataExample.chart.setXRender(false);
+	
+	scottlogic.chart.examples.imageDataExample.chart.getYAxis().setAxisStroke(new goog.graphics.Stroke(1,
+	 "#999999"));
+	scottlogic.chart.examples.imageDataExample.chart.getYAxis().setLabelStroke(new goog.graphics.Stroke(1,
+	 "#999999"));
+	scottlogic.chart.examples.imageDataExample.chart.getYAxis().setLabelFont(new goog.graphics.Font(10,
+ "Arial,helvetica,sans-serif"));
+	scottlogic.chart.examples.imageDataExample.chart.getYAxis().setLabelFontColour("#0b333c");
+	  
+	// initialise line series for charts. no values yet.
+	scottlogic.chart.examples.imageDataExample.seriesRed = new scottlogic.chart.rendering.LineSeries("red", []);
+	scottlogic.chart.examples.imageDataExample.seriesGreen = new scottlogic.chart.rendering.LineSeries("green", []);
+	scottlogic.chart.examples.imageDataExample.seriesBlue = new scottlogic.chart.rendering.LineSeries("blue", []);
+	
+	scottlogic.chart.examples.imageDataExample.seriesRed.setStroke(new goog.graphics.Stroke(1, "#C00000"));
+	scottlogic.chart.examples.imageDataExample.seriesGreen.setStroke(new goog.graphics.Stroke(1, "#00C000"));
+	scottlogic.chart.examples.imageDataExample.seriesBlue.setStroke(new goog.graphics.Stroke(1, "#0000C0"));
+	
+	scottlogic.chart.examples.imageDataExample.seriesRed.setMarkerPointsRender(false);
+	scottlogic.chart.examples.imageDataExample.seriesGreen.setMarkerPointsRender(false);
+	scottlogic.chart.examples.imageDataExample.seriesBlue.setMarkerPointsRender(false);
+	
+	scottlogic.chart.examples.imageDataExample.seriesRed.setTrackballRender(false);
+	scottlogic.chart.examples.imageDataExample.seriesGreen.setTrackballRender(false);
+	scottlogic.chart.examples.imageDataExample.seriesBlue.setTrackballRender(false);
+	
+	scottlogic.chart.examples.imageDataExample.chart.addLineSeries(scottlogic.chart.examples.imageDataExample.seriesRed);
+	scottlogic.chart.examples.imageDataExample.chart.addLineSeries(scottlogic.chart.examples.imageDataExample.seriesGreen);
+	scottlogic.chart.examples.imageDataExample.chart.addLineSeries(scottlogic.chart.examples.imageDataExample.seriesBlue);
+	
 	/** @type {Element} */
 	var canvas = document.getElementById(id);
 	/** @type {goog.math.Size} */
@@ -41,6 +97,7 @@ scottlogic.chart.examples.imageDataExample.load = function (id) {
 	var image = new Image();
 	image.src = "kitten.png";
 	image.onload = function () {
+		ctx.lineWidth = 3;
 		ctx.drawImage(image, 0, 0);
 		canvasPixelArray = ctx.getImageData(0, 0, size.width, size.height).data;
 	};
@@ -71,22 +128,25 @@ scottlogic.chart.examples.imageDataExample.load = function (id) {
 				ctx.lineTo(endPos.x, endPos.y);
 				ctx.closePath();
 				ctx.stroke();
-				// build the chart data
-				/** @type {Array.<number>} */
-				var red = [];
-				/** @type {Array.<number>} */
-				var	green = [];
-				/** @type {Array.<number>} */
-				var blue = [];
+				
+				// rebuild the chart data
+				/** @type {Array.<[*, *]>} */
+				scottlogic.chart.examples.imageDataExample.seriesRed.points = [];
+				/** @type {Array.<[*, *]>} */
+				scottlogic.chart.examples.imageDataExample.seriesGreen.points = [];
+				/** @type {Array.<[*, *]>} */
+				scottlogic.chart.examples.imageDataExample.seriesBlue.points = [];
 				for (var i = 0; i < length; i++) {
 					var xIndex = Math.floor(startPos.x + (endPos.x - startPos.x) * i / length);
 					var yIndex = Math.floor(startPos.y + (endPos.y - startPos.y) * i / length);
 					var index = yIndex * size.width * 4 + xIndex * 4;
-					red.push(canvasPixelArray[index]);
-					green.push(canvasPixelArray[index + 1]);
-					blue.push(canvasPixelArray[index + 2]);
+					scottlogic.chart.examples.imageDataExample.seriesRed.points.push([i,canvasPixelArray[index]]);
+					scottlogic.chart.examples.imageDataExample.seriesGreen.points.push([i,canvasPixelArray[index + 1]]);
+					scottlogic.chart.examples.imageDataExample.seriesBlue.points.push([i,canvasPixelArray[index + 2]]);
 				}
-				console.log(red, green, blue);
+				
+				// update the chart display
+				scottlogic.chart.examples.imageDataExample.chart.redraw();
 			}
 		}
 	});
@@ -94,44 +154,7 @@ scottlogic.chart.examples.imageDataExample.load = function (id) {
 		startPos = null;
 	});
 
-	///** @type {scottlogic.chart.Chart} */
-	// var chart = new scottlogic.chart.Chart(id, [400, 300]);
-	// chart.gridlines.setGridlineStroke(new goog.graphics.Stroke(1, '#eee'));
-	// chart.getXAxis().setAlignment(scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE);
-	// chart.getYAxis().setAlignment(scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTINSIDE);
-	
-	
-	// /** @type {goog.i18n.DateTimeFormat} */
-	// var formatter = new goog.i18n.DateTimeFormat(goog.i18n.DateTimeFormat.Format.SHORT_TIME);
-	// chart.xAxisData.setFormatter(goog.bind(formatter.format, formatter));
-	
-	// chart.yAxisData.setFormatter(function(yValue) {
-		// return yValue.toFixed(2);;
-	// });
-	
-	// var data = [];
-	// var generate = (function generate() {
-		// data.length = 0;
-		// for (var hour = 8; hour < 16; hour += 1) {
-			// for (var minute = 0; minute < 60; minute += 15) {
-				// var date = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, hour, minute, 0, 0);
-				// data.push([date, Math.random() * 20 - 10]);
-			// }
-		// }
-		// var date = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, hour, 0, 0, 0);
-		// data.push([date, Math.random() * 20 - 10]);
-		// return generate;
-	// }());
-	
-	// var series = new scottlogic.chart.rendering.LineSeries("test", data);
-	// chart.addLineSeries(series);
-
-	// setInterval(function() {
-		// generate();
-		// series.redraw();
-	// }, 50);
-	
-	// chart.redraw();
 };
+
 
 goog.exportSymbol('scottlogic.chart.examples.imageDataExample.load', scottlogic.chart.examples.imageDataExample.load);
