@@ -18,7 +18,6 @@
  * Drag and drop implementation for sources/targets consisting of multiple
  * elements.
  *
- *
  * @see ../demos/dragdrop.html
  */
 
@@ -26,6 +25,8 @@ goog.provide('goog.fx.DragDropGroup');
 
 goog.require('goog.fx.AbstractDragDrop');
 goog.require('goog.fx.DragDropItem');
+
+
 
 /**
  * Drag/drop implementation for creating drag sources/drop targets consisting of

@@ -16,7 +16,6 @@
  * @fileoverview Base class for control renderers.
  * TODO(user):  If the renderer framework works well, pull it into Component.
  *
- *
  */
 
 goog.provide('goog.ui.ControlRenderer');
@@ -31,6 +30,7 @@ goog.require('goog.style');
 goog.require('goog.ui.Component.State');
 goog.require('goog.ui.ControlContent');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -364,12 +364,9 @@ goog.ui.ControlRenderer.prototype.initializeDom = function(control) {
  * @param {Element} element Element to update.
  */
 goog.ui.ControlRenderer.prototype.setAriaRole = function(element) {
-  // setAriaRole is a no-op everywhere except Gecko.
-  if (goog.userAgent.GECKO) {
-    var ariaRole = this.getAriaRole();
-    if (ariaRole) {
-      goog.dom.a11y.setRole(element, ariaRole);
-    }
+  var ariaRole = this.getAriaRole();
+  if (ariaRole) {
+    goog.dom.a11y.setRole(element, ariaRole);
   }
 };
 
@@ -741,12 +738,12 @@ goog.ui.ControlRenderer.prototype.getClassNamesForState = function(state) {
  *     if none).
  * @protected
  */
-  goog.ui.ControlRenderer.prototype.getClassForState = function(state) {
-    if (!this.classByState_) {
-      this.createClassByStateMap_();
-    }
-    return this.classByState_[state];
-  };
+goog.ui.ControlRenderer.prototype.getClassForState = function(state) {
+  if (!this.classByState_) {
+    this.createClassByStateMap_();
+  }
+  return this.classByState_[state];
+};
 
 
 /**

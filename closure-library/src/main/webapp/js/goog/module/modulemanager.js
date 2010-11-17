@@ -15,9 +15,6 @@
 /**
  * @fileoverview A singleton object for managing Javascript code modules.
  *
- *
- *
- *
  */
 
 goog.provide('goog.module.ModuleManager');
@@ -32,6 +29,7 @@ goog.require('goog.debug.Trace');
 goog.require('goog.module.AbstractModuleLoader');
 goog.require('goog.module.ModuleInfo');
 goog.require('goog.module.ModuleLoadCallback');
+
 
 
 /**
@@ -104,6 +102,7 @@ goog.module.ModuleManager = function() {
 };
 goog.inherits(goog.module.ModuleManager, goog.Disposable);
 goog.addSingletonGetter(goog.module.ModuleManager);
+
 
 /**
 * The type of callbacks that can be registered with the module manager,.
@@ -250,7 +249,7 @@ goog.module.ModuleManager.prototype.setAllModuleInfo = function(infoMap) {
 /**
  * Sets the module info for all modules. Should only be called once.
  *
- * @param {string} opt_info A string representation of the module dependency
+ * @param {string=} opt_info A string representation of the module dependency
  *      graph, in the form: module1:dep1,dep2/module2:dep1,dep2 etc.
  *     Where depX is the base-36 encoded position of the dep in the module list.
  */

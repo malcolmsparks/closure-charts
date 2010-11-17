@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview Graphics utility functions and factory methods.
- *
  * @see ../demos/graphics/advancedcoordinates.html
  * @see ../demos/graphics/advancedcoordinates2.html
  * @see ../demos/graphics/basicelements.html
@@ -28,7 +27,6 @@
 goog.provide('goog.graphics');
 
 goog.require('goog.graphics.CanvasGraphics');
-goog.require('goog.graphics.ServerGraphics');
 goog.require('goog.graphics.SvgGraphics');
 goog.require('goog.graphics.VmlGraphics');
 goog.require('goog.userAgent');
@@ -59,9 +57,6 @@ goog.graphics.createGraphics = function(width, height, opt_coordWidth,
       goog.userAgent.MOBILE)) {
     graphics = new goog.graphics.CanvasGraphics(width, height,
         opt_coordWidth, opt_coordHeight, opt_domHelper);
-  } else if (goog.userAgent.RHINO) {
-    graphics = new goog.graphics.ServerGraphics(width, height,
-        opt_coordWidth, opt_coordHeight);
   } else {
     graphics = new goog.graphics.SvgGraphics(width, height,
         opt_coordWidth, opt_coordHeight, opt_domHelper);

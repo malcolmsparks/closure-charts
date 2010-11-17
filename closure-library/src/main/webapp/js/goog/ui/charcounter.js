@@ -15,7 +15,6 @@
 /**
  * @fileoverview Character counter widget implementation.
  *
- *
  * @see ../demos/charcounter.html
  */
 
@@ -26,6 +25,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.InputHandler');
+
 
 
 /**

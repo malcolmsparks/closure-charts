@@ -19,7 +19,6 @@
  *   * Standardize CSS class names with other components
  *   * Add functionality to "host" other components in content area
  *   * Abstract out ButtonSet and make it more general
- *
  * @see ../demos/dialog.html
  */
 
@@ -47,6 +46,7 @@ goog.require('goog.structs.Map');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -105,6 +105,7 @@ goog.inherits(goog.ui.Dialog, goog.ui.Component);
  */
 goog.ui.Dialog.prototype.focusHandler_ = null;
 
+
 /**
  * Whether the escape key closes this dialog.
  * @type {boolean}
@@ -119,6 +120,7 @@ goog.ui.Dialog.prototype.escapeToCancel_ = true;
  * @private
  */
 goog.ui.Dialog.prototype.hasTitleCloseButton_ = true;
+
 
 /**
  * Whether the dialog should use an iframe as the background element to work
@@ -232,7 +234,6 @@ goog.ui.Dialog.prototype.titleEl_ = null;
  * @private
  */
 goog.ui.Dialog.prototype.titleTextEl_ = null;
-
 
 
 /**
@@ -842,21 +843,16 @@ goog.ui.Dialog.prototype.setVisible = function(visible) {
     this.reposition();
     // Listen for keyboard and resize events while the dialog is visible.
     this.getHandler().
-        listen(this.getElement(), goog.events.EventType.KEYDOWN,
-            this.onKey_, true).
-        listen(this.getElement(), goog.events.EventType.KEYPRESS,
-            this.onKey_, true).
-        listen(win, goog.events.EventType.RESIZE,
-            this.onResize_, true);
+        listen(this.getElement(), goog.events.EventType.KEYDOWN, this.onKey_).
+        listen(this.getElement(), goog.events.EventType.KEYPRESS, this.onKey_).
+        listen(win, goog.events.EventType.RESIZE, this.onResize_);
   } else {
     // Stop listening for keyboard and resize events while the dialog is hidden.
     this.getHandler().
-        unlisten(this.getElement(), goog.events.EventType.KEYDOWN,
-            this.onKey_, true).
+        unlisten(this.getElement(), goog.events.EventType.KEYDOWN, this.onKey_).
         unlisten(this.getElement(), goog.events.EventType.KEYPRESS,
-            this.onKey_, true).
-        unlisten(win, goog.events.EventType.RESIZE,
-            this.onResize_, true);
+            this.onKey_).
+        unlisten(win, goog.events.EventType.RESIZE, this.onResize_);
   }
 
   // Show/hide the iframe mask (on IE), the background mask, and the dialog.
@@ -1168,6 +1164,7 @@ goog.ui.Dialog.prototype.onButtonClick_ = function(e) {
   }
 };
 
+
 /**
  * Finds the parent button of an element (or null if there was no button
  * parent).
@@ -1305,6 +1302,7 @@ goog.ui.Dialog.prototype.focusElement_ = function() {
 };
 
 
+
 /**
  * Dialog event class.
  * @param {string} key Key identifier for the button.
@@ -1346,6 +1344,7 @@ goog.ui.Dialog.EventType = {
    */
   AFTER_HIDE: 'afterhide'
 };
+
 
 
 /**
@@ -1412,7 +1411,7 @@ goog.ui.Dialog.ButtonSet.prototype.cancelButton_ = null;
  *    "set" calls and build new ButtonSets.
  */
 goog.ui.Dialog.ButtonSet.prototype.set = function(key, caption,
-      opt_isDefault, opt_isCancel) {
+    opt_isDefault, opt_isCancel) {
   goog.structs.Map.prototype.set.call(this, key, caption);
 
   if (opt_isDefault) {

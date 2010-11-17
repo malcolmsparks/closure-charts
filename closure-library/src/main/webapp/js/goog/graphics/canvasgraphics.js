@@ -16,7 +16,7 @@
 /**
  * @fileoverview CanvasGraphics sub class that uses the canvas tag for drawing.
  * @author robbyw@google.com (Robby Walker)
- *
+ * @author wcrosby@google.com (Wayne Crosby)
  */
 
 
@@ -37,6 +37,7 @@ goog.require('goog.graphics.LinearGradient');
 goog.require('goog.graphics.SolidFill');
 goog.require('goog.graphics.Stroke');
 goog.require('goog.math.Size');
+
 
 
 /**
@@ -158,6 +159,7 @@ goog.graphics.CanvasGraphics.prototype.createDom = function() {
 
   this.updateSize();
 };
+
 
 /**
  * Clears the drawing context object in response to actions that make the old
@@ -580,42 +582,8 @@ goog.graphics.CanvasGraphics.prototype.createGroup = function(opt_group) {
  *
  * @param {string} text The text string to measure.
  * @param {goog.graphics.Font} font The font object describing the font style.
- *
- * @return {number} The width in pixels of the text strings.
  */
-goog.graphics.CanvasGraphics.prototype.getTextWidth = function(text, font) {
-  /** @type {goog.dom.DomHelper} */
-  var domHelper = goog.dom.getDomHelper();
-  
-  /**
-   * The ruler is used to measure the pixel width of Strings The style given
-   * allows the ruler to be off the page (out of sight), with the correct font
-   * and style properties.
-   *
-   * @type {Element}
-   */
-  var ruler_ = domHelper.createDom(
-      'div',
-      {
-        style: 'position:absolute; visibility:hidden; font-family:' +
-            font.family + '; font-size:' +
-            font.size + 'px;'
-      });
-
-  // Add the ruler to the dom
-  document.body.appendChild(ruler_);
-  
-  // Set the inner html of the ruler to be the text
-  ruler_.innerHTML = text;
-  
-  /** @type {number} */
-  var result = ruler_.offsetWidth;
-  
-  // Remove the ruler
-  domHelper.removeNode(ruler_);
-  
-  return result;
-};
+goog.graphics.CanvasGraphics.prototype.getTextWidth = goog.abstractMethod;
 
 
 /**
@@ -661,4 +629,50 @@ goog.graphics.CanvasGraphics.prototype.resume = function() {
     this.redraw();
     this.needsRedraw_ = false;
   }
+};
+
+/**
+ * Measure and return the width (in pixels) of a given text string.
+ * Text measurement is needed to make sure a text can fit in the allocated
+ * area. The way text length is measured is by writing it into a div that is
+ * after the visible area, measure the div width, and immediatly erase the
+ * written value.
+ *
+ * @param {string} text The text string to measure.
+ * @param {goog.graphics.Font} font The font object describing the font style.
+ *
+ * @return {number} The width in pixels of the text strings.
+ */
+goog.graphics.CanvasGraphics.prototype.getTextWidth = function(text, font) {
+  /** @type {goog.dom.DomHelper} */
+  var domHelper = goog.dom.getDomHelper();
+  
+  /**
+   * The ruler is used to measure the pixel width of Strings The style given
+   * allows the ruler to be off the page (out of sight), with the correct font
+   * and style properties.
+   *
+   * @type {Element}
+   */
+  var ruler_ = domHelper.createDom(
+      'div',
+      {
+        style: 'position:absolute; visibility:hidden; font-family:' +
+            font.family + '; font-size:' +
+            font.size + 'px;'
+      });
+
+  // Add the ruler to the dom
+  document.body.appendChild(ruler_);
+  
+  // Set the inner html of the ruler to be the text
+  ruler_.innerHTML = text;
+  
+  /** @type {number} */
+  var result = ruler_.offsetWidth;
+  
+  // Remove the ruler
+  domHelper.removeNode(ruler_);
+  
+  return result;
 };

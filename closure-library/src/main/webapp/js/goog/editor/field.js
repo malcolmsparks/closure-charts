@@ -18,9 +18,6 @@
  * iframe to contain the editable area, never inherits the style of the
  * surrounding page, and is always a fixed height.
  *
- *
- * @author nicksantos@google.com (Nick Santos)
- *
  * @see ../demos/editor/editor.html
  * @see ../demos/editor/field_basic.html
  */
@@ -53,6 +50,8 @@ goog.require('goog.string');
 goog.require('goog.string.Unicode');
 goog.require('goog.style');
 goog.require('goog.userAgent');
+
+
 
 /**
  * This class encapsulates an editable field.
@@ -598,6 +597,7 @@ if (!goog.userAgent.IE) {
   goog.editor.Field.KEYS_CAUSING_CHANGES_[9] = true; // TAB
 }
 
+
 /**
  * Map of keyCodes (not charCodes) that when used in conjunction with the
  * Ctrl key cause changes in the field contents. These are the keys that are
@@ -734,6 +734,7 @@ goog.editor.Field.prototype.tearDownFieldObject_ = function() {
   this.field = null;
   this.editableDomHelper = null;
 };
+
 
 /**
  * Initialize listeners on the field.

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Python style iteration utilities.
- *
  */
 
 
@@ -83,7 +82,6 @@ goog.iter.Iterator.prototype.next = function() {
 goog.iter.Iterator.prototype.__iterator__ = function(opt_keys) {
   return this;
 };
-
 
 
 /**

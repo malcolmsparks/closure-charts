@@ -16,7 +16,6 @@
  * @fileoverview
  * Implementations of DataNode for wrapping XML data.
  *
- *
  */
 
 goog.provide('goog.ds.XmlDataSource');
@@ -97,8 +96,7 @@ goog.ds.XmlDataSource.prototype.createChildNodes_ = function() {
   var childNodeList = new goog.ds.BasicNodeList();
   if (this.node_ != null) {
     var childNodes = this.node_.childNodes;
-    for (var i = 0, childNode; 
-    (childNode = goog.userAgent.RHINO ? childNodes.item(i) : childNodes[i]); i++) {
+    for (var i = 0, childNode; childNode = childNodes[i]; i++) {
       if (childNode.nodeType != goog.dom.NodeType.TEXT ||
           !goog.ds.XmlDataSource.isEmptyTextNodeValue_(childNode.nodeValue)) {
         var newNode = new goog.ds.XmlDataSource(childNode,
@@ -109,6 +107,7 @@ goog.ds.XmlDataSource.prototype.createChildNodes_ = function() {
   }
   this.childNodeList_ = childNodeList;
 };
+
 
 /**
  * Creates the DataNodeList with the attributes for the element
@@ -214,6 +213,7 @@ goog.ds.XmlDataSource.prototype.getDataName = function() {
   return this.dataName_;
 };
 
+
 /**
  * Setthe name of the node relative to the parent node
  * @param {string} name The name of the node.
@@ -282,6 +282,7 @@ goog.ds.XmlDataSource.createChildlessDocument_ = function() {
 };
 
 
+
 /**
  * Data source whose backing is an XMLHttpRequest,
  *
@@ -304,6 +305,7 @@ goog.ds.XmlHttpDataSource = function(uri, name) {
   }
 };
 goog.inherits(goog.ds.XmlHttpDataSource, goog.ds.XmlDataSource);
+
 
 /**
  * Default load state is NOT_LOADED
