@@ -111,3 +111,17 @@ scottlogic.chart.rendering.NonRenderedGraphicalAxis.prototype.disposeInternal =
   scottlogic.chart.rendering.NonRenderedGraphicalAxis.superClass_.
       disposeInternal.call(this);
 };
+
+/**
+ * @override
+ */
+scottlogic.chart.rendering.NonRenderedGraphicalAxis.prototype.addGraphics = function (graphics) {
+	
+};
+
+/**
+ * Rebuild the labels for this axis.
+ */
+scottlogic.chart.rendering.NonRenderedGraphicalAxis.prototype.rebuildInternal =
+    function() {
+};
