@@ -1108,3 +1108,17 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.padRight =
     function(obj, opt_rangeMin, opt_rangeMax) {
   return obj;
 };
+
+/**
+ * @override
+ */
+scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.getDefaultBounds =
+    function() {
+  // TODO(shall): should this be Discontinuous?
+  /** @type {goog.date.UtcDateTime} */
+  var yester = new goog.date.UtcDateTime(new Date());
+  yester.add(new goog.date.Interval(0, 0, -1));
+  
+  // Returning this time yesterday and current time
+  return [yester, new goog.date.UtcDateTime(new Date())];  
+}

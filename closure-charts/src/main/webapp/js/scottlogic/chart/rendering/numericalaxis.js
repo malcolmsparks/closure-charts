@@ -192,3 +192,11 @@ scottlogic.chart.rendering.NumericalAxis.prototype.compare = function(
     return 0;
   }
 };
+
+/**
+ * @override
+ */
+scottlogic.chart.rendering.NumericalAxis.prototype.getDefaultBounds = 
+    function() {
+  return [0, 1];
+}

@@ -609,7 +609,7 @@ scottlogic.chart.Chart.prototype.getYBounds_ = function() {
 
   // TODO(shall): Get the default values from the Data axis.
   return min === undefined || max === undefined || 
-    this.yAxisData.equals(min, max) ? [0, 1] :
+    this.yAxisData.equals(min, max) ? this.yAxisData.getDefaultBounds() :
       [this.yAxisData.padRight(min, min, max),
        this.yAxisData.padLeft(max, min, max)];
 };
@@ -652,12 +652,7 @@ scottlogic.chart.Chart.prototype.getXBounds_ = function() {
   // TODO(shall) : Get the default values from the Data axis.
   if (min === undefined || max === undefined || 
         this.xAxisData.equals(min, max)) {
-    /** @type {goog.date.UtcDateTime} */
-    var yester = new goog.date.UtcDateTime(new Date());
-    yester.add(new goog.date.Interval(0, 0, -1));
-
-    // Returning this time yesterday and current time
-    return [yester, new goog.date.UtcDateTime(new Date())];
+    return this.xAxisData.getDefaultBounds();
   } else {
     return [min, max];
   }
