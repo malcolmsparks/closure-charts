@@ -42,7 +42,7 @@ goog.require('scottlogic.chart.rendering.Style');
  *
  * @export
  * @extends {goog.events.EventTarget}
- * @param {string} id The element ID to draw to.
+ * @param {string|Element} id Element ID or a DOM node.
  * @param {Array.<number>} size The size to draw.
  * @param {*} xAxisConstructor the x data axis to use.
  * @param {*} yAxisConstructor the y data axis to use.
