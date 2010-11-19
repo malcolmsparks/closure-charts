@@ -85,6 +85,16 @@ scottlogic.chart.examples.example3.load = function (id) {
 	scottlogic.chart.examples.example3.generateNewLineData();
 };
 
+scottlogic.chart.examples.example3.start = function() {
+	// prevent multiple timeouts from stacking up.
+	scottlogic.chart.examples.example3.stop();
+	scottlogic.chart.examples.example3.timeout = setTimeout(scottlogic.chart.examples.example3.generateNewLineData, 10);
+};
+
+scottlogic.chart.examples.example3.stop = function() {
+	clearTimeout(scottlogic.chart.examples.example3.timeout);
+};
+
 /**
  * Generates a new dataset for each of the line series on the chart.
  * and redraws the chart
@@ -97,7 +107,7 @@ scottlogic.chart.examples.example3.generateNewLineData = function() {
 	scottlogic.chart.examples.example3.series2.points = scottlogic.chart.examples.example3.generateLineSeriesData();
 	scottlogic.chart.examples.example3.series3.points = scottlogic.chart.examples.example3.generateLineSeriesData();
 	scottlogic.chart.examples.example3.chart.redraw();
-	var t = setTimeout(scottlogic.chart.examples.example3.generateNewLineData, 10);
+	scottlogic.chart.examples.example3.start();
 };
 
 /**
@@ -125,3 +135,5 @@ scottlogic.chart.examples.example3.generateLineSeriesData = function() {
 
 
 goog.exportSymbol('scottlogic.chart.examples.example3.load', scottlogic.chart.examples.example3.load);
+goog.exportSymbol('scottlogic.chart.examples.example3.start', scottlogic.chart.examples.example3.start);
+goog.exportSymbol('scottlogic.chart.examples.example3.stop', scottlogic.chart.examples.example3.stop);
