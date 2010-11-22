@@ -29,7 +29,7 @@ goog.require('goog.graphics');
  * @param {scottlogic.chart.Chart.Orientation} axis The orientation of the axis.
  * @param {number} tickLength the length of the tick on the label.
  * @param {scottlogic.chart.rendering.Style} style The style of the label.
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment} 
+ * @param {scottlogic.chart.rendering.GraphicalAxis.Alignment} 
  *        alignment of the axis on which this label will be displayed. 
  * @extends {goog.Disposable}
  * @constructor
@@ -64,7 +64,7 @@ scottlogic.chart.rendering.Label = function(
    * The alignment of the axis the label is displayed on.
    * 
    * @private
-   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment}
+   * @type {scottlogic.chart.rendering.GraphicalAxis.Alignment}
    */
   this.alignment_ = alignment;
 
@@ -187,8 +187,8 @@ scottlogic.chart.rendering.Label.prototype.addGraphics = function(graphics) {
   this.textStroke_ = new goog.graphics.Stroke(0, this.style_.getFontColour());
   
   /** @type {string} */
-  var labelAlignment = ((this.alignment_ === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE) ||
-		  				(this.alignment_ === scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.TOPINSIDE)
+  var labelAlignment = ((this.alignment_ === scottlogic.chart.rendering.GraphicalAxis.Alignment.BOTTOMOUTSIDE) ||
+		  				(this.alignment_ === scottlogic.chart.rendering.GraphicalAxis.Alignment.TOPINSIDE)
 		  ? "bottom" : "top");
  
   if (this.axisOrientation_ === scottlogic.chart.Chart.Orientation.X) {
