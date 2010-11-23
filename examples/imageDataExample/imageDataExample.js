@@ -35,8 +35,8 @@ scottlogic.chart.examples.imageDataExample.load = function (id, chartid) {
 	
 	// Chart initialisation
 	scottlogic.chart.examples.imageDataExample.chart = new scottlogic.chart.Chart(chartid, [280, 200], 
-			scottlogic.chart.rendering.NumericalAxis, 
-			scottlogic.chart.rendering.NumericalAxis);
+			new scottlogic.chart.rendering.NumericalAxis(), 
+			new scottlogic.chart.rendering.NumericalAxis(), false, true);
 	
 	scottlogic.chart.examples.imageDataExample.chart.yAxisData.setMinimum(0);
 	scottlogic.chart.examples.imageDataExample.chart.gridlines.setGridlineStroke(new goog.graphics.Stroke(1,
@@ -53,8 +53,6 @@ scottlogic.chart.examples.imageDataExample.load = function (id, chartid) {
 	    input = input.toFixed(0);
 	    return input;
 	});
-	
-	scottlogic.chart.examples.imageDataExample.chart.setXRender(false);
 	
 	scottlogic.chart.examples.imageDataExample.chart.getYAxis().setAxisStroke(new goog.graphics.Stroke(1,
 	 "#999999"));

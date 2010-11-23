@@ -176,6 +176,18 @@ scottlogic.chart.rendering.GraphicalAxis.prototype.getAlignment =
 };
 
 /**
+ * Gets property specifying whether or not to render the Axis
+ *
+ * @return {boolean} renderAxis_ The render property
+ * @export
+ * @public
+ */
+scottlogic.chart.rendering.GraphicalAxis.prototype.getRender =
+    function() {
+			return this.renderAxis_;
+};
+
+/**
  * Sets the stroke of the axis
  *
  * @param {!goog.graphics.Stroke} stroke The stroke to set.
@@ -221,6 +233,18 @@ scottlogic.chart.rendering.GraphicalAxis.prototype.setLabelFontColour =
 scottlogic.chart.rendering.GraphicalAxis.prototype.setLabelStroke =
     function(stroke) {
   this.labelStyle_.setStroke(stroke);
+};
+
+/**
+ * Sets property specifying whether or not to render the Axis
+ *
+ * @param {boolean} render The render to set.
+ * @export
+ * @public
+ */
+scottlogic.chart.rendering.GraphicalAxis.prototype.setRender =
+		function(render) {
+			this.renderAxis_ = render;
 };
 
 /**

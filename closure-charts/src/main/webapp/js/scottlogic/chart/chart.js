@@ -43,15 +43,14 @@ goog.require('scottlogic.chart.rendering.Style');
  * @extends {goog.events.EventTarget}
  * @param {string|Element} id Element ID or a DOM node.
  * @param {Array.<number>} size The size to draw.
- * @param {*} xAxisConstructor the x data axis to use.
- * @param {*} yAxisConstructor the y data axis to use.
- *
- * TODO(shall) : temporary solution to being unable to select data axis. Eventually
- * will have getters define default values and setters to allow setting the axis.
+ * @param {scottlogic.chart.rendering.AbstractAxis=} opt_xAxis the x data axis to use.
+ * @param {scottlogic.chart.rendering.AbstractAxis=} opt_yAxis the y data axis to use.
+ * @param {boolean=} opt_renderXAxis whether to render the x axis
+ * @param {boolean=} opt_renderYAxis whether to render the y axis
  *
  * @constructor
  */
-scottlogic.chart.Chart = function(id, size, xAxisConstructor, yAxisConstructor) {
+scottlogic.chart.Chart = function(id, size, opt_xAxis, opt_yAxis, opt_renderXAxis, opt_renderYAxis) {
   goog.events.EventTarget.call(this);
   /**
    * Has the Chart been initialized?
@@ -60,20 +59,6 @@ scottlogic.chart.Chart = function(id, size, xAxisConstructor, yAxisConstructor) 
    * @type {boolean}
    */
   this.initialized_ = false;
-
-  /**
-   * Determines whether or not to render the X Axis
-   * @private
-   * @type {boolean}
-   */
-  this.renderX_ = true;
-
-  /**
-   * Determines whether or not to render the Y Axis
-   * @private
-   * @type {boolean}
-   */
-  this.renderY_ = true;
 
   /**
    * Get the canvas element from the HTML file, given as a parameter.
@@ -108,7 +93,7 @@ scottlogic.chart.Chart = function(id, size, xAxisConstructor, yAxisConstructor) 
    * @public
    * @type {scottlogic.chart.rendering.AbstractAxis} 
    */
-  this.xAxisData = xAxisConstructor ? new xAxisConstructor() : 
+  this.xAxisData = opt_xAxis ? opt_xAxis : 
       new scottlogic.chart.rendering.DiscontinuousDateTimeAxis();
 
   /**
@@ -117,7 +102,7 @@ scottlogic.chart.Chart = function(id, size, xAxisConstructor, yAxisConstructor) 
    * @public
    * @type {scottlogic.chart.rendering.AbstractAxis}
    */
-  this.yAxisData = yAxisConstructor ? new yAxisConstructor() :
+  this.yAxisData = opt_yAxis ? opt_yAxis :
       new scottlogic.chart.rendering.NumericalAxis();
 
   /**
@@ -128,7 +113,7 @@ scottlogic.chart.Chart = function(id, size, xAxisConstructor, yAxisConstructor) 
    */
   this.series_ = [];
 
-  this.generateGraphicalAxis_();
+  this.generateGraphicalAxis_(opt_renderXAxis, opt_renderYAxis);
 
   /**
    * Gridlines of the chart
@@ -199,9 +184,17 @@ scottlogic.chart.Chart.prototype.getGridlines = function() {
 
 /**
  * Generates the graphical axis
+ * @param {boolean=} opt_renderXAxis whether to render the x axis
+ * @param {boolean=} opt_renderYAxis whether to render the y axis
  * @private
  */
-scottlogic.chart.Chart.prototype.generateGraphicalAxis_ = function() {
+scottlogic.chart.Chart.prototype.generateGraphicalAxis_ = function(opt_renderXAxis, opt_renderYAxis) {
+	
+	// render axis unless told not to. 
+	
+	opt_renderXAxis = opt_renderXAxis === undefined ? true : opt_renderXAxis;
+	opt_renderYAxis = opt_renderYAxis === undefined ? true : opt_renderYAxis;
+	
   /**
    * The X Axis of the Chart
    *
@@ -210,7 +203,7 @@ scottlogic.chart.Chart.prototype.generateGraphicalAxis_ = function() {
    */
 	
   this.xAxis = new scottlogic.chart.rendering.GraphicalAxis(this.xAxisData, this.style_,
-  		scottlogic.chart.rendering.GraphicalAxis.Alignment.BOTTOMOUTSIDE, this.renderX_);
+  		scottlogic.chart.rendering.GraphicalAxis.Alignment.BOTTOMOUTSIDE, opt_renderXAxis);
 
   /**
    * The Y Axis of the Chart
@@ -220,26 +213,7 @@ scottlogic.chart.Chart.prototype.generateGraphicalAxis_ = function() {
    */
   
   this.yAxis = new scottlogic.chart.rendering.GraphicalAxis(this.yAxisData, this.style_,
-  		scottlogic.chart.rendering.GraphicalAxis.Alignment.LEFTOUTSIDE, this.renderY_);
-};
-
-/**
- * Sets whether or not to render the X Axis
- * Rendering involves actually drawing the underlying component. If you try
- * to toggle rendering, you are essentially resetting the Axis and will lost
- * any style values.
- * If you wish to toggle the visibility of the Axis, but keep the underlying
- * graphical components, you should use showXAxis / showYAxis.
- * @export
- * @param {boolean} input whether or not to render the x axis.
- * @public
- */
-scottlogic.chart.Chart.prototype.setXRender = function(input) {
-  if (typeof input === 'boolean') {
-    this.renderX_ = input;
-  }
-
-  this.generateGraphicalAxis_();
+  		scottlogic.chart.rendering.GraphicalAxis.Alignment.LEFTOUTSIDE, opt_renderYAxis);
 };
 
 /**
@@ -260,25 +234,6 @@ scottlogic.chart.Chart.prototype.getAllLineSeries = function() {
  */
 scottlogic.chart.Chart.prototype.getSeriesCount = function() {
   return this.series_.length;
-};
-
-/**
- * Sets whether or not to render the Y Axis.
- * Rendering involves actually drawing the underlying component. If you try
- * to toggle rendering, you are essentially resetting the Axis and will lost
- * any style values.
- * If you wish to toggle the visibility of the Axis, but keep the underlying
- * graphical components, you should use showXAxis / showYAxis.
- * @export
- * @param {boolean} input whether or not to render the y axis.
- * @public
- */
-scottlogic.chart.Chart.prototype.setYRender = function(input) {
-  if (typeof input === 'boolean') {
-    this.renderY_ = input;
-  }
-
-  this.generateGraphicalAxis_();
 };
 
 /**
@@ -423,56 +378,56 @@ scottlogic.chart.Chart.prototype.calculateBoundingBoxes_ = function() {
     plottingAreaHeight -= xAxisHeight;
   }
   
-  if (this.yAxis.getAlignment() === scottlogic.chart.rendering.GraphicalAxis.Alignment.RIGHTOUTSIDE) {
-	  plottingOffset.x = xAxisHorizontalMargin;
-	  plottingOffset.y = yAxisVerticalMargin;
-	  boundingboxYoffset.x = plottingAreaWidth + xAxisHorizontalMargin;
-	  boundingboxXoffset.x = xAxisHorizontalMargin;
-  }
-  if (this.yAxis.getAlignment() === scottlogic.chart.rendering.GraphicalAxis.Alignment.LEFTOUTSIDE) {
-	  plottingOffset.x = yAxisWidth;
-	  plottingOffset.y = yAxisVerticalMargin;
-	  boundingboxYoffset.x = 0;
-	  boundingboxXoffset.x = yAxisWidth;
-  }
-  if (this.yAxis.getAlignment() === scottlogic.chart.rendering.GraphicalAxis.Alignment.RIGHTINSIDE) {
-	  plottingOffset.x = xAxisHorizontalMargin;
-	  plottingOffset.y = yAxisVerticalMargin;
-	  boundingboxYoffset.x = xAxisHorizontalMargin + plottingAreaWidth - yAxisWidth;
-	  boundingboxXoffset.x = xAxisHorizontalMargin;
-  }
-  if (this.yAxis.getAlignment() === scottlogic.chart.rendering.GraphicalAxis.Alignment.LEFTINSIDE) {
-	  plottingOffset.x = xAxisHorizontalMargin;
-	  plottingOffset.y = yAxisVerticalMargin;
-	  boundingboxYoffset.x = xAxisHorizontalMargin;
-	  boundingboxXoffset.x = xAxisHorizontalMargin;
-  }
-  
-  if (this.xAxis.getAlignment() === scottlogic.chart.rendering.GraphicalAxis.Alignment.BOTTOMOUTSIDE) {
-	  boundingboxXoffset.y = plottingAreaHeight + yAxisVerticalMargin;
-	  boundingboxYoffset.y = yAxisVerticalMargin;
-	  plottingOffset.y = yAxisVerticalMargin;
-  } 
-  
-  if (this.xAxis.getAlignment() === scottlogic.chart.rendering.GraphicalAxis.Alignment.TOPOUTSIDE) {
-	  boundingboxXoffset.y = 0;
-	  boundingboxYoffset.y = xAxisHeight;
-	  plottingOffset.y = xAxisHeight;
+  switch (this.yAxis.getAlignment()) {
+  	case scottlogic.chart.rendering.GraphicalAxis.Alignment.RIGHTOUTSIDE:
+  		plottingOffset.x = xAxisHorizontalMargin;
+  	  plottingOffset.y = yAxisVerticalMargin;
+  	  boundingboxYoffset.x = plottingAreaWidth + xAxisHorizontalMargin;
+  	  boundingboxXoffset.x = xAxisHorizontalMargin;
+  	  break;
+  	case scottlogic.chart.rendering.GraphicalAxis.Alignment.LEFTOUTSIDE:
+  		plottingOffset.x = yAxisWidth;
+			plottingOffset.y = yAxisVerticalMargin;
+			boundingboxYoffset.x = 0;
+			boundingboxXoffset.x = yAxisWidth;
+			break;
+  	case scottlogic.chart.rendering.GraphicalAxis.Alignment.RIGHTINSIDE:
+  		plottingOffset.x = xAxisHorizontalMargin;
+  	  plottingOffset.y = yAxisVerticalMargin;
+  	  boundingboxYoffset.x = xAxisHorizontalMargin + plottingAreaWidth - yAxisWidth;
+  	  boundingboxXoffset.x = xAxisHorizontalMargin;
+  	  break;
+  	case scottlogic.chart.rendering.GraphicalAxis.Alignment.LEFTINSIDE:
+  		plottingOffset.x = xAxisHorizontalMargin;
+		  plottingOffset.y = yAxisVerticalMargin;
+		  boundingboxYoffset.x = xAxisHorizontalMargin;
+		  boundingboxXoffset.x = xAxisHorizontalMargin;
+		  break;
   }
   
-  if (this.xAxis.getAlignment() === scottlogic.chart.rendering.GraphicalAxis.Alignment.TOPINSIDE) {
-	  boundingboxXoffset.y = 0;
-	  boundingboxYoffset.y = 0;
-	  plottingOffset.y = 0;
+  switch (this.xAxis.getAlignment()) {
+  	case scottlogic.chart.rendering.GraphicalAxis.Alignment.BOTTOMOUTSIDE:
+	  	boundingboxXoffset.y = plottingAreaHeight + yAxisVerticalMargin;
+		  boundingboxYoffset.y = yAxisVerticalMargin;
+		  plottingOffset.y = yAxisVerticalMargin;
+		  break;
+  	case scottlogic.chart.rendering.GraphicalAxis.Alignment.TOPOUTSIDE:
+  		boundingboxXoffset.y = 0;
+  	  boundingboxYoffset.y = xAxisHeight;
+  	  plottingOffset.y = xAxisHeight;
+  	  break;
+  	case scottlogic.chart.rendering.GraphicalAxis.Alignment.TOPINSIDE:
+  		boundingboxXoffset.y = 0;
+  	  boundingboxYoffset.y = 0;
+  	  plottingOffset.y = 0;
+  	  break;
+  	case scottlogic.chart.rendering.GraphicalAxis.Alignment.BOTTOMINSIDE:
+  		boundingboxXoffset.y = plottingAreaHeight - xAxisHeight + yAxisVerticalMargin;
+  	  boundingboxYoffset.y = yAxisVerticalMargin;
+  	  plottingOffset.y = yAxisVerticalMargin;
+  	  break;
   }
-  
-  if (this.xAxis.getAlignment() === scottlogic.chart.rendering.GraphicalAxis.Alignment.BOTTOMINSIDE) {
-	  boundingboxXoffset.y = plottingAreaHeight - xAxisHeight + yAxisVerticalMargin;
-	  boundingboxYoffset.y = yAxisVerticalMargin;
-	  plottingOffset.y = yAxisVerticalMargin;
-  } 
-  
-  
+  	
   /**
    * Store the plotting area in a Rectangle (Used for gridlines and context)
    *
