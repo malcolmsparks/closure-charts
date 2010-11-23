@@ -95,9 +95,9 @@
         var max = new goog.date.UtcDateTime(2010, goog.date.month.AUG, 5, 16, 0, 0, 0);
         var x = new scottlogic.chart.rendering.DateTimeAxis();
         x.setMinimum(min);
-    	x.setMaximum(max);
+        x.setMaximum(max);
         var y = new scottlogic.chart.rendering.NumericalAxis();
-        
+  
         var chart = new scottlogic.chart.Chart("canvas", [300, 300], x, y);
         var series = new scottlogic.chart.rendering.LineSeries("test", [[min, 0],[max, 10]]);
         var series2 = new scottlogic.chart.rendering.LineSeries("test", [[min, 5],[max, 10]]);

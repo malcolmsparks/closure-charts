@@ -32,8 +32,9 @@ scottlogic.chart.examples.example3.load = function (id) {
    * @private 
    */
 
-  scottlogic.chart.examples.example3.chart = new scottlogic.chart.Chart(id, [600, 300], scottlogic.chart.rendering.NumericalAxis, 
-		  scottlogic.chart.rendering.NumericalAxis);
+  scottlogic.chart.examples.example3.chart = new scottlogic.chart.Chart(id, [600, 300], 
+  		new scottlogic.chart.rendering.NumericalAxis(), 
+		  new scottlogic.chart.rendering.NumericalAxis());
   
   scottlogic.chart.examples.example3.chart.getXAxis().setAxisStroke(new goog.graphics.Stroke(1, "#999999"));
   scottlogic.chart.examples.example3.chart.getYAxis().setAxisStroke(new goog.graphics.Stroke(1, "#999999"));

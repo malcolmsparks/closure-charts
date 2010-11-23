@@ -31,8 +31,8 @@ scottlogic.chart.examples.example1.load = function (id) {
 	/** @type {scottlogic.chart.Chart} */
 	var chart = new scottlogic.chart.Chart(id, [400, 300]);
 	chart.gridlines.setGridlineStroke(new goog.graphics.Stroke(1, '#eee'));
-	chart.getXAxis().setAlignment(scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.BOTTOMOUTSIDE);
-	chart.getYAxis().setAlignment(scottlogic.chart.rendering.AbstractGraphicalAxis.Alignment.RIGHTINSIDE);
+	chart.getXAxis().setAlignment(scottlogic.chart.rendering.GraphicalAxis.Alignment.BOTTOMOUTSIDE);
+	chart.getYAxis().setAlignment(scottlogic.chart.rendering.GraphicalAxis.Alignment.RIGHTINSIDE);
 	
 	
 	/** @type {goog.i18n.DateTimeFormat} */

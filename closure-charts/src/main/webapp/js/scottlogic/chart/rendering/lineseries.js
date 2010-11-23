@@ -171,13 +171,13 @@ scottlogic.chart.rendering.LineSeries.prototype.setStroke = function(stroke) {
 
 /**
  * Sets the X Axis on the Series
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis} axis
+ * @param {scottlogic.chart.rendering.GraphicalAxis} axis
  *    the axis to set.
  */
 scottlogic.chart.rendering.LineSeries.prototype.setGraphicalAxisX = function(
     axis) {
   /**
-   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis}
+   * @type {scottlogic.chart.rendering.GraphicalAxis}
    * @private
    */
   this.graphicalAxisX_ = axis;
@@ -185,13 +185,13 @@ scottlogic.chart.rendering.LineSeries.prototype.setGraphicalAxisX = function(
 
 /**
  * Sets the Y Axis on the Series
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis} axis
+ * @param {scottlogic.chart.rendering.GraphicalAxis} axis
  *    the axis to set.
  */
 scottlogic.chart.rendering.LineSeries.prototype.setGraphicalAxisY = function(
     axis) {
   /**
-   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis}
+   * @type {scottlogic.chart.rendering.GraphicalAxis}
    * @private
    */
   this.graphicalAxisY_ = axis;
@@ -325,9 +325,9 @@ scottlogic.chart.rendering.LineSeries.prototype.getYBounds_ = function(
  * initialized)
  *
  * @param {goog.graphics.AbstractGraphics} graphics the graphics to draw on.
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis} graphicalAxisX
+ * @param {scottlogic.chart.rendering.GraphicalAxis} graphicalAxisX
  *                                                    the X Axis to draw using.
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis} graphicalAxisY
+ * @param {scottlogic.chart.rendering.GraphicalAxis} graphicalAxisY
  *                                                    the Y Axis to draw using.
  * @param {scottlogic.chart.rendering.Context} context the context to use when
  *        drawing.
@@ -511,9 +511,9 @@ scottlogic.chart.rendering.LineSeries.prototype.toggleDim = function() {
  * Initializes the Line Series
  *
  * @param {goog.graphics.AbstractGraphics} graphics The graphics to draw upon.
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis} graphicalAxisX
+ * @param {scottlogic.chart.rendering.GraphicalAxis} graphicalAxisX
  *    the x axis to use when drawing.
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis} graphicalAxisY
+ * @param {scottlogic.chart.rendering.GraphicalAxis} graphicalAxisY
  *    the y axis to use when drawing.
  * @param {scottlogic.chart.rendering.Context} context
  *                                                the context of the series.

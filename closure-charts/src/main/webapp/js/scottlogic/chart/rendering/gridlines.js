@@ -97,9 +97,9 @@ scottlogic.chart.rendering.Gridlines.prototype.setZeroLineStroke = function(
  * Redraws the object
  *
  * @param {goog.math.Rect} rect the rectangle in which to draw the grid lines.
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis} xAxis
+ * @param {scottlogic.chart.rendering.GraphicalAxis} xAxis
  *                                                          the x Axis to use.
- * @param {scottlogic.chart.rendering.AbstractGraphicalAxis} yAxis
+ * @param {scottlogic.chart.rendering.GraphicalAxis} yAxis
  *                                                          the y Axis to use.
  * @public
  */
@@ -116,13 +116,13 @@ scottlogic.chart.rendering.Gridlines.prototype.redraw = function(
 
   /**
    * @private
-   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis}
+   * @type {scottlogic.chart.rendering.GraphicalAxis}
    */
   this.xAxis = xAxis;
 
   /**
    * @private
-   * @type {scottlogic.chart.rendering.AbstractGraphicalAxis}
+   * @type {scottlogic.chart.rendering.GraphicalAxis}
    */
   this.yAxis = yAxis;
 

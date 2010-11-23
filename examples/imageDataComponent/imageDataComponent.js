@@ -75,13 +75,13 @@ scottlogic.chart.examples.ImageDataComponent.prototype.decorateInternal = functi
   /** @type {Element} */
   this.canvas = goog.dom.getNextElementSibling(chartElement);
   
-  //Chart initialisation
+  //Chart initialisation (specifying don't render x-axis, do render y-axis)
   /** @type {scottlogic.chart.Chart} */
 	this.chart = new scottlogic.chart.Chart(chartElement, [280, 200], 
-			scottlogic.chart.rendering.NumericalAxis, 
-			scottlogic.chart.rendering.NumericalAxis);
+			new scottlogic.chart.rendering.NumericalAxis(), 
+			new scottlogic.chart.rendering.NumericalAxis(), false, true);
 	
-	this.chart.yAxisData.setMinimum(0);
+	this.chart.yAxisData.setMinimum(0); 
 	this.chart.gridlines.setGridlineStroke(new goog.graphics.Stroke(1,
 	 "#ededed"));
 	this.chart.gridlines.setZeroLineStroke(new goog.graphics.Stroke(1,
@@ -89,8 +89,6 @@ scottlogic.chart.examples.ImageDataComponent.prototype.decorateInternal = functi
 	
 	this.chart.xAxisData.setFormatter(this.axisFormatter);	  
 	this.chart.yAxisData.setFormatter(this.axisFormatter);
-
-	this.chart.setXRender(false);
 	
 	this.chart.getYAxis().setAxisStroke(new goog.graphics.Stroke(1,
 	 "#999999"));
