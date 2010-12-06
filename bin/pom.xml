@@ -20,8 +20,6 @@
 	<name>Closure Charts Component</name>
 	<url>http://code.google.com/p/closure-charts/</url>
 	<build>
-		<directory>../target</directory>
-		<outputDirectory>../target</outputDirectory>
 		<plugins>
 			<plugin>
     	    <groupId>org.apache.maven.plugins</groupId>
@@ -30,18 +28,6 @@
 			<configuration>
 				<failOnMissingWebXml>false</failOnMissingWebXml>
 			</configuration>
-			<executions>
-				<execution>
-					<id>default-war</id>
-					<phase>prepare-package</phase>
-					<goals>
-						<goal>war</goal>
-					</goals>
-					<configuration>
-						<packagingIncludes>../closure-charts/*,../closure-library/*</packagingIncludes>
-					</configuration>
-				</execution>
-			</executions>
 			</plugin>
 		</plugins>
 	</build>
