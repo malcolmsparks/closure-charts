@@ -676,7 +676,27 @@ scottlogic.chart.Chart.prototype.removeLineSeriesById = function(idToRemove) {
  */
 scottlogic.chart.Chart.prototype.getLineSeriesById = function(id) {
   for (var i = 0; i < this.series_.length; i++) {
-    if (this.series_[i].id === id) { return this.series_[i]; }
+    if (this.series_[i].id === id) { return this.getLineSeriesByIndex(i); }
+  }
+};
+
+/**
+ * Returns the Line Series at the given index.
+ * @param {number} index the index to get the line series of
+ * @return {?scottlogic.chart.rendering.LineSeries} the matching line series.
+ * @public
+ * @export
+ */
+scottlogic.chart.Chart.prototype.getLineSeriesByIndex = function(index) {
+  if(this.series_.length === 0) {
+    // Return null if there are no series
+    return null;
+  } if(index < 0) {
+    return this.series_[0];
+  } else if(index > this.series_.length) {
+    return this.series_[this.series_.length-1];
+  } else {
+    return this.series_[index];
   }
 };
 
