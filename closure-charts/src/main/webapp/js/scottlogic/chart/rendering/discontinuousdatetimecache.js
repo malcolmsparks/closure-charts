@@ -123,7 +123,7 @@ scottlogic.chart.rendering.DiscontinuousDateTimeCache.prototype.getKey =
  */
 scottlogic.chart.rendering.DiscontinuousDateTimeCache.prototype.getVal =
     function(i) {
-  return this.vals_[i];
+  return i < 0 ? 0 : this.vals_[i];
 };
 
 /**
