@@ -62,10 +62,14 @@ scottlogic.chart.rendering.RebasedLineSeries.prototype.rebase =
     function(rebaseVal) {
   this.rebaseValue_ = rebaseVal;
 
-  // Convert all values to rebased values
-  for (var i = 0, l = this.points.length; i < l; i++) {
-    this.points[i][1] = ((this.originalPoints_[i][1] - this.rebaseValue_) /
+  // Guard against divide against zero errors. If the rebase value is
+  // zero, we do not need to apply any rebasing.
+  if(rebaseVal !== 0) {
+    // Convert all values to rebased values
+    for (var i = 0, l = this.points.length; i < l; i++) {
+      this.points[i][1] = ((this.originalPoints_[i][1] - this.rebaseValue_) /
         this.rebaseValue_) * 100;
+    }
   }
 };
 
