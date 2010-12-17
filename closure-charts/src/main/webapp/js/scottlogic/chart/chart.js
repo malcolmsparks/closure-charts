@@ -688,16 +688,7 @@ scottlogic.chart.Chart.prototype.getLineSeriesById = function(id) {
  * @export
  */
 scottlogic.chart.Chart.prototype.getLineSeriesByIndex = function(index) {
-  if(this.series_.length === 0) {
-    // Return null if there are no series
-    return null;
-  } if(index < 0) {
-    return this.series_[0];
-  } else if(index > this.series_.length) {
-    return this.series_[this.series_.length-1];
-  } else {
-    return this.series_[index];
-  }
+  return this.series_[index];
 };
 
 /**
