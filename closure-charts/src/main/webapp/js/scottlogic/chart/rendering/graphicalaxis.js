@@ -877,7 +877,7 @@ scottlogic.chart.rendering.GraphicalAxis.prototype.convertNormalized =
   var tempVal = input - this.normalizedMin_;
 
   // finally get a value between 0 and 1 which is the relative position
-  input = tempVal / tempMax;
+  input = tempMax === 0 ? 0 : tempVal / tempMax;
 
   // Now convert relative position into a canvas point
   if (this.isXAxis()) {
