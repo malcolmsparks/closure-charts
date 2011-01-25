@@ -2,3 +2,4 @@ closure-charts/closure-library-patches/CanvasGraphicsImplementedGetTextWidth.pat
 closure-charts/closure-library-patches/CanvasTextPointsToPixelsChange.patch
 closure-charts/closure-library-patches/ProtectAgainstEmptySvgPath.patch
 closure-charts/closure-library-patches/VmlGraphicsSuspendResumeGetTextWidth.patch
+closure-charts/closure-library-patches/SVGGraphicsTextWidthImplementation.patch
