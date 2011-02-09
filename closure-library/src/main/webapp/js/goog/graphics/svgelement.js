@@ -179,8 +179,9 @@ goog.inherits(goog.graphics.SvgPathElement, goog.graphics.PathElement);
  * @param {goog.graphics.Path} path The path object to draw.
  */
 goog.graphics.SvgPathElement.prototype.setPath = function(path) {
+  // Check if the Path is empty before setting attribute.
   var attributes = path.isEmpty() ? {} : 
-  {'d': goog.graphics.SvgGraphics.getSvgPath(path)};
+    {'d': goog.graphics.SvgGraphics.getSvgPath(path)};
   
   this.getGraphics().setElementAttributes(this.getElement(),
       attributes);

@@ -15,8 +15,6 @@
 
 /**
  * @fileoverview SvgGraphics sub class that uses SVG to draw the graphics.
- *
- *
  */
 
 goog.provide('goog.graphics.SvgGraphics');
@@ -38,6 +36,7 @@ goog.require('goog.graphics.SvgRectElement');
 goog.require('goog.graphics.SvgTextElement');
 goog.require('goog.math.Size');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -615,16 +614,15 @@ goog.graphics.SvgGraphics.prototype.drawTextOnLine = function(
  */
 goog.graphics.SvgGraphics.prototype.drawPath = function(
     path, stroke, fill, opt_group) {
-  /* Check whether the path is empty. Do not add attributes to the element
-   *  if it is */
-   var attributes = path.isEmpty() ? {} : 
-     {'d': goog.graphics.SvgGraphics.getSvgPath(path)};
-   
-   var element = this.createSvgElement_('path', attributes);
-   
-   var wrapper = new goog.graphics.SvgPathElement(element, this, stroke, fill);
-   this.append_(wrapper, opt_group);
-   return wrapper;
+  
+  // Check if the Path is empty. Do not add 'd' attribute if so.
+  var attributes = path.isEmpty() ? {} : 
+    {'d': goog.graphics.SvgGraphics.getSvgPath(path)}
+  
+  var element = this.createSvgElement_('path', attributes);
+  var wrapper = new goog.graphics.SvgPathElement(element, this, stroke, fill);
+  this.append_(wrapper, opt_group);
+  return wrapper;
 };
 
 
