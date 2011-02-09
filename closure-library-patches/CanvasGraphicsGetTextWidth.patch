@@ -1,26 +1,15 @@
-### Eclipse Workspace Patch 1.0
-#P closure-library-readonly
-Index: closure/goog/graphics/canvasgraphics.js
+Index: goog/graphics/canvasgraphics.js
 ===================================================================
---- closure/goog/graphics/canvasgraphics.js	(revision 329)
-+++ closure/goog/graphics/canvasgraphics.js	(working copy)
-@@ -628,3 +628,49 @@
-     this.needsRedraw_ = false;
-   }
- };
-+
-+/**
-+ * Measure and return the width (in pixels) of a given text string.
-+ * Text measurement is needed to make sure a text can fit in the allocated
-+ * area. The way text length is measured is by writing it into a div that is
-+ * after the visible area, measure the div width, and immediatly erase the
-+ * written value.
-+ *
-+ * @param {string} text The text string to measure.
-+ * @param {goog.graphics.Font} font The font object describing the font style.
+--- goog/graphics/canvasgraphics.js	(revision 697)
++++ goog/graphics/canvasgraphics.js	(working copy)
+@@ -582,10 +582,44 @@
+  *
+  * @param {string} text The text string to measure.
+  * @param {goog.graphics.Font} font The font object describing the font style.
 + *
 + * @return {number} The width in pixels of the text strings.
-+ */
+  */
+-goog.graphics.CanvasGraphics.prototype.getTextWidth = goog.abstractMethod;
 +goog.graphics.CanvasGraphics.prototype.getTextWidth = function(text, font) {
 +  /** @type {goog.dom.DomHelper} */
 +  var domHelper = goog.dom.getDomHelper();
@@ -39,7 +28,7 @@ Index: closure/goog/graphics/canvasgraphics.js
 +            font.family + '; font-size:' +
 +            font.size + 'px;'
 +      });
-+
+ 
 +  // Add the ruler to the dom
 +  document.body.appendChild(ruler_);
 +  
@@ -54,3 +43,8 @@ Index: closure/goog/graphics/canvasgraphics.js
 +  
 +  return result;
 +};
+ 
++
+ /**
+  * Disposes of the component by removing event handlers, detacing DOM nodes from
+  * the document body, and removing references to them.

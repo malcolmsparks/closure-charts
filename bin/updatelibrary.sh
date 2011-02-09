@@ -10,7 +10,7 @@ cd ../../../../../..
 read -n1 -r -p "Press any key to continue..." key
 
 echo "Applying patches"
-ln -s closure-charts/closure-library/src/main/webapp/js closure
+ln -s closure-charts/closure-library/src/main/webapp/js/goog goog
 cat patches.txt | xargs -n 1 patch -p0 -i
 read -n1 -r -p "Press any key to continue..." key
 

@@ -1,27 +1,8 @@
-## Eclipse Workspace Patch 1.0
-#P closure-library-readonly
-Index: closure/goog/graphics/svggraphics.js
+Index: goog/graphics/svggraphics.js
 ===================================================================
---- closure/goog/graphics/svggraphics.js	Wed Nov 17 17:23:02 2010 +0000
-+++ closure/goog/graphics/svggraphics.js	Wed Nov 17 18:03:42 2010 +0000
-@@ -15,6 +15,8 @@
- 
- /**
-  * @fileoverview SvgGraphics sub class that uses SVG to draw the graphics.
-+ *
-+ *
-  */
- 
- goog.provide('goog.graphics.SvgGraphics');
-@@ -38,7 +40,6 @@
- goog.require('goog.userAgent');
- 
- 
--
- /**
-  * A Graphics implementation for drawing using SVG.
-  * @param {string|number} width The width in pixels.  Strings
-@@ -693,7 +694,37 @@
+--- goog/graphics/svggraphics.js	(revision 697)
++++ goog/graphics/svggraphics.js	(working copy)
+@@ -689,7 +689,37 @@
   * @param {goog.graphics.Font} font The font object describing the font style.
   */
  goog.graphics.SvgGraphics.prototype.getTextWidth = function(text, font) {

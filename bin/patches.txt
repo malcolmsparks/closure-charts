@@ -1,5 +1,6 @@
-closure-charts/closure-library-patches/CanvasGraphicsImplementedGetTextWidth.patch
-closure-charts/closure-library-patches/CanvasTextPointsToPixelsChange.patch
+closure-charts/closure-library-patches/CanvasGraphicsGetTextWidth.patch
+closure-charts/closure-library-patches/CanvasElementPointsToPixels.patch
 closure-charts/closure-library-patches/ProtectAgainstEmptySvgPath.patch
-closure-charts/closure-library-patches/VmlGraphicsSuspendResumeGetTextWidth.patch
-closure-charts/closure-library-patches/SVGGraphicsTextWidthImplementation.patch
+closure-charts/closure-library-patches/VmlGraphicsSuspendResume.patch
+closure-charts/closure-library-patches/VmlGraphicsGetTextWidth.patch
+closure-charts/closure-library-patches/SvgGraphicsGetTextWidth.patch
