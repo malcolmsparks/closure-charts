@@ -491,6 +491,7 @@ scottlogic.chart.Chart.prototype.initialize_ = function() {
         function(e) {
           e.preventDefault();
 
+          /** @type {number} */
           var clientPos = e.type == goog.events.EventType.TOUCHMOVE ?
             e.getBrowserEvent().changedTouches[0].clientX : e.clientX;
 
