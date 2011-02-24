@@ -486,18 +486,22 @@ scottlogic.chart.Chart.prototype.initialize_ = function() {
    */
   this.context_ = new scottlogic.chart.rendering.Context(this.plottingArea);
 
-  goog.events
-      .listen(this.canvas_, goog.events.EventType.MOUSEMOVE,
-          function(e) {
-            /** @type {number} */
-            var relativeMousePosition = e.clientX -
-                                        goog.style
-                                            .getClientPosition(that.canvas_).x;
+  goog.events.listen(this.canvas_, 
+        [goog.events.EventType.TOUCHMOVE, goog.events.EventType.MOUSEMOVE],
+        function(e) {
+          e.preventDefault();
 
-            that.updateTrackballs(/** @type {goog.date.UtcDateTime} */
-                (that.xAxis.convertCanvasToData(relativeMousePosition)));
-            that.dispatchEvent(e);
-          }, true);
+          var clientPos = e.type == goog.events.EventType.TOUCHMOVE ?
+            e.getBrowserEvent().changedTouches[0].clientX : e.clientX;
+
+          /** @type {number} */
+          var relativeMousePosition = clientPos - goog.style.getClientPosition(e.target).x;
+
+          that.updateTrackballs(/** @type {goog.date.UtcDateTime} */
+              (that.xAxis.convertCanvasToData(relativeMousePosition)));
+
+          that.dispatchEvent(new scottlogic.chart.TrackballChangeEvent(e));
+        }, true);
 };
 
 /**
@@ -719,3 +723,21 @@ scottlogic.chart.Chart.Orientation = {
   X: 0,
   Y: 1
 };
+
+/** @enum {string} */
+scottlogic.chart.Chart.EventType = {
+  TRACKBALL_CHANGE : goog.events.getUniqueId('trackball_change')
+};
+
+/**
+ * An event that represents a change to the trackballs.
+ * This is generated through either a mousemove or a touchmove.
+ * @constructor
+ * @param {Event|goog.events.Event} e 
+ *                  the Event that caused the trackball change
+ * @extends 
+ */
+scottlogic.chart.TrackballChangeEvent = function(e) {
+  goog.base(this, scottlogic.chart.Chart.EventType.TRACKBALL_CHANGE, e);
+};
+goog.inherits(scottlogic.chart.TrackballChangeEvent, goog.events.Event);
