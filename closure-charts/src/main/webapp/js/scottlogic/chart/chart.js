@@ -735,7 +735,7 @@ scottlogic.chart.Chart.EventType = {
  * @constructor
  * @param {Event|goog.events.Event} e 
  *                  the Event that caused the trackball change
- * @extends 
+ * @extends {goog.events.Event}
  */
 scottlogic.chart.TrackballChangeEvent = function(e) {
   goog.base(this, scottlogic.chart.Chart.EventType.TRACKBALL_CHANGE, e);
