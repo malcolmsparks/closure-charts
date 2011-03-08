@@ -179,17 +179,18 @@ goog.editor.BrowserFeature = {
 
   // Whether this browser collapses the selection in a contenteditable when the
   // mouse is pressed in a non-editable portion of the same frame, even if
-  // Event.preventDefault is called.
-  COLLAPSES_SELECTION_ONMOUSEDOWN: goog.userAgent.OPERA,
+  // Event.preventDefault is called. This field is deprecated and unused -- only
+  // old versions of Opera have this bug.
+  COLLAPSES_SELECTION_ONMOUSEDOWN: false,
 
   // Whether the user can actually create a selection in this browser with the
   // caret in the MIDDLE of the selection by double-clicking.
   CARET_INSIDE_SELECTION: goog.userAgent.OPERA,
 
   // Whether the browser focuses <body contenteditable> automatically when
-  // the user clicks on <html>
-  FOCUSES_EDITABLE_BODY_ON_HTML_CLICK:
-      goog.userAgent.IE || goog.userAgent.GECKO || goog.userAgent.WEBKIT,
+  // the user clicks on <html>. This field is deprecated and unused -- only old
+  // versions of Opera don't have this behavior.
+  FOCUSES_EDITABLE_BODY_ON_HTML_CLICK: true,
 
   // Whether to use keydown for key listening (uses keypress otherwise). Taken
   // from goog.events.KeyHandler.
@@ -246,6 +247,6 @@ goog.editor.BrowserFeature = {
   // browser: http://www.whatwg/org/specs/web-apps/current-work/#dnd
   SUPPORTS_HTML5_FILE_DRAGGING: (goog.userAgent.product.CHROME &&
                                  goog.userAgent.product.isVersion('4')) ||
-      (goog.userAgent.product.SAFARI && goog.userAgent.product.isVersion('533'))
+      (goog.userAgent.product.SAFARI && goog.userAgent.isVersion('533'))
 
 };
