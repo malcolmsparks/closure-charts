@@ -4,3 +4,4 @@ closure-charts/closure-library-patches/ProtectAgainstEmptySvgPath.patch
 closure-charts/closure-library-patches/VmlGraphicsSuspendResume.patch
 closure-charts/closure-library-patches/VmlGraphicsGetTextWidth.patch
 closure-charts/closure-library-patches/SvgGraphicsGetTextWidth.patch
+closure-charts/closure-library-patches/IgnoreStatusCodeZero.patch
