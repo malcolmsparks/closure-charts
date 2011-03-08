@@ -5,9 +5,9 @@
 # Parent  e4ff2747273918be5955ca807e273516aba630f7
 Temporary fix for an incorrect return statement when you are attempted to access an offline, cached resource.
 
-diff -r e4ff27472739 -r 237c2d478e6f closure-library/src/main/webapp/js/goog/net/xhrio.js
---- a/closure-library/src/main/webapp/js/goog/net/xhrio.js	Thu Feb 24 11:39:11 2011 +0000
-+++ b/closure-library/src/main/webapp/js/goog/net/xhrio.js	Tue Mar 08 09:09:12 2011 +0000
+diff -r e4ff27472739 -r 237c2d478e6f goog/net/xhrio.js
+--- goog/net/xhrio.js	Thu Feb 24 11:39:11 2011 +0000
++++ goog/net/xhrio.js	Tue Mar 08 09:09:12 2011 +0000
 @@ -842,7 +842,7 @@
  goog.net.XhrIo.prototype.isSuccess = function() {
    switch (this.getStatus()) {
