@@ -842,7 +842,7 @@ goog.net.XhrIo.prototype.isComplete = function() {
 goog.net.XhrIo.prototype.isSuccess = function() {
   switch (this.getStatus()) {
     case 0:         // Used for local XHR requests
-      return !this.isLastUriEffectiveSchemeHttp_();
+      //return !this.isLastUriEffectiveSchemeHttp_();
 
     case 200:       // Http Success
     case 204:       // Http Success - no content
