@@ -774,8 +774,7 @@ scottlogic.chart.rendering.GraphicalAxis.prototype.isYAxis =
  * @return {*} the data object represented.
  */
 scottlogic.chart.rendering.GraphicalAxis.prototype.convertCanvasToData =
-    function(
-    input) {
+    function(input) {
   /** @type {number} */
   var tempMax = this.normalizedMax_ - this.normalizedMin_;
 
@@ -800,7 +799,7 @@ scottlogic.chart.rendering.GraphicalAxis.prototype.convertCanvasToData =
   } else if (relative > 1) {
     relative = 1;
   }
-
+  
   return this.axis.denormalize(this.normalizedMin_ + (relative * tempMax));
 };
 

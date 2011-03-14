@@ -492,11 +492,11 @@ scottlogic.chart.Chart.prototype.initialize_ = function() {
           e.preventDefault();
 
           /** @type {number} */
-          var clientPos = e.type == goog.events.EventType.TOUCHMOVE ?
+          var clientPos = e.type === goog.events.EventType.TOUCHMOVE ?
             e.getBrowserEvent().changedTouches[0].clientX : e.clientX;
 
           /** @type {number} */
-          var relativeMousePosition = clientPos - goog.style.getClientPosition(e.target).x;
+          var relativeMousePosition = clientPos - goog.style.getClientPosition(e.currentTarget).x;
 
           that.updateTrackballs(/** @type {goog.date.UtcDateTime} */
               (that.xAxis.convertCanvasToData(relativeMousePosition)));
@@ -519,6 +519,7 @@ scottlogic.chart.Chart.prototype.updateTrackballs = function(dataPoint) {
   for (var i = 0; i < this.series_.length; i++) {
     this.series_[i].updateTrackball(dataPoint);
   }
+  
   this.graphics_.resume();
 };
 
