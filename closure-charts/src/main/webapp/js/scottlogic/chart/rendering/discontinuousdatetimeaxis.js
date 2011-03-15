@@ -707,11 +707,6 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.moveForward_ =
  */
 scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalizeFrom_ =
     function(date, baseDate) {
-  // Check whether the working ms has been assigned already
-  if (date.workingMs > -1) {
-    return date.workingMs;
-  }
-
   /** @type {goog.date.UtcDateTime} */
   var input = date;
 
@@ -792,7 +787,6 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalizeFrom_ =
     }
   }
 
-  date.workingMs = result;
   return result;
 };
 
@@ -828,6 +822,14 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalizeFrom_ =
 scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalize =
     function(inputObj) {
 
+  // Check whether the working ms has been assigned already
+  if (inputObj.workingMs > -1) {
+    return inputObj.workingMs;
+  }
+
+  // We check the cache to get the normalized value of the beginning of the
+  // input day
+
   /** @type {goog.date.UtcDateTime} */
   var input = new goog.date.UtcDateTime(new Date(inputObj));
 
@@ -843,12 +845,20 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.normalize =
   /** @type {?number} */
   var baseNormalized = this.cache_.getVal(index);
 
+  var result;
+
+  // If we don't have a beginning day value, normalize from the epoch
   if (!(baseNormalized > -1)) {
-    return this.normalizeFrom_(input,
+    result = this.normalizeFrom_(input,
         new goog.date.UtcDateTime(new Date(0)));
+  } else {
+    // Otherwise we normalize from the base
+    result = baseNormalized + this.normalizeFrom_(input, start);
   }
 
-  return baseNormalized + this.normalizeFrom_(input, start);
+  // Assign the normalized value to the original object and return the result
+  inputObj.workingMs = result;
+  return result;
 };
 
 /**
