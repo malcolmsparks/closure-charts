@@ -355,14 +355,18 @@ scottlogic.chart.rendering.LineSeries.prototype.redraw = function(graphics,
     var x = [];
 
     for (var i = 0, l = this.points.length; i < l; i++) {
-      if (!this.min_ ||
-          this.graphicalAxisY_.axis.compare(
-              this.points[i][1], this.min_[1]) < 0) {
+      if(!this.min_) {
         this.min_ = this.points[i];
       }
 
-      if (!this.max_ ||
-          this.graphicalAxisY_.axis.compare(
+      if(!this.max_) {
+        this.max_ = this.points[i];
+      }
+
+      if (this.graphicalAxisY_.axis.compare(
+            this.points[i][1], this.min_[1]) < 0) {
+        this.min_ = this.points[i];
+      } else if (this.graphicalAxisY_.axis.compare(
               this.points[i][1], this.max_[1]) > 0) {
         this.max_ = this.points[i];
       }
