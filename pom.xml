@@ -19,6 +19,9 @@
     <version>1.1-SNAPSHOT</version>
     <name>Closure Charts Component</name>
     <url>http://code.google.com/p/closure-charts/</url>
+    <scm>
+        <connection>scm:hg:https://closure-charts.googlecode.com/hg/</connection>
+    </scm>
     <build>
         <plugins>
             <plugin>
