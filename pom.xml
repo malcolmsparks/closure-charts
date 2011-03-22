@@ -16,7 +16,7 @@
     <groupId>com.scottlogic.closure</groupId>
     <artifactId>closure-charts</artifactId>
     <packaging>war</packaging>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <name>Closure Charts Component</name>
     <url>http://code.google.com/p/closure-charts/</url>
     <scm>
