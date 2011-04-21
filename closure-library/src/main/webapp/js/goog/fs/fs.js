@@ -41,11 +41,15 @@ goog.require('goog.fs.FileSystem');
  * @private
  */
 goog.fs.get_ = function(type, size) {
+  if (!goog.isFunction(goog.global.requestFileSystem)) {
+    return goog.async.Deferred.fail(new Error('File API unsupported'));
+  }
+
   var d = new goog.async.Deferred();
   goog.global.requestFileSystem(type, size, function(fs) {
     d.callback(new goog.fs.FileSystem(fs));
   }, function(err) {
-    d.callback(new goog.fs.Error(err.code, 'requesting filesystem'));
+    d.errback(new goog.fs.Error(err.code, 'requesting filesystem'));
   });
   return d;
 };
@@ -118,11 +122,17 @@ goog.fs.revokeObjectUrl = function(url) {
 
 
 /**
+ * @typedef {!{createObjectURL: (function(!Blob): string),
+ *             revokeObjectURL: function(string): void}}
+ */
+goog.fs.UrlObject_;
+
+
+/**
  * Get the object that has the createObjectURL and revokeObjectURL functions for
  * this browser.
  *
- * @return {!{createObjectURL: (function(Blob): string),
- *            revokeObjectURL: function(string)}} The object for this browser.
+ * @return {goog.fs.UrlObject_} The object for this browser.
  * @private
  */
 goog.fs.getUrlObject_ = function() {
@@ -130,14 +140,14 @@ goog.fs.getUrlObject_ = function() {
   // http://dev.w3.org/2006/webapi/FileAPI/#dfn-createObjectURL
   if (goog.isDef(goog.global.URL) &&
       goog.isDef(goog.global.URL.createObjectURL)) {
-    return goog.global.URL;
+    return /** @type {goog.fs.UrlObject_} */ (goog.global.URL);
   // This is what Chrome does (as of 10.0.648.6 dev)
   } else if (goog.isDef(goog.global.webkitURL) &&
              goog.isDef(goog.global.webkitURL.createObjectURL)) {
-    return goog.global.webkitURL;
+    return /** @type {goog.fs.UrlObject_} */ (goog.global.webkitURL);
   // This is what the spec used to say to do
   } else if (goog.isDef(goog.global.createObjectURL)) {
-    return goog.global;
+    return /** @type {goog.fs.UrlObject_} */ (goog.global);
   } else {
     throw Error('This browser doesn\'t seem to support blob URLs');
   }

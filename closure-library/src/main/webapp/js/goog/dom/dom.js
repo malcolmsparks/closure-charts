@@ -996,6 +996,22 @@ goog.dom.insertSiblingAfter = function(newNode, refNode) {
 
 
 /**
+ * Insert a child at a given index. If index is larger than the number of child
+ * nodes that the parent currently has, the node is inserted as the last child
+ * node.
+ * @param {Element} parent The element into which to insert the child.
+ * @param {Node} child The element to insert.
+ * @param {number} index The index at which to insert the new child node. Must
+ *     not be negative.
+ */
+goog.dom.insertChildAt = function(parent, child, index) {
+  // Note that if the second argument is null, insertBefore
+  // will append the child at the end of the list of children.
+  parent.insertBefore(child, parent.childNodes[index] || null);
+};
+
+
+/**
  * Removes a node from its parent.
  * @param {Node} node The node to remove.
  * @return {Node} The node removed if removed; else, null.
@@ -1053,7 +1069,10 @@ goog.dom.flattenElement = function(element) {
  *     children of the given element.
  */
 goog.dom.getChildren = function(element) {
-  if (goog.dom.BrowserFeature.CAN_USE_CHILDREN_ATTRIBUTE) {
+  // We check if the children attribute is supported for child elements
+  // since IE8 misuses the attribute by also including comments.
+  if (goog.dom.BrowserFeature.CAN_USE_CHILDREN_ATTRIBUTE &&
+      element.children != undefined) {
     return element.children;
   }
   // Fall back to manually filtering the element's child nodes.
@@ -1069,8 +1088,7 @@ goog.dom.getChildren = function(element) {
  * @return {Element} The first child node of {@code node} that is an element.
  */
 goog.dom.getFirstElementChild = function(node) {
-  if (goog.dom.BrowserFeature.CAN_USE_CHILDREN_ATTRIBUTE &&
-      node.nodeType == goog.dom.NodeType.ELEMENT) {
+  if (node.firstElementChild != undefined) {
     return /** @type {Element} */(node).firstElementChild;
   }
   return goog.dom.getNextElementNode_(node.firstChild, true);
@@ -1083,8 +1101,7 @@ goog.dom.getFirstElementChild = function(node) {
  * @return {Element} The last child node of {@code node} that is an element.
  */
 goog.dom.getLastElementChild = function(node) {
-  if (goog.dom.BrowserFeature.CAN_USE_CHILDREN_ATTRIBUTE &&
-      node.nodeType == goog.dom.NodeType.ELEMENT) {
+  if (node.lastElementChild != undefined) {
     return /** @type {Element} */(node).lastElementChild;
   }
   return goog.dom.getNextElementNode_(node.lastChild, false);
@@ -1097,8 +1114,7 @@ goog.dom.getLastElementChild = function(node) {
  * @return {Element} The next sibling of {@code node} that is an element.
  */
 goog.dom.getNextElementSibling = function(node) {
-  if (goog.dom.BrowserFeature.CAN_USE_CHILDREN_ATTRIBUTE &&
-      node.nodeType == goog.dom.NodeType.ELEMENT) {
+  if (node.nextElementSibling != undefined) {
     return /** @type {Element} */(node).nextElementSibling;
   }
   return goog.dom.getNextElementNode_(node.nextSibling, true);
@@ -1112,8 +1128,7 @@ goog.dom.getNextElementSibling = function(node) {
  *     an element.
  */
 goog.dom.getPreviousElementSibling = function(node) {
-  if (goog.dom.BrowserFeature.CAN_USE_CHILDREN_ATTRIBUTE &&
-      node.nodeType == goog.dom.NodeType.ELEMENT) {
+  if (node.previousElementSibling != undefined) {
     return /** @type {Element} */(node).previousElementSibling;
   }
   return goog.dom.getNextElementNode_(node.previousSibling, false);

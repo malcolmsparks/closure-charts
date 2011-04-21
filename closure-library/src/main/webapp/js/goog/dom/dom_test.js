@@ -479,6 +479,35 @@ function testReplaceNode() {
   assertNull('badNode should not be in the DOM tree', $('badReplaceNode'));
 }
 
+function testAppendChildAt() {
+  var parent = $('p2');
+  var origNumChildren = parent.childNodes.length;
+
+  var child1 = document.createElement('div');
+  goog.dom.insertChildAt(parent, child1, origNumChildren);
+  assertEquals(origNumChildren + 1, parent.childNodes.length);
+
+  var child2 = document.createElement('div');
+  goog.dom.insertChildAt(parent, child2, origNumChildren + 42);
+  assertEquals(origNumChildren + 2, parent.childNodes.length);
+
+  var child3 = document.createElement('div');
+  goog.dom.insertChildAt(parent, child3, 0);
+  assertEquals(origNumChildren + 3, parent.childNodes.length);
+
+  var child4 = document.createElement('div');
+  goog.dom.insertChildAt(parent, child3, 2);
+  assertEquals(origNumChildren + 3, parent.childNodes.length);
+
+  parent.removeChild(child1);
+  parent.removeChild(child2);
+  parent.removeChild(child3);
+
+  var emptyParentNotInDocument = document.createElement('div');
+  goog.dom.insertChildAt(emptyParentNotInDocument, child1, 0);
+  assertEquals(1, emptyParentNotInDocument.childNodes.length);
+}
+
 function testFlattenElement() {
   var text = document.createTextNode('Text');
   var br = document.createElement('br');
@@ -568,6 +597,18 @@ function testGetFirstElementChild() {
 
   var c = goog.dom.getFirstElementChild(b1);
   assertNull('First element child of b1 should be null', c);
+
+  // Test with an undefined firstElementChild attribute.
+  var b2 = $('b2');
+  var mockP2 = {
+      childNodes: [b1, b2],
+      firstChild: b1,
+      firstElementChild: undefined
+  };
+
+  b1 = goog.dom.getFirstElementChild(mockP2);
+  assertNotNull('First element child of mockP2 should not be null', b1);
+  assertEquals('First element child is b1', 'b1', b1.id);
 }
 
 function testGetLastElementChild() {
@@ -578,6 +619,18 @@ function testGetLastElementChild() {
 
   var c = goog.dom.getLastElementChild(b2);
   assertNull('Last element child of b2 should be null', c);
+
+  // Test with an undefined lastElementChild attribute.
+  var b1 = $('b1');
+  var mockP2 = {
+      childNodes: [b1, b2],
+      lastChild: b2,
+      lastElementChild: undefined
+  };
+
+  b2 = goog.dom.getLastElementChild(mockP2);
+  assertNotNull('Last element child of mockP2 should not be null', b2);
+  assertEquals('Last element child is b2', 'b2', b2.id);
 }
 
 function testGetNextElementSibling() {
@@ -588,6 +641,16 @@ function testGetNextElementSibling() {
 
   var c = goog.dom.getNextElementSibling(b2);
   assertNull('Next element sibling of b2 should be null', c);
+
+  // Test with an undefined nextElementSibling attribute.
+  var mockB1 = {
+      nextSibling: b2,
+      nextElementSibling: undefined
+  };
+
+  b2 = goog.dom.getNextElementSibling(mockB1);
+  assertNotNull('Next element sibling of mockB1 should not be null', b1);
+  assertEquals('Next element sibling is b2', 'b2', b2.id);
 }
 
 function testGetPreviousElementSibling() {
@@ -598,6 +661,16 @@ function testGetPreviousElementSibling() {
 
   var c = goog.dom.getPreviousElementSibling(b1);
   assertNull('Previous element sibling of b1 should be null', c);
+
+  // Test with an undefined previousElementSibling attribute.
+  var mockB2 = {
+      previousSibling: b1,
+      previousElementSibling: undefined
+  };
+
+  b1 = goog.dom.getPreviousElementSibling(mockB2);
+  assertNotNull('Previous element sibling of mockB2 should not be null', b1);
+  assertEquals('Previous element sibling is b1', 'b1', b1.id);
 }
 
 function testGetChildren() {
@@ -616,6 +689,20 @@ function testGetChildren() {
   assertNotNull('Element children array should not be null', noChildren);
   assertEquals('List of element children should be length zero.', 0,
       noChildren.length);
+
+  // Test with an undefined children attribute.
+  var mockP2 = {
+      childNodes: [b1, b2],
+      children: undefined
+  };
+
+  children = goog.dom.getChildren(mockP2);
+  assertNotNull('Elements array should not be null', children);
+  assertEquals('List of element children should be length two.', 2,
+      children.length);
+
+  assertObjectEquals('First element child should be b1.', b1, children[0]);
+  assertObjectEquals('Second element child should be b2.', b2, children[1]);
 }
 
 function testGetNextNode() {
