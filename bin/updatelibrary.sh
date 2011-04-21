@@ -28,4 +28,4 @@ read -n1 -r -p "Press any key to continue..." key
 
 echo "Tidying up"
 rm -rf closure-charts
-rm -rf closure
+rm -rf goog
