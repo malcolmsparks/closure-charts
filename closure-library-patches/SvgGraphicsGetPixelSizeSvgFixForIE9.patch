@@ -1,6 +1,6 @@
 diff -r 96baedd0c34f closure-library/src/main/webapp/js/goog/graphics/svggraphics.js
---- a/closure-library/src/main/webapp/js/goog/graphics/svggraphics.js	Tue Mar 22 11:56:40 2011 +0000
-+++ b/closure-library/src/main/webapp/js/goog/graphics/svggraphics.js	Thu Apr 21 16:25:38 2011 +0100
+--- goog/graphics/svggraphics.js	Tue Mar 22 11:56:40 2011 +0000
++++ goog/graphics/svggraphics.js	Thu Apr 21 16:25:38 2011 +0100
 @@ -399,7 +399,7 @@
  
  /** @inheritDoc */
