@@ -25,6 +25,7 @@ goog.require('goog.color');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.graphics');
+goog.require('goog.debug.ErrorHandler');
 goog.require('goog.math.Rect');
 goog.require('goog.math.Coordinate');
 goog.require('scottlogic.chart.rendering.Context');
@@ -245,6 +246,7 @@ scottlogic.chart.Chart.prototype.redraw = function() {
   /* Only skip the boundary computation if the user has defined both a min
    * AND a max, and they do not equal one another */
   
+  this.graphics_.suspend();
   /** @type {boolean} */
   var invalidX = this.xAxisData.equals(this.xAxisData.max, this.xAxisData.min);
   
@@ -294,9 +296,7 @@ scottlogic.chart.Chart.prototype.redraw = function() {
     this.initialized_ = true;
   }
  
-  // Redraw
-  this.graphics_.suspend();
-
+  // Redraw 
   this.calculateBoundingBoxes_();
   this.context_.plotArea = this.plottingArea;
   
@@ -308,8 +308,7 @@ scottlogic.chart.Chart.prototype.redraw = function() {
   for (var i = 0; i < this.series_.length; i++) {
     this.series_[i].redraw(this.graphics_, this.xAxis, this.yAxis,
         this.context_);
-  }
-
+  } 
   this.graphics_.resume();
 };
 
@@ -670,6 +669,7 @@ scottlogic.chart.Chart.prototype.removeLineSeriesById = function(idToRemove) {
       return this.removeLineSeriesByIndex_(i);
     }
   }
+  return null;
 };
 
 /**
@@ -684,6 +684,7 @@ scottlogic.chart.Chart.prototype.getLineSeriesById = function(id) {
   for (var i = 0; i < this.series_.length; i++) {
     if (this.series_[i].id === id) { return this.getLineSeriesByIndex(i); }
   }
+  return null;
 };
 
 /**
@@ -714,6 +715,7 @@ scottlogic.chart.Chart.prototype.removeLineSeries = function(
       return this.removeLineSeriesByIndex_(i);
     }
   }
+  return null;
 };
 
 /**
