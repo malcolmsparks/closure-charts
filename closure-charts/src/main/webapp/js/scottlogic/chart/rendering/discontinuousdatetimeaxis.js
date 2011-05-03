@@ -879,9 +879,7 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.
     getFirstLabelTick = function() {
 
   // We hold a temporary date, which is the beginning of the working day.
-  var tempDate = new goog.date.UtcDateTime(this.minYear_, this.minMonth_,
-      this.minDate_, this.startHours_,
-      this.startMinutes_, 0, 0);
+  var tempDate = this.denormalize(this.normalize(this.min));
 
   /** @type {goog.date.Interval} */
   var interval = new goog.date.Interval(0, 0, 0, 0, 0, 0);
