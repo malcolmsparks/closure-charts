@@ -394,7 +394,8 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.setIntervalStep =
    *
    * @type {number}
    */
-  var effectiveInterval = (this.max.getTime() - this.minTime_) / input;
+  var effectiveInterval = (this.normalize(this.max) - 
+      this.normalize(this.min)) / input;
 
   /** @type {number} */
   var years = Math.floor(effectiveInterval /
@@ -470,8 +471,10 @@ scottlogic.chart.rendering.DiscontinuousDateTimeAxis.prototype.setIntervalStep =
     // 12 hours+ = 1 day
     if (hours > 6 || (hours === 6 && minutes > 0) || days === 1) {
       manipulateStep.days = 1;
-    } else if (hours > 2 || (hours === 2 && minutes > 0)) {
+    } else if (hours > 3 || (hours === 3 && minutes > 0)) {
       manipulateStep.hours = 6;
+    } else if (hours > 2 || (hours === 2 && minutes > 0)) {
+      manipulateStep.hours = 3;
       // 2 hours
     } else if (hours > 1 || (hours === 1 && minutes > 0)) {
       manipulateStep.hours = 2;
